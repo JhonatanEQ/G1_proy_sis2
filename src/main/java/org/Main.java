@@ -15,7 +15,13 @@ public class Main {
             e.printStackTrace();
             return;
         }
-
-
+        // Iniciar la interfaz gráfica en el hilo de eventos de Swing
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("TechPoint Manager");
+            frame.setSize(800, 600);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setLocationRelativeTo(null); // Centrar ventana
+            frame.setVisible(true);
+        });
     }
 }

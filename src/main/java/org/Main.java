@@ -23,5 +23,7 @@ public class Main {
             frame.setLocationRelativeTo(null); // Centrar ventana
             frame.setVisible(true);
         });
+        
+        System.out.print("hola");
     }
 }

@@ -65,14 +65,13 @@ public class Home extends javax.swing.JFrame {
 
         jpMenu.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 150, 20));
 
-        jpDashboard.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.default.focusedBackground"));
+        jpDashboard.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.default.borderColor"));
         jpDashboard.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        jlIconD.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.default.focusColor"));
+        jlIconD.setBackground(new java.awt.Color(255, 255, 255));
         jlIconD.setForeground(new java.awt.Color(51, 153, 255));
         jlIconD.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/dash_select.png"))); // NOI18N
 
-        jlbuttonDasboard.setForeground(new java.awt.Color(51, 153, 255));
         jlbuttonDasboard.setText("Dashboard");
 
         javax.swing.GroupLayout jpDashboardLayout = new javax.swing.GroupLayout(jpDashboard);
@@ -80,7 +79,8 @@ public class Home extends javax.swing.JFrame {
         jpDashboardLayout.setHorizontalGroup(
             jpDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpDashboardLayout.createSequentialGroup()
-                .addComponent(jlIconD, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(jlIconD, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlbuttonDasboard, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())

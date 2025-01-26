@@ -4,6 +4,7 @@ import javax.swing.*;
 import org.config.DatabaseConnection;
 import java.sql.Connection;
 import java.sql.SQLException;
+import org.gui.home.Home;
 
 public class Main {
     public static void main(String[] args) {
@@ -17,13 +18,10 @@ public class Main {
         }
         // Iniciar la interfaz gráfica en el hilo de eventos de Swing
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("TechPoint Manager");
-            frame.setSize(800, 600);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setLocationRelativeTo(null); // Centrar ventana
-            frame.setVisible(true);
+            Home home = new Home();
+            home.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            home.setLocationRelativeTo(null); 
+            home.setVisible(true);
         });
-        
-        System.out.print("hola");
     }
 }

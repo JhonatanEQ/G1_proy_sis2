@@ -13,7 +13,6 @@ public class Main {
             System.out.println("✅ Conexión a PostgreSQL exitosa.");
         } catch (SQLException e) {
             System.err.println("❌ Error de conexión a la base de datos.");
-            e.printStackTrace();
             return;
         }
         // Iniciar la interfaz gráfica en el hilo de eventos de Swing

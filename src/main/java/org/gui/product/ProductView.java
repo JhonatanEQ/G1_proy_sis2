@@ -26,31 +26,247 @@ public class ProductView extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jpProduct = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jlCodeP = new javax.swing.JLabel();
+        jtCodeP = new javax.swing.JTextField();
+        jlNombreP = new javax.swing.JLabel();
+        jtNombreP = new javax.swing.JTextField();
+        jlFechaE = new javax.swing.JLabel();
+        jdFechaE = new com.toedter.calendar.JDateChooser();
+        jlPrecioU = new javax.swing.JLabel();
+        jtPrecioU = new javax.swing.JTextField();
+        jlCategoria = new javax.swing.JLabel();
+        jtCategoria = new javax.swing.JTextField();
+        jlCantidad = new javax.swing.JLabel();
+        jtCantidad = new javax.swing.JTextField();
+        jsDivision = new javax.swing.JSeparator();
+        jlProvedorInfo = new javax.swing.JLabel();
+        jlNombreE = new javax.swing.JLabel();
+        jtNombreE = new javax.swing.JTextField();
+        jbRegistrarE = new javax.swing.JButton();
+        jlFotoP = new javax.swing.JLabel();
+        jlFoto = new javax.swing.JLabel();
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Product");
+        jpProduct.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setText("Registar Entrada de Producto");
+        jpProduct.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 20, 200, -1));
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        jlCodeP.setText("Codigo del Producto");
+
+        jtCodeP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jtCodePActionPerformed(evt);
+            }
+        });
+
+        jlNombreP.setText("Nombre del Producto");
+
+        jtNombreP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jtNombrePActionPerformed(evt);
+            }
+        });
+
+        jlFechaE.setText("Fecha de Entrada");
+
+        jlPrecioU.setText("Precio Unitario");
+
+        jlCategoria.setText("Categoria");
+
+        jlCantidad.setText("Cantidad");
+
+        jlProvedorInfo.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jlProvedorInfo.setText("Informacion del Proveedor");
+
+        jlNombreE.setText("Nombre de la Empresa");
+
+        jtNombreE.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jtNombreEActionPerformed(evt);
+            }
+        });
+
+        jbRegistrarE.setBackground(new java.awt.Color(0, 102, 255));
+        jbRegistrarE.setForeground(new java.awt.Color(255, 255, 255));
+        jbRegistrarE.setText("Registrar Entrada");
+        jbRegistrarE.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jbRegistrarEMouseClicked(evt);
+            }
+        });
+        jbRegistrarE.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbRegistrarEActionPerformed(evt);
+            }
+        });
+
+        jlFotoP.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        jlFotoP.setText("Foto del Producto");
+
+        jlFoto.setText("                                        imagen");
+        jlFoto.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jlFoto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlFotoMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jsDivision)
+                        .addContainerGap())
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jlCantidad)
+                            .addComponent(jlCategoria)
+                            .addComponent(jlFechaE)
+                            .addComponent(jlNombreP)
+                            .addComponent(jlPrecioU)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jtCantidad, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jtCategoria, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jtPrecioU, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jdFechaE, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jtNombreP, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jtCodeP, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jlFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jlNombreE)
+                            .addComponent(jlProvedorInfo)
+                            .addComponent(jtNombreE, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jlCodeP))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(1, 1, 1)
+                                .addComponent(jlFotoP)
+                                .addGap(0, 238, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jbRegistrarE)
+                                .addGap(30, 30, 30))))))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jlCodeP)
+                    .addComponent(jlFotoP))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jtCodeP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jlNombreP)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jtNombreP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jlFechaE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jdFechaE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jlPrecioU)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jtPrecioU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jlCategoria)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jtCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jlCantidad)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jlFoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jsDivision, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jlProvedorInfo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jlNombreE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jtNombreE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jbRegistrarE)
+                .addGap(25, 25, 25))
+        );
+
+        jpProduct.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, 690, 470));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(244, 244, 244)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(276, Short.MAX_VALUE))
+            .addComponent(jpProduct, javax.swing.GroupLayout.DEFAULT_SIZE, 740, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(138, 138, 138)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(199, Short.MAX_VALUE))
+            .addComponent(jpProduct, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jtCodePActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtCodePActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jtCodePActionPerformed
+
+    private void jtNombrePActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtNombrePActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jtNombrePActionPerformed
+
+    private void jtNombreEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtNombreEActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jtNombreEActionPerformed
+
+    private void jbRegistrarEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbRegistrarEActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jbRegistrarEActionPerformed
+
+    private void jlFotoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlFotoMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jlFotoMouseClicked
+
+    private void jbRegistrarEMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jbRegistrarEMouseClicked
+        // TODO add your handling code here:
+        addProct(gProcut);
+    }//GEN-LAST:event_jbRegistrarEMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JButton jbRegistrarE;
+    private com.toedter.calendar.JDateChooser jdFechaE;
+    private javax.swing.JLabel jlCantidad;
+    private javax.swing.JLabel jlCategoria;
+    private javax.swing.JLabel jlCodeP;
+    private javax.swing.JLabel jlFechaE;
+    private javax.swing.JLabel jlFoto;
+    private javax.swing.JLabel jlFotoP;
+    private javax.swing.JLabel jlNombreE;
+    private javax.swing.JLabel jlNombreP;
+    private javax.swing.JLabel jlPrecioU;
+    private javax.swing.JLabel jlProvedorInfo;
+    private javax.swing.JPanel jpProduct;
+    private javax.swing.JSeparator jsDivision;
+    private javax.swing.JTextField jtCantidad;
+    private javax.swing.JTextField jtCategoria;
+    private javax.swing.JTextField jtCodeP;
+    private javax.swing.JTextField jtNombreE;
+    private javax.swing.JTextField jtNombreP;
+    private javax.swing.JTextField jtPrecioU;
     // End of variables declaration//GEN-END:variables
 }

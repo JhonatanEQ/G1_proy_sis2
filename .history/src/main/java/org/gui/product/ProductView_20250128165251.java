@@ -51,6 +51,11 @@ public class ProductView extends javax.swing.JPanel {
 
         jpProduct.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+<<<<<<< HEAD
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Product");
+        jpProduct.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 3, 750, 540));
+=======
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Registar Entrada de Producto");
         jpProduct.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 20, 200, -1));
@@ -211,11 +216,18 @@ public class ProductView extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jpProduct, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jpProduct, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+=======
             .addComponent(jpProduct, javax.swing.GroupLayout.DEFAULT_SIZE, 740, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jpProduct, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
+>>>>>>> fc83fe9c67a7492d873a96ecba736ddd23df0301
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -247,6 +259,9 @@ public class ProductView extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+<<<<<<< HEAD
+    private javax.swing.JPanel jpProduct;
+=======
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton jbRegistrarE;
     private com.toedter.calendar.JDateChooser jdFechaE;
@@ -268,5 +283,6 @@ public class ProductView extends javax.swing.JPanel {
     private javax.swing.JTextField jtNombreE;
     private javax.swing.JTextField jtNombreP;
     private javax.swing.JTextField jtPrecioU;
+>>>>>>> fc83fe9c67a7492d873a96ecba736ddd23df0301
     // End of variables declaration//GEN-END:variables
 }

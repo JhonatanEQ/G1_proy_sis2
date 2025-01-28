@@ -22,7 +22,9 @@ org\gui\sales\SalesView.class
 org\config\DatabaseConnection.class
 org\gui\reports\ReportsViews.class
 org\gui\home\Home$4.class
+org\config\CrudProduct.class
 org\gui\home\Home$8.class
+org\gui\product\ProductView$6.class
 org\gui\alerts\AlertsView.class
 org\services\product\ProductService.class
 org\gui\dashboad\Dashboard.class

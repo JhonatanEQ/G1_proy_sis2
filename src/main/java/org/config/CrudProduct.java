@@ -1,6 +1,8 @@
 
 package org.config;
 import org.config.DatabaseConnection;
+import java.sql.Statement;
+
 import java.sql.Connection;
 
 public class CrudProduct {
@@ -9,7 +11,7 @@ public class CrudProduct {
     public void inset(){
         try {
             Connection conn = DatabaseConnection.getConnection();
-            java.sql.Statement = conn.createStatement();
+            Statement Statement = conn.createStatement();
         } catch (Exception e) {
         }
     }

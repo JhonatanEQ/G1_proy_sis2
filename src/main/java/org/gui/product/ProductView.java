@@ -241,7 +241,7 @@ public class ProductView extends javax.swing.JPanel {
 
     private void jbRegistrarEMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jbRegistrarEMouseClicked
         // TODO add your handling code here:
-        addProct(gProcut);
+        //addProct(gProduct);
     }//GEN-LAST:event_jbRegistrarEMouseClicked
 
 

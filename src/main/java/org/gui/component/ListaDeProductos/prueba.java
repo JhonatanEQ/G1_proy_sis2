@@ -1,4 +1,4 @@
-package org.gui.component;
+package org.gui.component.ListaDeProductos;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -9,9 +9,7 @@ import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-/**
- * Clase para mostrar productos en un carrito.
- */
+
 public class prueba extends javax.swing.JPanel {
     private Product gProduct; // Producto actual
     private ArrayList<Product> gProductsList; // Lista de productos
@@ -27,23 +25,23 @@ public class prueba extends javax.swing.JPanel {
         initComponents();
         loadProductData();
     }
-
+    
     /**
      * Carga los datos del producto en los componentes visuales.
      */
     private void loadProductData() {
-        if (gProduct.getgImagePath() != null && !gProduct.getgImagePath().isEmpty()) {
-            ImageIcon icon = new ImageIcon(gProduct.getgImagePath());
+        if (gProduct.getImage() != null && !gProduct.getImage().isEmpty()) {
+            ImageIcon icon = new ImageIcon(gProduct.getImage());
             java.awt.Image img = icon.getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
             jLabel1.setIcon(new ImageIcon(img));
         } else {
             jLabel1.setText("Sin Imagen");
         }
 
-        jLabel3.setText(gProduct.getgName());
-        jLabel4.setText(String.format("%.2f", gProduct.getgPrice()));
+        jLabel3.setText(gProduct.getName());
+        jLabel4.setText(String.format("%.2f", gProduct.getUnitPrice()));
 
-        if ("active".equalsIgnoreCase(gProduct.getgStatus())) {
+        if (!gProduct.getStatus()) {
             jLabel5.setText("Active");
             jLabel5.setForeground(new Color(39, 174, 96));
         } else {
@@ -57,11 +55,11 @@ public class prueba extends javax.swing.JPanel {
      */
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {
         JOptionPane.showMessageDialog(this, 
-            "Producto: " + gProduct.getgName() + "\nPrecio: $" + gProduct.getgPrice(),
+            "Producto: " + gProduct.getName() + "\nPrecio: $" + gProduct.getUnitPrice(),
             "Detalles del Producto", 
             JOptionPane.INFORMATION_MESSAGE);
     }
-
+    
     /**
      * Inicializa los componentes del formulario.
      */
@@ -129,4 +127,8 @@ public class prueba extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration
+
+    public JLabel getCartButton() {
+    return jLabel2;  // El JLabel que actúa como botón de carrito
+    }
 }

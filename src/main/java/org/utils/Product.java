@@ -19,6 +19,7 @@ public class Product {
     private String gCompanyName;
     private boolean gStatus;
 
+ 
     // Constructor 1
     public Product(String pName, double pUnitPrice, String pImage, boolean pStatus) {
         gName = pName;
@@ -110,7 +111,8 @@ public class Product {
         return gCompanyName;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return gStatus;
     }
+
 }

@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import org.utils.Product;
 
 /**
@@ -14,7 +15,7 @@ import org.utils.Product;
  * @author HP
  */
 public class CartProduct extends javax.swing.JPanel {
-    private Product gProduct;
+    private final Product gProduct;
 
     /**
      * Creates new form CartProduct
@@ -54,19 +55,19 @@ public class CartProduct extends javax.swing.JPanel {
     }
 
      private void loadProductData() {
-        if (gProduct.getgImagePath() != null && !gProduct.getgImagePath().isEmpty()) {
-            ImageIcon icon = new ImageIcon(gProduct.getgImagePath());
+        if (gProduct.getImage() != null && !gProduct.getImage().isEmpty()) {
+            ImageIcon icon = new ImageIcon(gProduct.getImage());
             java.awt.Image img = icon.getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
             jLabel1.setIcon(new ImageIcon(img));
         } else {
             jLabel1.setText("Sin Imagen");
         }
 
-        jLabel3.setText(gProduct.getgName());
+        jLabel3.setText(gProduct.getName());
 
-        jLabel4.setText(String.format("%.2f", gProduct.getgPrice()));
+        jLabel4.setText(String.format("%.2f", gProduct.getUnitPrice()));
 
-        if (gProduct.getgStatus().equalsIgnoreCase("active") ) {
+        if (!gProduct.getStatus()) {
             jLabel5.setText("Active");
             jLabel5.setForeground(new Color(39, 174, 96));
         } else {
@@ -98,7 +99,6 @@ public class CartProduct extends javax.swing.JPanel {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("imagen");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-2, -4, 160, 110));
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -112,7 +112,7 @@ public class CartProduct extends javax.swing.JPanel {
 
         jLabel4.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         jLabel4.setText("0.00");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 130, 30, 30));
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 130, 40, 30));
 
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("active");
@@ -130,7 +130,7 @@ public class CartProduct extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

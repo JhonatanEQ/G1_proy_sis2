@@ -1,23 +1,38 @@
-
 package org.gui.sales;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.*;
+import java.awt.Font;
+import java.awt.Cursor;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import org.gui.component.CartProduct;
 import org.utils.Product;
+import org.gui.component.ListaDeProductos.prueba;
 
 public class SalesView extends javax.swing.JPanel {
-
     private ArrayList<Product> gProducts;
-    private ArrayList<CartProduct> gCartProducts;
+    private ArrayList<prueba> gCartProducts;
+    private Map<String, CartItem> cartItems;
+    private double subtotal;
+    private double tax;
+    private double total;
+
     public SalesView() {
+        cartItems = new HashMap<>();
         initComponents();
         setupStyle();
         initializeProducts();
         setupProductsPanel();
+        setupCartControls();
     }
     
      private void initializeProducts() {
@@ -26,12 +41,12 @@ public class SalesView extends javax.swing.JPanel {
         gCartProducts = new ArrayList<>();
         
         // Add sample products - you can modify this to load from your actual data source
-        gProducts.add(new Product("Mouse", "active", 39.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 212927.png"));
-        gProducts.add(new Product("Notebook", "active", 12.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 213659.png"));
-        gProducts.add(new Product("USB Cable", "active", 8.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 213704.png"));
-        gProducts.add(new Product("Keyboard", "active", 29.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 213930.png"));
-        gProducts.add(new Product("Laptop", "active", 599.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 223435.png"));
-        gProducts.add(new Product("Power Source", "active", 199.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 223615.png"));
+        gProducts.add(new Product("Mouse", 39.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 212927.png", true));
+        gProducts.add(new Product("Notebook", 12.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 213659.png", true));
+        gProducts.add(new Product("USB Cable", 8.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 213704.png", true));
+        gProducts.add(new Product("Keyboard", 29.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 213930.png", false));
+        gProducts.add(new Product("Laptop", 599.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 223435.png", false));
+        gProducts.add(new Product("Power Source", 199.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 223615.png", true));
     }
     
      private void setupStyle() {
@@ -53,20 +68,29 @@ public class SalesView extends javax.swing.JPanel {
         // Cart panel styling
         jPanelAreaListaProductos.setBackground(Color.WHITE);
         jPanelAreaListaProductos.setBorder(BorderFactory.createLineBorder(new Color(240, 240, 240)));
+        // Estilo del botón de registro
+        jToggleButton1.setBackground(new Color(63, 81, 181));
+        jToggleButton1.setForeground(Color.WHITE);
+        jToggleButton1.setFocusPainted(false);
+        jToggleButton1.setBorderPainted(false);
     }
     
     private void setupProductsPanel() {
         jpaProductos.removeAll();
-        
-        // Use GridLayout with proper spacing
         jpaProductos.setLayout(new GridLayout(2, 3, 15, 15));
-        
-        // Set minimum size for the products panel
         jpaProductos.setPreferredSize(new Dimension(557, 400));
         
-        // Add products with proper styling
         for (Product lProduct : gProducts) {
-            CartProduct lCartProduct = new CartProduct(lProduct);
+            prueba lCartProduct = new prueba(lProduct);
+            
+            // Add click listener to cart button
+            lCartProduct.getCartButton().addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    addToCart(lProduct);
+                }
+            });
+            
             gCartProducts.add(lCartProduct);
             jpaProductos.add(lCartProduct);
         }
@@ -74,8 +98,260 @@ public class SalesView extends javax.swing.JPanel {
         jpaProductos.revalidate();
         jpaProductos.repaint();
     }
-    
 
+    private void setupCartControls() {
+        // Setup quantity controls for each product row
+        for (int i = 1; i <= 6; i++) {
+            final String productId = "Producto " + i;
+            JLabel minusLabel = findLabelByText("-", productId);
+            JLabel plusLabel = findLabelByText("+", productId);
+            
+            if (minusLabel != null) {
+                minusLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                minusLabel.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        decrementQuantity(productId);
+                    }
+                });
+            }
+            
+            if (plusLabel != null) {
+                plusLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                plusLabel.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        incrementQuantity(productId);
+                    }
+                });
+            }
+        }
+
+        // Setup register button
+        jToggleButton1.addActionListener(e -> registerSale());
+    }
+
+    private void addToCart(Product product) {
+        String productId = product.getName();
+        if (cartItems.containsKey(productId)) {
+            cartItems.get(productId).incrementQuantity();
+        } else {
+            cartItems.put(productId, new CartItem(product));
+            addCartRow(product);
+        }
+        updateCartDisplay();
+    }
+
+    private void addCartRow(Product product) {
+        // Buscar una fila vacía para agregar el producto
+        for (int i = 1; i <= 6; i++) {
+            JLabel nameLabel = findProductLabel(i);
+            if (nameLabel != null && nameLabel.getText().equals("Producto " + i)) {
+                // Encontramos una fila vacía, actualizamos con el nuevo producto
+                nameLabel.setText(product.getName());
+                
+                // Configurar los controles de cantidad
+                JLabel minusLabel = findLabelByText("-", "Producto " + i);
+                JLabel plusLabel = findLabelByText("+", "Producto " + i);
+                JLabel quantityLabel = findLabelByText("1", "Producto " + i);
+                
+                if (minusLabel != null) {
+                    minusLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                    minusLabel.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            decrementQuantity(product.getName());
+                        }
+                    });
+                }
+                
+                if (plusLabel != null) {
+                    plusLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                    plusLabel.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            incrementQuantity(product.getName());
+                        }
+                    });
+                }
+                
+                break;
+            }
+        }
+    }
+
+    private void updateCartDisplay() {
+        subtotal = 0;
+        for (CartItem item : cartItems.values()) {
+            subtotal += item.getTotal();
+            
+            // Actualizar la cantidad mostrada para este producto
+            JLabel quantityLabel = findQuantityLabel(item.getProduct().getName());
+            if (quantityLabel != null) {
+                quantityLabel.setText(String.valueOf(item.getQuantity()));
+            }
+        }
+
+        tax = subtotal * 0.10;
+        total = subtotal + tax;
+
+        // Actualizar las etiquetas de totales
+        jLabel33.setText(String.format("$%.2f", subtotal));
+        jLabel34.setText(String.format("$%.2f", tax));
+        jLabel36.setText(String.format("$%.2f", total));
+    }
+    private void incrementQuantity(String productId) {
+        CartItem item = cartItems.get(productId);
+        if (item != null) {
+            item.incrementQuantity();
+            updateCartDisplay();
+        }
+    }
+
+    private void decrementQuantity(String productId) {
+        CartItem item = cartItems.get(productId);
+        if (item != null && item.getQuantity() > 1) {
+            item.decrementQuantity();
+            updateCartDisplay();
+        }
+    }
+
+    private void registerSale() {
+        if (total > 0) {
+            int response = JOptionPane.showConfirmDialog(
+                this,
+                "¿Desea registrar la venta por $" + String.format("%.2f", total) + "?",
+                "Confirmar Venta",
+                JOptionPane.YES_NO_OPTION
+            );
+            
+            if (response == JOptionPane.YES_OPTION) {
+                clearCart();
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Venta registrada exitosamente",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+        
+            }
+            if (response == JOptionPane.NO_OPTION) {
+                clearCart();
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Venta no registrada",
+                    "",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        }
+    }
+
+    private void clearCart() {
+        cartItems.clear();
+        subtotal = 0;
+        tax = 0;
+        total = 0;
+        
+        // Restablecer todas las filas de productos
+        for (int i = 1; i <= 6; i++) {
+            JLabel nameLabel = findProductLabel(i);
+            if (nameLabel != null) {
+                nameLabel.setText("Producto " + i);
+            }
+            
+            // Restablecer la cantidad
+            JLabel quantityLabel = findLabelByText("1", "Producto " + i);
+            if (quantityLabel != null) {
+                quantityLabel.setText("1");
+            }
+        }
+        
+        // Actualizar los totales
+        updateCartDisplay();
+    }
+
+    private JLabel findProductLabel(int index) {
+        String labelName = "jLabel2" + index;
+        for (Component c : jPanelAreaListaProductos.getComponents()) {
+            if (c instanceof JLabel && c.getName() != null && c.getName().equals(labelName)) {
+                return (JLabel) c;
+            }
+        }
+        return null;
+    }
+
+    private JLabel findQuantityLabel(String productName) {
+        for (Component c : jPanelAreaListaProductos.getComponents()) {
+            if (c instanceof JLabel) {
+                JLabel label = (JLabel) c;
+                if (label.getText().equals(productName)) {
+                    // Buscar el label de cantidad en el mismo contenedor
+                    Container parent = label.getParent();
+                    for (Component sibling : parent.getComponents()) {
+                        if (sibling instanceof JLabel) {
+                            JLabel siblingLabel = (JLabel) sibling;
+                            // Verificar si el texto es un número
+                            if (siblingLabel.getText().matches("\\d+")) {
+                                return siblingLabel;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private JLabel findLabelByText(String text, String productId) {
+        for (Component c : jPanelAreaListaProductos.getComponents()) {
+            if (c instanceof JLabel) {
+                JLabel label = (JLabel) c;
+                if (label.getText().equals(text)) {
+                    Container parent = label.getParent();
+                    for (Component sibling : parent.getComponents()) {
+                        if (sibling instanceof JLabel && ((JLabel) sibling).getText().equals(productId)) {
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    // Inner class to handle cart items
+    private class CartItem {
+        private Product product;
+        private int quantity;
+
+        public CartItem(Product product) {
+            this.product = product;
+            this.quantity = 1;
+        }
+
+        public Product getProduct() {
+            return product;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public void incrementQuantity() {
+            quantity++;
+        }
+
+        public void decrementQuantity() {
+            if (quantity > 1) {
+                quantity--;
+            }
+        }
+
+        public double getTotal() {
+            return product.getUnitPrice() * quantity;
+        }
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -141,7 +417,7 @@ public class SalesView extends javax.swing.JPanel {
         );
 
         jpaProductos.setBackground(new java.awt.Color(255, 255, 255));
-        jpaProductos.setLayout(new java.awt.GridLayout());
+        jpaProductos.setLayout(new java.awt.GridLayout(1, 0));
 
         jPanelAreaListaProductos.setBackground(new java.awt.Color(255, 255, 255));
 

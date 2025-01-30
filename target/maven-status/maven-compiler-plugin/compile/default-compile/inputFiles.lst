@@ -1,5 +1,3 @@
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\config\CrudProduct.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\config\DatabaseConnection.java
 C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\alerts\AlertsView.java
 C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\billing\BillingView.java
 C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\component\CartLowStockAlert.java
@@ -13,8 +11,11 @@ C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org
 C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\sales\SalesView.java
 C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\settings\Settings.java
 C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\Main.java
+C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\model\config\CrudProduct.java
+C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\model\config\DatabaseConnection.java
+C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\model\ProductModel.java
 C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\services\home\HomeService.java
 C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\services\product\ProductService.java
 C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\services\sales\SalesServcice.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\utils\logica.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\utils\Product.java
+C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\services\utils\logica.java
+C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\services\utils\Product.java

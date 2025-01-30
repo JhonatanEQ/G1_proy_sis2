@@ -18,10 +18,21 @@ import org.services.utils.Product;
  */
 public class ProductModel {
     private int gId;
+    private String gCode;
     private String gName;
-    private double gPrice;
+    private double gUnitPrice;
+    private int gCategoryId;
+    private int gCurrentStock;
+    private int gMinimumStock;
+    private String gEntryDate;
+    private String gSupplierName;
+    private String gImage;
+    private boolean gStatus;
+    
+    
 
     // Getters and Setters
+    
 
     public static List<Product> getAll(Connection conn) throws SQLException {
         String query = "SELECT * FROM products";
@@ -30,8 +41,16 @@ public class ProductModel {
             while (rs.next()) {
                 Product p = new Product();
                 p.setId(rs.getInt("id"));
-                p.setName(rs.getString("name"));
-                p.setUnitPrice(rs.getDouble("price"));
+                p.setCode(rs.getString("codigo"));
+                p.setName(rs.getString("nombre"));
+                p.setUnitPrice(rs.getDouble("precio_unitario"));
+                p.setCategoryId(rs.getInt("categoria_id"));
+                p.setCurrentStock(rs.getInt("stock_actual"));
+                p.setMinimumStock(rs.getInt("stock_minimo"));
+                p.setEntryDate(rs.getString("fecha_entrada"));
+                p.setSupplierName(rs.getString("nombre_proveedor"));
+                p.setImage(rs.getString("imagen_url"));
+                p.setStatus(rs.getBoolean("activo"));
                 products.add(p);
             }
         }

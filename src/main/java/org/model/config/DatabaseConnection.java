@@ -1,4 +1,4 @@
-package org.config;
+package org.model.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

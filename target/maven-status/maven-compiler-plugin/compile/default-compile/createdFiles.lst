@@ -18,6 +18,7 @@ org\gui\home\Home$6.class
 org\gui\product\ProductView.class
 org\gui\product\ProductView$1.class
 org\gui\billing\BillingView.class
+org\gui\component\JpRecentSales.class
 org\gui\sales\SalesView.class
 org\config\DatabaseConnection.class
 org\gui\reports\ReportsViews.class
@@ -28,7 +29,7 @@ org\gui\product\ProductView$6.class
 org\gui\alerts\AlertsView.class
 org\services\product\ProductService.class
 org\gui\dashboad\Dashboard.class
+org\gui\component\RoundedBorder.class
 org\utils\logica.class
 org\gui\product\ProductView$3.class
-org\gui\home\Home$10.class
 org\gui\home\Home$2.class

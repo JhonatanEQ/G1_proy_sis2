@@ -4,39 +4,41 @@
  */
 package org.gui.component;
 
+
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.text.DecimalFormat;
 import javax.swing.border.CompoundBorder;
-import java.awt.*;
 
 /**
  *
  * @author Encin
  */
-public class CartLowStockAlert extends javax.swing.JPanel {
-    
-    private JLabel lblProductName;
-    private JLabel lblStockStatus;
-    private JButton btnRestock;
+public class JpRecentSales extends javax.swing.JPanel {
+
+    private JLabel lblOrderNumber;
+    private JLabel lblTime;
+    private JLabel lblAmount;
     /**
-     * Creates new form CartLowStockAlert
+     * Creates new form JpRecentSales
      */
-    public CartLowStockAlert() {
+    public JpRecentSales() {
         initComponents();
         setProperties();
     }
     
-    private void setProperties() {
-        // Set panel properties
-        setBackground(new Color(249, 250, 251)); // #F9FAFB
+     private void setProperties() {
+        setBackground(new Color(249, 250, 251)); 
+        
         setBorder(new CompoundBorder(
             new EmptyBorder(5, 5, 5, 5),
             new RoundedBorder(8, new Color(240, 240, 240))
         ));
+        
         setPreferredSize(new Dimension(330, 70));
         setLayout(new BorderLayout(10, 5));
         
@@ -45,38 +47,33 @@ public class CartLowStockAlert extends javax.swing.JPanel {
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(new Color(249, 250, 251));
         
-        // Product info panel
+        // Order number and time panel
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
         topPanel.setBackground(new Color(249, 250, 251));
         
-        lblProductName = new JLabel("Producto 1");
-        lblProductName.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblOrderNumber = new JLabel("Order #1234");
+        lblOrderNumber.setFont(new Font("Segoe UI", Font.BOLD, 14));
         
-        // Stock status panel
+        lblTime = new JLabel("hace 2 horas");
+        lblTime.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblTime.setForeground(new Color(128, 128, 128));
+        
+        topPanel.add(lblOrderNumber);
+        topPanel.add(Box.createHorizontalGlue());
+        topPanel.add(lblTime);
+        
+        // Amount panel
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
         bottomPanel.setBackground(new Color(249, 250, 251));
         
-        lblStockStatus = new JLabel("Quedan solo 2 items");
-        lblStockStatus.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblStockStatus.setForeground(new Color(239, 68, 68)); // Color rojo para alertas
+        lblAmount = new JLabel("$123.45");
+        lblAmount.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblAmount.setForeground(new Color(71, 71, 71));
         
-        // Botón de Resurtir
-        btnRestock = new JButton("Resurtir");
-        btnRestock.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        btnRestock.setForeground(new Color(59, 130, 246)); // Color azul para el botón
-        btnRestock.setBorderPainted(false);
-        btnRestock.setContentAreaFilled(false);
-        btnRestock.setFocusPainted(false);
-        btnRestock.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
-        topPanel.add(lblProductName);
-        topPanel.add(Box.createHorizontalGlue());
-        topPanel.add(btnRestock);
-        
-        bottomPanel.add(lblStockStatus);
         bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(lblAmount);
         
         contentPanel.add(topPanel);
         contentPanel.add(Box.createVerticalStrut(5));
@@ -84,16 +81,13 @@ public class CartLowStockAlert extends javax.swing.JPanel {
         
         add(contentPanel, BorderLayout.CENTER);
     }
-    
-    // Método público para actualizar la información de la alerta
-    public void setAlertInfo(String productName, int remainingItems) {
-        lblProductName.setText(productName);
-        lblStockStatus.setText("Quedan solo " + remainingItems + " items");
-    }
-    
-    // Método para agregar un listener al botón de resurtir
-    public void addRestockListener(java.awt.event.ActionListener listener) {
-        btnRestock.addActionListener(listener);
+     
+     // Public methods to update the sale information
+    public void setOrderInfo(String orderNumber, String timeAgo, double amount) {
+        lblOrderNumber.setText("Order #" + orderNumber);
+        lblTime.setText(timeAgo);
+        DecimalFormat df = new DecimalFormat("$#,##0.00");
+        lblAmount.setText(df.format(amount));
     }
 
     /**
@@ -109,11 +103,11 @@ public class CartLowStockAlert extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 280, Short.MAX_VALUE)
+            .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 46, Short.MAX_VALUE)
+            .addGap(0, 66, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

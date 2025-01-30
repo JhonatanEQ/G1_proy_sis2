@@ -4,20 +4,30 @@
  */
 package org.services.product;
 
-import org.utils.Product;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import org.model.ProductModel;
+import org.model.config.DatabaseConnection;
+import org.services.utils.Product;
 
 /**
  *
  * @author BORIS
  */
 public class ProductService {
-    private Product gProduct;
-
+    private DatabaseConnection gConnDB;
     public ProductService() {
+        this.gConnDB = new DatabaseConnection();
     }
-    
-    public void addProduct(Product pProduct){
-        //
+
+    public List<Product> obtenerProductos() throws SQLException {
+        try (Connection conn = gConnDB.getConnection()) {
+            return ProductModel.getAll(conn);
+        } catch (SQLException e) {
+            return new ArrayList<>();
+        }
     }
     
     

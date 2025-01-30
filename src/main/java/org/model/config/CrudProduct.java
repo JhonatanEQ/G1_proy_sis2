@@ -1,6 +1,6 @@
 
-package org.config;
-import org.config.DatabaseConnection;
+package org.model.config;
+import org.model.config.DatabaseConnection;
 import java.sql.Statement;
 
 import java.sql.Connection;

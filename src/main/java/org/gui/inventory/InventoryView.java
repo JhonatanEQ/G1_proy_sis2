@@ -281,7 +281,7 @@ private void deshabilitarEdicionTabla(){
 
 private void cargarDatosDesdeBD() {
     try {
-        List<Product> productos = productService.obtenerProductos();
+        List<Product> productos = productService.getAllProducts();
         tableModel.setRowCount(0); // Limpiar la tabla
         
         for (Product producto : productos) {

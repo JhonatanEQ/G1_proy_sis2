@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\alerts\AlertsView.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\billing\BillingView.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\component\CartLowStockAlert.java
@@ -12,38 +11,15 @@ C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\reports\Reports
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\sales\SalesView.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\settings\Settings.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\Main.java
+C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\model\CategoryModel.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\model\config\CrudProduct.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\model\config\DatabaseConnection.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\model\ProductModel.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\home\HomeService.java
+C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\product\CategoryService.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\product\ProductService.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\sales\SalesServcice.java
+C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\utils\Category.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\utils\logica.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\utils\Product.java
-=======
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\alerts\AlertsView.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\billing\BillingView.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\component\CartLowStockAlert.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\component\JpRecentSales.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\component\RoundedBorder.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\dashboad\Dashboard.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\home\Home.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\inventory\InventoryView.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\product\ProductView.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\reports\ReportsViews.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\sales\SalesView.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\gui\settings\Settings.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\Main.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\model\CategoryModel.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\model\config\CrudProduct.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\model\config\DatabaseConnection.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\model\ProductModel.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\services\home\HomeService.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\services\product\CategoryService.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\services\product\ProductService.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\services\sales\SalesServcice.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\services\utils\Category.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\services\utils\logica.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\services\utils\Product.java
-C:\Users\Encin\OneDrive\Desktop\Nueva carpeta\techPointManager\src\main\java\org\services\utils\Utils.java
->>>>>>> 005429c0e41e058d6026ccdbfaafdd59803a829d
+C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\utils\Utils.java

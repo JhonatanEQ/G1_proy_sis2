@@ -34,7 +34,6 @@ public class Home extends javax.swing.JFrame {
     private final AlertsView gAlertsPanel;
     private final ReportsViews gReportsPanel;
     private final Settings gSettingsPanel;
-    private JPanel gActivePanel = null;
     private JPanel gSelectedPanel;
     
     

@@ -193,20 +193,21 @@ private void deshabilitarEdicionTabla(){
     }//GEN-LAST:event_txt_filterActionPerformed
 
     private void txt_modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_modificarActionPerformed
-        // TODO add your handling code here:
- int selectedRow = jTable1.getSelectedRow();
-    if(selectedRow == -1){
+        // TODO add your handling code here:                                              
+     int selectedRow = jTable1.getSelectedRow();
+     if (selectedRow == -1) {
         JOptionPane.showMessageDialog(this, "Seleccione una fila para modificar.");
         return;
     }
     
     // Obtener los datos de la fila seleccionada
+    int productId = (int) jTable1.getValueAt(selectedRow, 0); // Suponiendo que el ID está en la primera columna
     String codigo = String.valueOf(jTable1.getValueAt(selectedRow, 1));
     String nombre = String.valueOf(jTable1.getValueAt(selectedRow, 2));
     double precio = Double.parseDouble(String.valueOf(jTable1.getValueAt(selectedRow, 3)));
     int stockActual = Integer.parseInt(String.valueOf(jTable1.getValueAt(selectedRow, 5)));
     int stockMinimo = Integer.parseInt(String.valueOf(jTable1.getValueAt(selectedRow, 6)));
-    
+
     // Mostrar cuadro de diálogo para editar
     JTextField txtCodigo = new JTextField(codigo);
     txtCodigo.setEditable(false);
@@ -214,7 +215,7 @@ private void deshabilitarEdicionTabla(){
     txtNombre.setEditable(false);
     JTextField txtPrecio = new JTextField(String.valueOf(precio));
     JTextField txtStock = new JTextField(String.valueOf(stockActual));
-    
+
     Object[] message = {
         "Código:", txtCodigo,
         "Nombre:", txtNombre,
@@ -222,47 +223,80 @@ private void deshabilitarEdicionTabla(){
         "Stock Actual:", txtStock
     };
 
-    int option = JOptionPane.showConfirmDialog(this, message, "Modificar Producto", JOptionPane.OK_CANCEL_OPTION);
-    if (option == JOptionPane.OK_OPTION) {
-        try {
+         int option = JOptionPane.showConfirmDialog(this, message, "Modificar Producto", JOptionPane.OK_CANCEL_OPTION);
+         if (option == JOptionPane.OK_OPTION) {
+          try {
             // Validar datos numéricos
             double nuevoPrecio = Double.parseDouble(txtPrecio.getText());
             int nuevoStock = Integer.parseInt(txtStock.getText());
-            
+
             // Obtener fecha y hora actual del sistema
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String fechaHoraActual = sdf.format(new Date());
-            
-            // Actualizar los datos en la tabla
-            jTable1.setValueAt(nuevoPrecio, selectedRow, 3);
-            jTable1.setValueAt(nuevoStock, selectedRow, 5);
-            jTable1.setValueAt(fechaHoraActual, selectedRow, 7);
-            
-            // Actualizar el estado basado en el stock
-            String nuevoEstado = nuevoStock <= stockMinimo ? "Bajo stock" : "En stock";
-            jTable1.setValueAt(nuevoEstado, selectedRow, 9);
-            
+
+            // Crear objeto Producto con los nuevos valores
+            Product updatedProduct = new Product();
+            updatedProduct.setId(productId);
+            updatedProduct.setCode(codigo);
+            updatedProduct.setName(nombre);
+            updatedProduct.setUnitPrice(nuevoPrecio);
+            updatedProduct.setCurrentStock(nuevoStock);
+            updatedProduct.setEntryDate(fechaHoraActual);
+
+            // Llamar al servicio para actualizar en la BD
+            ProductService productService = new ProductService();
+            boolean success = productService.updateProductStockAndDate(updatedProduct);
+
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.");
+
+                // Actualizar la tabla visualmente
+                jTable1.setValueAt(nuevoPrecio, selectedRow, 3);
+                jTable1.setValueAt(nuevoStock, selectedRow, 5);
+                jTable1.setValueAt(fechaHoraActual, selectedRow, 7);
+
+                // Actualizar el estado basado en el stock
+                String nuevoEstado = nuevoStock <= stockMinimo ? "Bajo stock" : "En stock";
+                jTable1.setValueAt(nuevoEstado, selectedRow, 9);
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar el producto.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, 
                 "Error: Verifique que el precio y stock sean números válidos", 
                 "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+
     }//GEN-LAST:event_txt_modificarActionPerformed
 
     private void txt_eliminar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_eliminar1ActionPerformed
         // TODO add your handling code here:
         int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione una fila para eliminar.");
-            return;
-            
+     if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Seleccione una fila para eliminar.");
+        return;
+    }
+    
+    // Obtener el ID del producto (asumiendo que el ID está en la primera columna)
+    int productId = (int) jTable1.getValueAt(selectedRow, 0);
+
+    // Confirmar eliminación
+    int confirm = JOptionPane.showConfirmDialog(this, "¿Está seguro de que desea eliminar este producto?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+    
+    if (confirm == JOptionPane.YES_OPTION) {
+        ProductService productService = new ProductService();
+        boolean success = productService.deleteProduct(productId);
+
+         if (success) {
+            JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
+            tableModel.removeRow(selectedRow); // Elimina de la tabla visualmente
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al eliminar el producto.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        // Confirmar eliminación
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Está seguro de que desea eliminar este producto?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            tableModel.removeRow(selectedRow);
-        }
+    }
     }//GEN-LAST:event_txt_eliminar1ActionPerformed
 
 

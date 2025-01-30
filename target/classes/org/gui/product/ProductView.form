@@ -41,7 +41,7 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="40" y="20" width="200" height="-1"/>
+              <AbsoluteConstraints x="30" y="20" width="200" height="-1"/>
             </Constraint>
           </Constraints>
         </Component>
@@ -53,7 +53,7 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="30" y="50" width="690" height="470"/>
+              <AbsoluteConstraints x="30" y="40" width="690" height="480"/>
             </Constraint>
           </Constraints>
 
@@ -68,20 +68,18 @@
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="jlCantidad" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="jlCategoria" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="jlFechaE" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="jlNombreP" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="jlPrecioU" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="jtCantidad" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="jtCategoria" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="jtPrecioU" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="jdFechaE" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="jtNombreP" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="jtCodeP" alignment="0" pref="250" max="32767" attributes="0"/>
-                                  </Group>
+                                  <Component id="jtCantidad" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jtPrecioU" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jdFechaE" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jtNombreP" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jtCodeP" alignment="0" pref="250" max="32767" attributes="0"/>
+                                  <Component id="jcCategoria" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="jlFoto" min="-2" pref="314" max="-2" attributes="0"/>
@@ -101,7 +99,7 @@
                                       <EmptySpace min="0" pref="238" max="32767" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="1" attributes="0">
-                                      <EmptySpace max="32767" attributes="0"/>
+                                      <EmptySpace pref="174" max="32767" attributes="0"/>
                                       <Component id="jbRegistrarE" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                                   </Group>
@@ -138,13 +136,13 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jlCategoria" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jtCategoria" min="-2" max="-2" attributes="0"/>
+                              <Component id="jcCategoria" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jlCantidad" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jtCantidad" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jlFoto" max="32767" attributes="0"/>
+                          <Component id="jlFoto" pref="282" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jsDivision" min="-2" pref="9" max="-2" attributes="0"/>
@@ -154,7 +152,7 @@
                       <Component id="jlNombreE" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jtNombreE" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="11" max="32767" attributes="0"/>
                       <Component id="jbRegistrarE" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
                   </Group>
@@ -200,8 +198,6 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Categoria"/>
               </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="jtCategoria">
             </Component>
             <Component class="javax.swing.JLabel" name="jlCantidad">
               <Properties>
@@ -261,10 +257,28 @@
                     <EtchetBorder/>
                   </Border>
                 </Property>
+                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                  <Color id="Hand Cursor"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jlFotoMouseClicked"/>
               </Events>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="jcCategoria">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="4">
+                    <StringItem index="0" value="Item 1"/>
+                    <StringItem index="1" value="Item 2"/>
+                    <StringItem index="2" value="Item 3"/>
+                    <StringItem index="3" value="Item 4"/>
+                  </StringArray>
+                </Property>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>

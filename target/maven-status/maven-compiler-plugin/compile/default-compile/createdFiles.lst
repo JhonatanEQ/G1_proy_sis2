@@ -10,6 +10,7 @@ org\services\sales\SalesServcice.class
 org\gui\component\CartLowStockAlert.class
 org\gui\inventory\InventoryView$2.class
 org\gui\home\Home$6.class
+cartItems.class
 org\gui\product\ProductView.class
 org\gui\product\ProductView$1.class
 org\gui\billing\BillingView.class

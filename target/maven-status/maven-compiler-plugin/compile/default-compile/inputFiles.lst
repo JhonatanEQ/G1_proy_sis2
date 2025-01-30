@@ -1,7 +1,13 @@
+C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\cartItems.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\alerts\AlertsView.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\billing\BillingView.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\component\CartLowStockAlert.java
+C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\component\CartPanel.java
+C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\component\CartProduct.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\component\JpRecentSales.java
+C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\component\ListaDeProductos\CartProduct.java
+C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\component\ListaDeProductos\jpListaDeProductos.java
+C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\component\ListaDeProductos\prueba.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\component\RoundedBorder.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\dashboad\Dashboard.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\home\Home.java
@@ -23,3 +29,5 @@ C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\utils\Cate
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\utils\logica.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\utils\Product.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\utils\Utils.java
+C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\utils\CartItem.java
+C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\utils\Product.java

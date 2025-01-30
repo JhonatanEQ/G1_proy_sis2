@@ -48,5 +48,22 @@ public class ProductService {
             return false;
         }
     }
+    public boolean updateProductStockAndDate(Product product) {
+        try (Connection conn = gConnDB.getConnection()) {
+            return ProductModel.updateProductStockAndDate(conn, product);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteProduct(int productId) {
+        try (Connection conn = gConnDB.getConnection()) {
+            return ProductModel.deleteProduct(conn, productId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     
 }

@@ -11,9 +11,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.services.utils.Product;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import org.services.utils.Utils;
 
 
@@ -72,5 +69,25 @@ public class ProductModel {
             return rowsAffected > 0;
         }
     }
+    public static boolean updateProductStockAndDate(Connection conn, Product product) throws SQLException {
+        String query = "UPDATE productos SET stock_actual = ?, fecha_entrada = ? WHERE id = ?";
     
+         try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, product.getCurrentStock());
+            stmt.setDate(2, (java.sql.Date) Utils.convertToDate(product.getEntryDate()));
+            stmt.setInt(3, product.getId());
+        
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+    public static boolean deleteProduct(Connection conn, int productId) throws SQLException {
+        String query = "DELETE FROM productos WHERE id = ?";
+    
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, productId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
 }

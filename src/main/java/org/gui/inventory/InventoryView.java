@@ -217,10 +217,12 @@ private void deshabilitarEdicionTabla(){
         JTextField txtNombre = new JTextField(nombre);
         txtNombre.setEditable(false); // Nombre no editable
         JTextField txtCategoria = new JTextField(categoria);
+        txtCategoria.setEditable(false); // Categoria no editable
         JTextField txtStock = new JTextField(stock);
         JTextField txtUltimaActualizacion = new JTextField(ultimaActualizacion);
         txtUltimaActualizacion.setEditable(false); // Última Actualización no editable
         JTextField txtEstado = new JTextField(estado);
+        txtEstado.setEditable(false); // Estado no editable
         
         Object[] message = {
             "Nombre:", txtNombre,

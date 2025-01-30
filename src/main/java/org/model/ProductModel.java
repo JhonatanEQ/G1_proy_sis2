@@ -35,7 +35,7 @@ public class ProductModel {
     
 
     public static List<Product> getAll(Connection conn) throws SQLException {
-        String query = "SELECT * FROM products";
+        String query = "SELECT * FROM productos";
         List<Product> products = new ArrayList<>();
         try (PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {

@@ -12,22 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 import org.services.utils.Product;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import org.services.utils.Utils;
+
+
+
 /**
  *
  * @author Encin
  */
 public class ProductModel {
-    private int gId;
-    private String gCode;
-    private String gName;
-    private double gUnitPrice;
-    private int gCategoryId;
-    private int gCurrentStock;
-    private int gMinimumStock;
-    private String gEntryDate;
-    private String gSupplierName;
-    private String gImage;
-    private boolean gStatus;
     
     
 
@@ -56,4 +51,26 @@ public class ProductModel {
         }
         return products;
     }
+    
+    public static boolean insertOneProduct(Connection conn, Product product) throws SQLException {
+        String query = "INSERT INTO productos (codigo, nombre, precio_unitario, categoria_id, stock_actual, stock_minimo, fecha_entrada, nombre_proveedor, imagen_url, activo) "
+                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, product.getCode());
+            stmt.setString(2, product.getName());
+            stmt.setDouble(3, product.getUnitPrice());
+            stmt.setInt(4, product.getCategoryId());
+            stmt.setInt(5, product.getCurrentStock());
+            stmt.setInt(6, product.getMinimumStock());
+            stmt.setDate(7, (java.sql.Date) Utils.convertToDate(product.getEntryDate()));
+            stmt.setString(8, product.getSupplierName());
+            stmt.setString(9, product.getImage());
+            stmt.setBoolean(10, product.getStatus());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+    
 }

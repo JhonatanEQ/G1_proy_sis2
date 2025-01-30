@@ -78,7 +78,7 @@ public class prueba extends javax.swing.JPanel {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("imagen");
+        
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-2, -4, 160, 110));
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

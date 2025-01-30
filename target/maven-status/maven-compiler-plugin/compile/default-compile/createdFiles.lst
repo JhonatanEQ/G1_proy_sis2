@@ -11,8 +11,8 @@ org\gui\component\CartProduct.class
 org\gui\home\Home$3.class
 org\services\sales\SalesServcice.class
 org\gui\component\CartLowStockAlert.class
-org\gui\sales\SalesView$5.class
 org\gui\home\Home$6.class
+cartItems.class
 org\gui\product\ProductView.class
 org\gui\product\ProductView$1.class
 org\gui\billing\BillingView.class
@@ -43,4 +43,3 @@ org\gui\product\ProductView$6.class
 org\gui\component\CartPanel.class
 org\gui\product\ProductView$3.class
 org\gui\home\Home$2.class
-org\gui\sales\SalesView$6.class

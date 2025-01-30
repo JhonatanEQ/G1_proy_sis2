@@ -30,5 +30,4 @@ org\services\product\ProductService.class
 org\gui\dashboad\Dashboard.class
 org\utils\logica.class
 org\gui\product\ProductView$3.class
-org\gui\home\Home$10.class
 org\gui\home\Home$2.class

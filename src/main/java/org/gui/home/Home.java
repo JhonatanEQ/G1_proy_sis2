@@ -5,6 +5,8 @@
 package org.gui.home;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.gui.alerts.AlertsView;
 import org.gui.billing.BillingView;
@@ -32,6 +34,7 @@ public class Home extends javax.swing.JFrame {
     private final AlertsView gAlertsPanel;
     private final ReportsViews gReportsPanel;
     private final Settings gSettingsPanel;
+    private JPanel gSelectedPanel;
     
     
 
@@ -49,6 +52,7 @@ public class Home extends javax.swing.JFrame {
         gReportsPanel = new ReportsViews();
         gSettingsPanel = new Settings();
         jpView.add(gDashboardPanel, BorderLayout.CENTER);
+        initDefaultSelection();
         
     }
 
@@ -66,7 +70,7 @@ public class Home extends javax.swing.JFrame {
         jSeparator3 = new javax.swing.JSeparator();
         jpDashboard = new javax.swing.JPanel();
         jlIconD = new javax.swing.JLabel();
-        jlbuttonDasboard = new javax.swing.JLabel();
+        jlDasboard = new javax.swing.JLabel();
         jpInventory = new javax.swing.JPanel();
         jlIconInv = new javax.swing.JLabel();
         jlInv = new javax.swing.JLabel();
@@ -77,14 +81,14 @@ public class Home extends javax.swing.JFrame {
         jlIconSales = new javax.swing.JLabel();
         jlSales = new javax.swing.JLabel();
         jpBilling = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jlIconB = new javax.swing.JLabel();
         jlBilling = new javax.swing.JLabel();
         jpAlerts = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        jlIconA = new javax.swing.JLabel();
+        jlAlerts = new javax.swing.JLabel();
         jpReports = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        jlIconR = new javax.swing.JLabel();
+        jlReports = new javax.swing.JLabel();
         jpSettings = new javax.swing.JPanel();
         jlIconSet = new javax.swing.JLabel();
         jlSettings = new javax.swing.JLabel();
@@ -111,6 +115,9 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpDashboardMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jpDashboardMouseEntered(evt);
+            }
         });
 
         jlIconD.setBackground(new java.awt.Color(255, 255, 255));
@@ -118,7 +125,12 @@ public class Home extends javax.swing.JFrame {
         jlIconD.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlIconD.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/dash_select.png"))); // NOI18N
 
-        jlbuttonDasboard.setText("Dashboard");
+        jlDasboard.setText("Dashboard");
+        jlDasboard.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jlDasboardMouseExited(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpDashboardLayout = new javax.swing.GroupLayout(jpDashboard);
         jpDashboard.setLayout(jpDashboardLayout);
@@ -127,14 +139,14 @@ public class Home extends javax.swing.JFrame {
             .addGroup(jpDashboardLayout.createSequentialGroup()
                 .addComponent(jlIconD, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jlbuttonDasboard, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jlDasboard, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15))
         );
         jpDashboardLayout.setVerticalGroup(
             jpDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpDashboardLayout.createSequentialGroup()
                 .addGroup(jpDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jlbuttonDasboard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jlDasboard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jlIconD, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -147,10 +159,16 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpInventoryMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jpInventoryMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jpInventoryMouseExited(evt);
+            }
         });
 
         jlIconInv.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jlIconInv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/4544845-business-comerce-delivery-list-shop_121445 (1).png"))); // NOI18N
+        jlIconInv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/inv.png"))); // NOI18N
 
         jlInv.setText("Inventario");
 
@@ -178,18 +196,19 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpProductMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jpProductMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jpProductMouseExited(evt);
+            }
         });
 
         jlIconP.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jlIconP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/‌inventory.png"))); // NOI18N
+        jlIconP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/product.png"))); // NOI18N
         jlIconP.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jlProduct.setText("Producto");
-        jlProduct.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jlProductMouseClicked(evt);
-            }
-        });
 
         javax.swing.GroupLayout jpProductLayout = new javax.swing.GroupLayout(jpProduct);
         jpProduct.setLayout(jpProductLayout);
@@ -210,16 +229,22 @@ public class Home extends javax.swing.JFrame {
 
         jpSales.setBackground(new java.awt.Color(255, 255, 255));
         jpSales.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jpSales.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jpSalesMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jpSalesMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jpSalesMouseExited(evt);
+            }
+        });
 
         jlIconSales.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlIconSales.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/sales.png"))); // NOI18N
 
         jlSales.setText("Ventas");
-        jlSales.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jlSalesMouseClicked(evt);
-            }
-        });
 
         javax.swing.GroupLayout jpSalesLayout = new javax.swing.GroupLayout(jpSales);
         jpSales.setLayout(jpSalesLayout);
@@ -233,7 +258,7 @@ public class Home extends javax.swing.JFrame {
         jpSalesLayout.setVerticalGroup(
             jpSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jlIconSales, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-            .addComponent(jlSales, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jlSales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jpMenu.add(jpSales, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 240, 150, 40));
@@ -244,30 +269,31 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpBillingMouseClicked(evt);
             }
-        });
-
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("x");
-
-        jlBilling.setText("Facturas");
-        jlBilling.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jlBillingMouseClicked(evt);
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jpBillingMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jpBillingMouseExited(evt);
             }
         });
+
+        jlIconB.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlIconB.setText("x");
+
+        jlBilling.setText("Facturas");
 
         javax.swing.GroupLayout jpBillingLayout = new javax.swing.GroupLayout(jpBilling);
         jpBilling.setLayout(jpBillingLayout);
         jpBillingLayout.setHorizontalGroup(
             jpBillingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpBillingLayout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jlIconB, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlBilling, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
         );
         jpBillingLayout.setVerticalGroup(
             jpBillingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+            .addComponent(jlIconB, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
             .addComponent(jlBilling, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
@@ -279,26 +305,32 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpAlertsMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jpAlertsMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jpAlertsMouseExited(evt);
+            }
         });
 
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("x");
+        jlIconA.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlIconA.setText("x");
 
-        jLabel3.setText("Alertas");
+        jlAlerts.setText("Alertas");
 
         javax.swing.GroupLayout jpAlertsLayout = new javax.swing.GroupLayout(jpAlerts);
         jpAlerts.setLayout(jpAlertsLayout);
         jpAlertsLayout.setHorizontalGroup(
             jpAlertsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpAlertsLayout.createSequentialGroup()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jlIconA, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
+                .addComponent(jlAlerts, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
         );
         jpAlertsLayout.setVerticalGroup(
             jpAlertsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jlIconA, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+            .addComponent(jlAlerts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jpMenu.add(jpAlerts, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 360, 150, 40));
@@ -309,34 +341,47 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpReportsMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jpReportsMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jpReportsMouseExited(evt);
+            }
         });
 
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("x");
+        jlIconR.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlIconR.setText("x");
 
-        jLabel5.setText("Reportes");
+        jlReports.setText("Reportes");
 
         javax.swing.GroupLayout jpReportsLayout = new javax.swing.GroupLayout(jpReports);
         jpReports.setLayout(jpReportsLayout);
         jpReportsLayout.setHorizontalGroup(
             jpReportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpReportsLayout.createSequentialGroup()
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jlIconR, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
+                .addComponent(jlReports, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
         );
         jpReportsLayout.setVerticalGroup(
             jpReportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jlIconR, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+            .addComponent(jlReports, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jpMenu.add(jpReports, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 420, 150, 40));
 
+        jpSettings.setBackground(new java.awt.Color(255, 255, 255));
         jpSettings.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jpSettings.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpSettingsMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jpSettingsMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jpSettingsMouseExited(evt);
             }
         });
 
@@ -376,73 +421,175 @@ public class Home extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jpDashboardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpDashboardMouseClicked
-        // TODO add your handling code here:
-        showPanel(gDashboardPanel);
+        handleMenuClick(jpDashboard, jlIconD, "/org/images/dashH.png", jlDasboard, gDashboardPanel);
     }//GEN-LAST:event_jpDashboardMouseClicked
 
     private void jpInventoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpInventoryMouseClicked
         // TODO add your handling code here:
-        showPanel(gInventoryPanel);
+        handleMenuClick(jpInventory, jlIconInv, "/org/images/inv_select.png", jlInv, gInventoryPanel);
     }//GEN-LAST:event_jpInventoryMouseClicked
 
-    private void jlProductMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlProductMouseClicked
-        // TODO add your handling code here:
-        showPanel(gProductPanel);
-    }//GEN-LAST:event_jlProductMouseClicked
-
     private void jpProductMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpProductMouseClicked
-
+        handleMenuClick(jpProduct, jlIconP, "/org/images/product_select.png", jlProduct, gProductPanel);
     }//GEN-LAST:event_jpProductMouseClicked
 
-    private void jlBillingMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlBillingMouseClicked
-        // TODO add your handling code here:
-        showPanel(gBillingPanel);
-    }//GEN-LAST:event_jlBillingMouseClicked
-
     private void jpBillingMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpBillingMouseClicked
-
+        handleMenuClick(jpBilling, jlIconB, "/org/images/inv_select.png", jlBilling, gBillingPanel);
     }//GEN-LAST:event_jpBillingMouseClicked
 
     private void jpAlertsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpAlertsMouseClicked
         // TODO add your handling code here:
-        showPanel(gAlertsPanel);
+        handleMenuClick(jpAlerts, jlIconA, "/org/images/inv_select.png", jlAlerts, gAlertsPanel);
     }//GEN-LAST:event_jpAlertsMouseClicked
 
     private void jpReportsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpReportsMouseClicked
         // TODO add your handling code here:
-        showPanel(gReportsPanel);
+        handleMenuClick(jpReports, jlIconR, "/org/images/inv_select.png", jlReports, gReportsPanel);
     }//GEN-LAST:event_jpReportsMouseClicked
 
     private void jpSettingsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpSettingsMouseClicked
         // TODO add your handling code here:
-        showPanel(gSettingsPanel);
+        handleMenuClick(jpSettings, jlIconSet, "/org/images/inv_select.png", jlSettings, gSettingsPanel);
     }//GEN-LAST:event_jpSettingsMouseClicked
 
-    private void jlSalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlSalesMouseClicked
+    private void jpDashboardMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpDashboardMouseEntered
         // TODO add your handling code here:
-        showPanel(gSalesPanel);
-    }//GEN-LAST:event_jlSalesMouseClicked
+        if (gSelectedPanel != jpDashboard) {
+            handleMouseEntered(jpDashboard, jlIconD, "/org/images/dashH.png", jlDasboard, "#F1F6FD", "#4061DB");
+        }
+    }//GEN-LAST:event_jpDashboardMouseEntered
+
+    private void jlDasboardMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlDasboardMouseExited
+        // TODO add your handling code here:
+        if (gSelectedPanel != jpDashboard) {
+            handleMouseExited(jpDashboard, jlIconD, "/org/images/dash_select.png", jlDasboard, "#FFFFFF", "#4E5561");
+        }
+    }//GEN-LAST:event_jlDasboardMouseExited
+
+    private void jpInventoryMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpInventoryMouseEntered
+        // TODO add your handling code here:
+        if (gSelectedPanel != jpInventory) {
+            handleMouseEntered(jpInventory, jlIconInv, "/org/images/inv_select.png", jlInv, "#F1F6FD", "#4061DB");
+        }
+    }//GEN-LAST:event_jpInventoryMouseEntered
+
+    private void jpInventoryMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpInventoryMouseExited
+        // TODO add your handling code here:
+        if (gSelectedPanel != jpInventory) {
+            handleMouseExited(jpInventory, jlIconInv, "/org/images/inv.png", jlInv, "#FFFFFF", "#4E5561");
+        }
+    }//GEN-LAST:event_jpInventoryMouseExited
+
+    private void jpProductMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpProductMouseEntered
+        // TODO add your handling code here:
+        if (gSelectedPanel != jpProduct) {
+            handleMouseEntered(jpProduct, jlIconP, "/org/images/product_select.png", jlProduct, "#F1F6FD", "#4061DB");
+        }
+    }//GEN-LAST:event_jpProductMouseEntered
+
+    private void jpProductMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpProductMouseExited
+        // TODO add your handling code here:
+        if (gSelectedPanel != jpProduct) {
+            handleMouseExited(jpProduct, jlIconP, "/org/images/product.png", jlProduct, "#FFFFFF", "#4E5561");
+        }
+    }//GEN-LAST:event_jpProductMouseExited
+
+    private void jpSalesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpSalesMouseEntered
+        // TODO add your handling code here:
+        if (gSelectedPanel != jpSales) {
+            handleMouseEntered(jpSales, jlIconSales, "/org/images/sales_select.png", jlSales, "#F1F6FD", "#4061DB");
+        }
+    }//GEN-LAST:event_jpSalesMouseEntered
+
+    private void jpSalesMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpSalesMouseExited
+        // TODO add your handling code here:
+        if (gSelectedPanel != jpSales) {
+            handleMouseExited(jpSales, jlIconSales, "/org/images/sales.png", jlSales, "#FFFFFF", "#4E5561");
+        }
+    }//GEN-LAST:event_jpSalesMouseExited
+
+    private void jpSalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpSalesMouseClicked
+        // TODO add your handling code here:
+        handleMenuClick(jpSales, jlIconSales, "/org/images/inv_select.png", jlSales, gSalesPanel);
+    }//GEN-LAST:event_jpSalesMouseClicked
+
+    private void jpBillingMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpBillingMouseEntered
+        // TODO add your handling code here:
+        if (gSelectedPanel != jpBilling) {
+            handleMouseEntered(jpBilling, jlIconB, "/org/images/product_select.png", jlBilling, "#F1F6FD", "#4061DB");
+        }
+    }//GEN-LAST:event_jpBillingMouseEntered
+
+    private void jpBillingMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpBillingMouseExited
+        // TODO add your handling code here:
+        if (gSelectedPanel != jpBilling) {
+            handleMouseExited(jpBilling, jlIconB, "/org/images/inv.png", jlBilling, "#FFFFFF", "#4E5561");
+        }
+    }//GEN-LAST:event_jpBillingMouseExited
+
+    private void jpAlertsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpAlertsMouseEntered
+        // TODO add your handling code here:
+        if (gSelectedPanel != jpAlerts) {
+            handleMouseEntered(jpAlerts, jlIconA, "/org/images/product_select.png", jlAlerts, "#F1F6FD", "#4061DB");
+        }
+    }//GEN-LAST:event_jpAlertsMouseEntered
+
+    private void jpAlertsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpAlertsMouseExited
+        // TODO add your handling code here:
+
+        if (gSelectedPanel != jpAlerts) {
+            handleMouseExited(jpAlerts, jlIconA, "/org/images/inv.png", jlAlerts, "#FFFFFF", "#4E5561");
+        }
+    }//GEN-LAST:event_jpAlertsMouseExited
+
+    private void jpReportsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpReportsMouseEntered
+        // TODO add your handling code here:
+        if (gSelectedPanel != jpReports) {
+            handleMouseEntered(jpReports, jlIconR, "/org/images/product_select.png", jlReports, "#F1F6FD", "#4061DB");
+        }
+    }//GEN-LAST:event_jpReportsMouseEntered
+
+    private void jpReportsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpReportsMouseExited
+        // TODO add your handling code here:
+        if (gSelectedPanel != jpReports) {
+            handleMouseExited(jpReports, jlIconR, "/org/images/inv.png", jlReports, "#FFFFFF", "#4E5561");
+        }
+    }//GEN-LAST:event_jpReportsMouseExited
+
+    private void jpSettingsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpSettingsMouseEntered
+        // TODO add your handling code here:
+        if (gSelectedPanel != jpSettings) {
+            handleMouseEntered(jpSettings, jlIconSet, "/org/images/product_select.png", jlSettings, "#F1F6FD", "#4061DB");
+        }
+    }//GEN-LAST:event_jpSettingsMouseEntered
+
+    private void jpSettingsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpSettingsMouseExited
+        // TODO add your handling code here:
+        if (gSelectedPanel != jpSettings) {
+            handleMouseExited(jpSettings, jlIconSet, "/org/images/inv.png", jlSettings, "#FFFFFF", "#4E5561");
+        }
+    }//GEN-LAST:event_jpSettingsMouseExited
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JLabel jlAlerts;
     private javax.swing.JLabel jlBilling;
+    private javax.swing.JLabel jlDasboard;
+    private javax.swing.JLabel jlIconA;
+    private javax.swing.JLabel jlIconB;
     private javax.swing.JLabel jlIconD;
     private javax.swing.JLabel jlIconInv;
     private javax.swing.JLabel jlIconP;
+    private javax.swing.JLabel jlIconR;
     private javax.swing.JLabel jlIconSales;
     private javax.swing.JLabel jlIconSet;
     private javax.swing.JLabel jlInv;
     private javax.swing.JLabel jlProduct;
+    private javax.swing.JLabel jlReports;
     private javax.swing.JLabel jlSales;
     private javax.swing.JLabel jlSettings;
     private javax.swing.JLabel jlTitle;
-    private javax.swing.JLabel jlbuttonDasboard;
     private javax.swing.JPanel jpAlerts;
     private javax.swing.JPanel jpBilling;
     private javax.swing.JPanel jpDashboard;
@@ -458,10 +605,56 @@ public class Home extends javax.swing.JFrame {
 
 
 
-private void showPanel(JPanel panel) {
-    jpView.removeAll();
-    jpView.add(panel, BorderLayout.CENTER);
-    jpView.revalidate();
-    jpView.repaint();
-}
+    private void showPanel(JPanel panel) {
+        jpView.removeAll();
+        jpView.add(panel, BorderLayout.CENTER);
+        jpView.revalidate();
+        jpView.repaint();
+    }
+    
+    private void initDefaultSelection() {
+        gSelectedPanel = jpDashboard; 
+        handleMouseEntered(jpDashboard, jlIconD, "/org/images/dashH.png", jlDasboard, "#F1F6FD", "#4061DB");
+        showPanel(gDashboardPanel);
+    }
+
+    // Método genérico para manejar MouseEntered
+    private void handleMouseEntered(JPanel panel, JLabel icon, String iconPath, JLabel textLabel, String backgroundColor, String textColor) {
+        panel.setBackground(Color.decode(backgroundColor));
+        icon.setIcon(new javax.swing.ImageIcon(getClass().getResource(iconPath)));
+        textLabel.setForeground(Color.decode(textColor));
+    }
+
+    // Método genérico para manejar MouseExited
+    private void handleMouseExited(JPanel panel, JLabel icon, String iconPath, JLabel textLabel, String backgroundColor, String textColor) {
+        panel.setBackground(Color.decode(backgroundColor));
+        icon.setIcon(new javax.swing.ImageIcon(getClass().getResource(iconPath)));
+        textLabel.setForeground(Color.decode(textColor));
+    }
+    
+    private void handleMenuClick(JPanel panel, JLabel icon, String iconPathSelected, JLabel textLabel, JPanel targetPanel) {
+        // Restablecer el estado del panel previamente seleccionado
+        if (gSelectedPanel != null) {
+            resetPanelState(gSelectedPanel);
+        }
+
+        // Aplicar el estado seleccionado al nuevo panel
+        handleMouseEntered(panel, icon, iconPathSelected, textLabel, "#F1F6FD", "#4061DB");
+        gSelectedPanel = panel;
+        showPanel(targetPanel);
+    }
+
+    // Método para restablecer el estado de un panel
+    private void resetPanelState(JPanel panel) {
+        if (panel == jpDashboard) {
+            handleMouseExited(jpDashboard, jlIconD, "/org/images/dash_select.png", jlDasboard, "#FFFFFF", "#4E5561");
+        } else if (panel == jpInventory) {
+            handleMouseExited(jpInventory, jlIconInv, "/org/images/inv.png", jlInv, "#FFFFFF", "#4E5561");
+        }else if (panel == jpProduct) {
+            handleMouseExited(jpProduct, jlIconP, "/org/images/product.png", jlProduct, "#FFFFFF", "#4E5561");
+        } else if (panel == jpSales) {
+            handleMouseExited(jpSales, jlIconSales, "/org/images/sales.png", jlSales, "#FFFFFF", "#4E5561");
+        }
+        // Agregar más paneles aquí según sea necesario...
+    }
 }

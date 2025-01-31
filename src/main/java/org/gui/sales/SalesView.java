@@ -454,8 +454,6 @@ public class SalesView extends javax.swing.JPanel {
         jLabel37.setFont(new java.awt.Font("Segoe UI Semibold", 1, 12)); // NOI18N
         jLabel37.setText("Lista de productos ");
 
-        jLabel38.setIcon(new javax.swing.ImageIcon("C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-27 002357.png")); // NOI18N
-
         jLabel1.setText("-");
 
         jLabel2.setText("-");
@@ -564,11 +562,12 @@ public class SalesView extends javax.swing.JPanel {
                     .addComponent(jLabel1)
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelAreaListaProductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel21)
+                .addGroup(jPanelAreaListaProductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel26)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel8))
+                    .addGroup(jPanelAreaListaProductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel21)
+                        .addComponent(jLabel2)
+                        .addComponent(jLabel8)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelAreaListaProductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel22)

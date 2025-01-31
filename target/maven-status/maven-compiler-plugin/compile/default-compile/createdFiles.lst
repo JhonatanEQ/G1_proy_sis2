@@ -1,9 +1,11 @@
 org\model\config\CrudProduct.class
 org\gui\sales\SalesView$1.class
+org\gui\sales\SalesView$CartItem.class
 org\Main.class
 org\services\home\HomeService.class
 org\gui\home\Home$7.class
 org\gui\settings\Settings.class
+org\gui\inventory\InventoryView$1.class
 org\gui\component\CartPanel$CartItemRow.class
 org\gui\product\ProductView$5.class
 org\gui\component\ListaDeProductos\CartProduct.class

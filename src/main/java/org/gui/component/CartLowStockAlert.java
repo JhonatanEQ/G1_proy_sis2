@@ -37,7 +37,7 @@ public class CartLowStockAlert extends javax.swing.JPanel {
             new EmptyBorder(5, 5, 5, 5),
             new RoundedBorder(8, new Color(240, 240, 240))
         ));
-        setPreferredSize(new Dimension(330, 70));
+        setPreferredSize(new Dimension(280, 70));
         setLayout(new BorderLayout(10, 5));
         
         // Create main content panel

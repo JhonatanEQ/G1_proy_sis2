@@ -9,6 +9,7 @@ import java.io.File;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -46,19 +47,23 @@ public class ProductView extends javax.swing.JPanel {
         gCategoryService = new CategoryService();
         gSupplierService = new SupplierService();
         cargarCategorias();
+        cargarProveedores();
         jtAddProveedor.setVisible(false);
     }
     private void cargarCategorias() {
         try {
             gCategories= gCategoryService.getAllCategories();
             List<String> categoryNames = new ArrayList<>();
-        
+            
+            categoryNames.add("Seleccionar categoría");
+            
             for (Category category : gCategories) {
                 categoryNames.add(category.toString());
             }
 
             DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(categoryNames.toArray(new String[0]));
             jcCategoria.setModel(model);
+            jcCategoria.setSelectedIndex(0);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al cargar las categorías: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -68,17 +73,18 @@ public class ProductView extends javax.swing.JPanel {
         try {
             gSuppliers = gSupplierService.getAllSuppliers();
             List<String> supplierNames = new ArrayList<>();
+            
+            supplierNames.add("Seleccionar proveedor");
 
-            // Agregar los proveedores existentes
             for (Supplier supplier : gSuppliers) {
                 supplierNames.add(supplier.getCompanyName());
             }
 
-            // Agregar la opción para añadir nuevo proveedor
-            supplierNames.add("Agregar nuevo proveedor");
+            supplierNames.add("Agregar proveedor");
 
             DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(supplierNames.toArray(new String[0]));
             jcSelectProveedor.setModel(model);
+            jcSelectProveedor.setSelectedIndex(0);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, 
                 "Error al cargar los proveedores: " + e.getMessage(), 
@@ -284,36 +290,43 @@ public class ProductView extends javax.swing.JPanel {
     }//GEN-LAST:event_jlFotoMouseClicked
 
     private void jbRegistrarEMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jbRegistrarEMouseClicked
-        // TODO add your handling code here:
+        // TODO add your handling code here:                                         
         if (validarCampos()) {
-            
-            Product lProduct = new Product();
+            try {
+                Product lProduct = new Product();
+                lProduct.setId(0);
+                lProduct.setCode(jtCodeP.getText());
+                lProduct.setName(jtNombreP.getText());
+                lProduct.setUnitPrice(Double.parseDouble(jtPrecioU.getText()));
+                lProduct.setCategoryId(extractCategoryId());
+                lProduct.setCurrentStock(Integer.parseInt(jtCantidad.getText()));
+                lProduct.setMinimumStock(10); 
+                lProduct.setEntryDate(obtenerFechaTexto());
+                lProduct.setSupplierId(extractSupplierId());
+                lProduct.setImage(gURLImage); 
+                lProduct.setStatus(true); 
 
-            lProduct.setId(0);
-            lProduct.setCode(jtCodeP.getText());
-            lProduct.setName(jtNombreP.getText());
-            lProduct.setUnitPrice(Double.parseDouble(jtPrecioU.getText()));
-                
-            lProduct.setCategoryId(extractCategoryId());
-            
-            lProduct.setCurrentStock(Integer.parseInt(jtCantidad.getText()));
-            lProduct.setMinimumStock(10); 
-            lProduct.setEntryDate(obtenerFechaTexto());
-            lProduct.setSupplierId(extractSupplinerId());
-            lProduct.setImage(gURLImage); 
-            lProduct.setStatus(true); 
+                gProductService.insertOneProduct(lProduct);
+                JOptionPane.showMessageDialog(this, "Producto registrado exitosamente.");
 
+                // Limpiar campos después del registro exitoso
+                limpiarCamposRegistro();
 
-            
-
-            gProductService.insertOneProduct(lProduct);
-            JOptionPane.showMessageDialog(this, "Producto registrado exitosamente.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, 
+                    "Error al registrar el producto: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_jbRegistrarEMouseClicked
 
     
     private int extractCategoryId() {
         String selectedCategoryName = (String) jcCategoria.getSelectedItem();
+        if (selectedCategoryName == null || selectedCategoryName.equals("Seleccionar categoría")) {
+            throw new IllegalArgumentException("Debe seleccionar una categoría");
+        }
 
         for (Category category : gCategories) {
             if (category.toString().equals(selectedCategoryName)) {
@@ -325,21 +338,61 @@ public class ProductView extends javax.swing.JPanel {
     }
     
     
-    private int extractSupplinerId() {
-        String selectedSupplinerName = (String) jcCategoria.getSelectedItem();
+    private int extractSupplierId() {
+        String selectedSupplierName = (String) jcSelectProveedor.getSelectedItem();
 
-        for (Category category : gCategories) {
-            if (category.toString().equals(selectedSupplinerName)) {
-                return category.getId();
+        if (selectedSupplierName == null || selectedSupplierName.equals("Seleccionar proveedor")) {
+            throw new IllegalArgumentException("Debe seleccionar un proveedor");
+        }
+
+        if (selectedSupplierName.equals("Agregar proveedor")) {
+            String newSupplierName = jtAddProveedor.getText().trim();
+            if (newSupplierName.isEmpty()) {
+                throw new IllegalArgumentException("Debe ingresar el nombre del nuevo proveedor");
+            }
+
+            try {
+                Supplier newSupplier = new Supplier();
+                newSupplier.setCompanyName(newSupplierName);
+                int newSupplierId = gSupplierService.insertOneSupplier(newSupplier);
+
+                // Recargar la lista de proveedores
+                cargarProveedores();
+
+                // Seleccionar el nuevo proveedor en el combobox
+                for (int i = 0; i < jcSelectProveedor.getItemCount(); i++) {
+                    if (jcSelectProveedor.getItemAt(i).equals(newSupplierName)) {
+                        jcSelectProveedor.setSelectedIndex(i);
+                        break;
+                    }
+                }
+
+                return newSupplierId;
+            } catch (SQLException e) {
+                throw new IllegalArgumentException("Error al crear nuevo proveedor: " + e.getMessage());
             }
         }
 
-        throw new IllegalArgumentException("Category not found: " + selectedSupplinerName);
+        for (Supplier supplier : gSuppliers) {
+            if (supplier.getCompanyName().equals(selectedSupplierName)) {
+                return supplier.getIdSupplier();
+            }
+        }
+
+        throw new IllegalArgumentException("Proveedor no encontrado: " + selectedSupplierName);
     }
     
     
     private void jcSelectProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcSelectProveedorActionPerformed
         // TODO add your handling code here:
+        String selectedItem = (String) jcSelectProveedor.getSelectedItem();
+        if (selectedItem != null && selectedItem.equals("Agregar proveedor")) {
+            jtAddProveedor.setVisible(true);
+            jtAddProveedor.requestFocus();
+        } else {
+            jtAddProveedor.setVisible(false);
+            jtAddProveedor.setText("");
+        }
     }//GEN-LAST:event_jcSelectProveedorActionPerformed
 
 
@@ -370,52 +423,161 @@ public class ProductView extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private boolean validarCampos() {
-        String mensajeError = "";
-
-        if (jtCodeP.getText().isEmpty()) {
-            mensajeError += "- El código del producto no puede estar vacío.\n";
+        StringBuilder mensajeError = new StringBuilder();
+         // Validación del código
+        String codigo = jtCodeP.getText().trim();
+        if (codigo.isEmpty()) {
+            mensajeError.append("- El código del producto no puede estar vacío.\n");
+        } else {
+            // Validar formato TEC000
+            if (!codigo.matches("TEC\\d{3}")) {
+                mensajeError.append("- El código debe tener el formato TEC seguido de 3 números (ejemplo: TEC001).\n");
+            } else {
+                // Validar que el código no exista
+                Product productoExistente = gProductService.findProductByCode(codigo);
+                if (productoExistente != null) {
+                    mensajeError.append("- Ya existe un producto con el código ").append(codigo).append(".\n");
+                }
+            }
         }
 
-        if (jtNombreP.getText().isEmpty()) {
-            mensajeError += "- El nombre del producto no puede estar vacío.\n";
+        // Validación del nombre
+        String nombre = jtNombreP.getText().trim();
+        if (nombre.isEmpty()) {
+            mensajeError.append("- El nombre del producto no puede estar vacío.\n");
+        } else {
+            // Validar que el nombre solo contenga letras, espacios y caracteres especiales permitidos
+            if (!nombre.matches("^[A-Za-zÁáÉéÍíÓóÚúÑñ\\s\\-.,()]+$")) {
+                mensajeError.append("- El nombre solo puede contener letras, espacios y algunos caracteres especiales (.-,()).\n");
+            }
+            // Validar longitud mínima y máxima
+            if (nombre.length() < 3 || nombre.length() > 100) {
+                mensajeError.append("- El nombre debe tener entre 3 y 100 caracteres.\n");
+            }
         }
 
+        // Validación del precio
         try {
-            double precio = Double.parseDouble(jtPrecioU.getText());
-            if (precio <= 0) {
-                mensajeError += "- El precio unitario debe ser mayor a 0.\n";
+            String precioText = jtPrecioU.getText().trim();
+            if (precioText.isEmpty()) {
+                mensajeError.append("- El precio unitario no puede estar vacío.\n");
+            } else {
+                double precio = Double.parseDouble(precioText);
+                if (precio <= 0) {
+                    mensajeError.append("- El precio unitario debe ser mayor a 0.\n");
+                }
+                // Validar máximo dos decimales
+                if (precioText.contains(".") && 
+                    precioText.split("\\.")[1].length() > 2) {
+                    mensajeError.append("- El precio solo puede tener hasta 2 decimales.\n");
+                }
             }
         } catch (NumberFormatException e) {
-            mensajeError += "- El precio unitario debe ser un número válido.\n";
+            mensajeError.append("- El precio unitario debe ser un número válido.\n");
         }
 
+        // Validación de la cantidad
         try {
-            int cantidad = Integer.parseInt(jtCantidad.getText());
-            if (cantidad < 0) {
-                mensajeError += "- La cantidad no puede ser negativa.\n";
+            String cantidadText = jtCantidad.getText().trim();
+            if (cantidadText.isEmpty()) {
+                mensajeError.append("- La cantidad no puede estar vacía.\n");
+            } else {
+                int cantidad = Integer.parseInt(cantidadText);
+                if (cantidad < 0) {
+                    mensajeError.append("- La cantidad no puede ser negativa.\n");
+                }
+                if (cantidad > 99999) {
+                    mensajeError.append("- La cantidad no puede ser mayor a 99999.\n");
+                }
             }
         } catch (NumberFormatException e) {
-            mensajeError += "- La cantidad debe ser un número entero válido.\n";
+            mensajeError.append("- La cantidad debe ser un número entero válido.\n");
         }
 
+        // Validación de la fecha
         if (jdFechaE.getDate() == null) {
-            mensajeError += "- La fecha de entrada no puede estar vacía.\n";
+            mensajeError.append("- La fecha de entrada no puede estar vacía.\n");
+        } else {
+            // Validar que la fecha no sea futura
+            Date fechaActual = new Date();
+            if (jdFechaE.getDate().after(fechaActual)) {
+                mensajeError.append("- La fecha de entrada no puede ser futura.\n");
+            }
         }
 
-        if (!mensajeError.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Errores en la validación:\n" + mensajeError, "Error de Validación", JOptionPane.ERROR_MESSAGE);
-            return false;
+        // Validación de la categoría
+        if (jcCategoria.getSelectedItem() == null || 
+            jcCategoria.getSelectedItem().toString().equals("Seleccionar categoría")) {
+            mensajeError.append("- Debe seleccionar una categoría.\n");
+        }
+
+        // Validación del proveedor
+        if (jcSelectProveedor.getSelectedItem() == null || 
+            jcSelectProveedor.getSelectedItem().toString().equals("Seleccionar proveedor")) {
+            mensajeError.append("- Debe seleccionar un proveedor.\n");
+        } else if (jcSelectProveedor.getSelectedItem().equals("Agregar proveedor")) {
+            String nuevoProveedor = jtAddProveedor.getText().trim();
+            if (nuevoProveedor.isEmpty()) {
+                mensajeError.append("- Debe ingresar el nombre del nuevo proveedor.\n");
+            } else {
+                // Validar formato del nombre del proveedor
+                if (!nuevoProveedor.matches("^[A-Za-zÁáÉéÍíÓóÚúÑñ\\s\\-.,&]+$")) {
+                    mensajeError.append("- El nombre del proveedor solo puede contener letras, espacios y algunos caracteres especiales (.-,&).\n");
+                }
+                if (nuevoProveedor.length() < 3 || nuevoProveedor.length() > 100) {
+                    mensajeError.append("- El nombre del proveedor debe tener entre 3 y 100 caracteres.\n");
+                }
+            }
+        }
+
+        // Validación de la imagen
+        if (gURLImage == null || gURLImage.isEmpty()) {
+            mensajeError.append("- Debe seleccionar una imagen para el producto.\n");
         }
         
-        // Validación de que la categoría seleccionada no sea nula
-        Category selectedCategory = (Category) jcCategoria.getSelectedItem();
-        if (selectedCategory == null) {
-            JOptionPane.showMessageDialog(this, "Por favor, seleccione una categoría.");
-            return false; 
+        if (jcCategoria.getSelectedItem() == null || 
+            jcCategoria.getSelectedItem().toString().equals("Seleccionar categoría")) {
+            mensajeError.append("- Debe seleccionar una categoría.\n");
+        }
+
+        
+
+        if (mensajeError.length() > 0) {
+            JOptionPane.showMessageDialog(
+                this, 
+                "Errores en la validación:\n" + mensajeError.toString(), 
+                "Error de Validación", 
+                JOptionPane.ERROR_MESSAGE
+            );
+            return false;
         }
 
         return true;
     }
+    
+    private void limpiarCamposRegistro() {
+        jtCodeP.setText("");
+        jtNombreP.setText("");
+        jtPrecioU.setText("");
+        jtCantidad.setText("");
+
+        jdFechaE.setDate(null);
+
+        jcCategoria.setSelectedIndex(0);
+        jcSelectProveedor.setSelectedIndex(0);
+
+        jtAddProveedor.setText("");
+        jtAddProveedor.setVisible(false);
+
+        gURLImage = null;
+        jlFoto.setIcon(null);
+        jlFoto.setText(" imagen");
+
+        jtCodeP.setEditable(true);
+
+        jtCodeP.requestFocus();
+    }
+    
     private String obtenerFechaTexto() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return jdFechaE.getDate() != null ? sdf.format(jdFechaE.getDate()) : "";

@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\config\DatabaseConnection.java
-C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\alerts\AlertsView.java
-C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\billing\BillingView.java
-C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\component\CartLowStockAlert.java
-=======
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\cartItems.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\alerts\AlertsView.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\billing\BillingView.java
@@ -15,7 +9,6 @@ C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\component\Lista
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\component\ListaDeProductos\jpListaDeProductos.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\component\ListaDeProductos\prueba.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\component\RoundedBorder.java
->>>>>>> Development
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\dashboad\Dashboard.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\home\Home.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\inventory\InventoryView.java
@@ -24,11 +17,6 @@ C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\reports\Reports
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\sales\SalesView.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\gui\settings\Settings.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\Main.java
-<<<<<<< HEAD
-C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\home\HomeService.java
-C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\sales\SalesServcice.java
-C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\utils\logica.java
-=======
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\model\CategoryModel.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\model\config\CrudProduct.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\model\config\DatabaseConnection.java
@@ -43,4 +31,3 @@ C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\utils\Prod
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\services\utils\Utils.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\utils\CartItem.java
 C:\Users\Usuario\Desktop\SIS2\G1_proy_sis2\src\main\java\org\utils\Product.java
->>>>>>> Development

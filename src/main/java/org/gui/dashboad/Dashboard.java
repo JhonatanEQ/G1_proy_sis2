@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import org.gui.component.CartLowStockAlert;
+import org.gui.component.CustomScrollPane;
 
 /**
  *
@@ -24,68 +25,112 @@ public class Dashboard extends javax.swing.JPanel {
      */
     public Dashboard() {
         initComponents();
-        setupRecentSales();
+        setupRecentSales();   
+        setupLowStockAlerts();   
         addSampleSales();
-        setupLowStockAlerts();
     }
     
     private void setupRecentSales() {
         recentSalesQueue = new LinkedList<>();
-        jpRecentSalesContent.setLayout(new BoxLayout(jpRecentSalesContent, BoxLayout.Y_AXIS));
+
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(Color.WHITE);
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        CustomScrollPane scrollPane = new CustomScrollPane(contentPanel);
+        scrollPane.setPreferredSize(new Dimension(300, 200));
+        scrollPane.setBorder(null);
+
+        jpRecentSalesContent.removeAll();
+        jpRecentSalesContent.setLayout(new BorderLayout());
         jpRecentSalesContent.setBackground(Color.WHITE);
-        jpRecentSalesContent.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        jpRecentSalesContent.setBorder(null);
+        jpRecentSalesContent.add(scrollPane, BorderLayout.CENTER);
+
+        jpRecentSalesContent.putClientProperty("contentPanel", contentPanel);
+
+        jpRecentSales.setBackground(Color.WHITE);
+        jpRecentSales.setBorder(BorderFactory.createLineBorder(new Color(240, 240, 240)));
     }
 
     private void setupLowStockAlerts() {
-        jpAlertPanel.setLayout(new BoxLayout(jpAlertPanel, BoxLayout.Y_AXIS));
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(Color.WHITE);
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        CustomScrollPane scrollPane = new CustomScrollPane(contentPanel);
+        scrollPane.setPreferredSize(new Dimension(300, 200));
+        scrollPane.setBorder(null);
+
+        jpAlertPanel.removeAll();
+        jpAlertPanel.setLayout(new BorderLayout());
         jpAlertPanel.setBackground(Color.WHITE);
-        jpAlertPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        jpAlertPanel.setBorder(null);
+        jpAlertPanel.add(scrollPane, BorderLayout.CENTER);
+
+        jpAlertPanel.putClientProperty("contentPanel", contentPanel);
+
+        jpLowStockAlert.setBackground(Color.WHITE);
+        jpLowStockAlert.setBorder(BorderFactory.createLineBorder(new Color(240, 240, 240)));
     }
 
     public void addRecentSale(String orderNumber, String timeAgo, double amount) {
+        JPanel contentPanel = (JPanel) jpRecentSalesContent.getClientProperty("contentPanel");
+        if (contentPanel == null) return;
+
         JpRecentSales salePanel = new JpRecentSales();
         salePanel.setOrderInfo(orderNumber, timeAgo, amount);
+        salePanel.setBackground(Color.WHITE);
+        salePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, salePanel.getPreferredSize().height));
+        salePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        if (jpRecentSalesContent.getComponentCount() > 0) {
-            jpRecentSalesContent.add(Box.createVerticalStrut(10), 0);
+        if (contentPanel.getComponentCount() > 0) {
+            contentPanel.add(Box.createVerticalStrut(10), 0);
         }
 
-        jpRecentSalesContent.add(salePanel, 0);
+        contentPanel.add(salePanel, 0);
         recentSalesQueue.offerFirst(salePanel);
 
         if (recentSalesQueue.size() > MAX_ITEMS) {
-            jpRecentSalesContent.remove(jpRecentSalesContent.getComponentCount() - 1); 
-            if (jpRecentSalesContent.getComponentCount() > 0) {
-                jpRecentSalesContent.remove(jpRecentSalesContent.getComponentCount() - 1);
+            contentPanel.remove(contentPanel.getComponentCount() - 1);
+            if (contentPanel.getComponentCount() > 0) {
+                contentPanel.remove(contentPanel.getComponentCount() - 1);
             }
             recentSalesQueue.removeLast();
         }
 
-        jpRecentSalesContent.revalidate();
-        jpRecentSalesContent.repaint();
+        contentPanel.revalidate();
+        contentPanel.repaint();
     }
 
     public void addLowStockAlert(String productName, int remainingItems) {
+        JPanel contentPanel = (JPanel) jpAlertPanel.getClientProperty("contentPanel");
+        if (contentPanel == null) return;
+
         CartLowStockAlert alertPanel = new CartLowStockAlert();
         alertPanel.setAlertInfo(productName, remainingItems);
         alertPanel.addRestockListener(e -> handleRestock(productName));
+        alertPanel.setBackground(Color.WHITE);
+        alertPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, alertPanel.getPreferredSize().height));
+        alertPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        if (jpAlertPanel.getComponentCount() > 0) {
-            jpAlertPanel.add(Box.createVerticalStrut(10), 0);
+        if (contentPanel.getComponentCount() > 0) {
+            contentPanel.add(Box.createVerticalStrut(10), 0);
         }
 
-        jpAlertPanel.add(alertPanel, 0);
+        contentPanel.add(alertPanel, 0);
 
-        // Remover los paneles más antiguos si excedemos el límite
-        while (jpAlertPanel.getComponentCount() > MAX_ITEMS * 2) { 
-            jpAlertPanel.remove(jpAlertPanel.getComponentCount() - 1); 
-            if (jpAlertPanel.getComponentCount() > 0) {
-                jpAlertPanel.remove(jpAlertPanel.getComponentCount() - 1); 
+        while (contentPanel.getComponentCount() > MAX_ITEMS * 2) {
+            contentPanel.remove(contentPanel.getComponentCount() - 1);
+            if (contentPanel.getComponentCount() > 0) {
+                contentPanel.remove(contentPanel.getComponentCount() - 1);
             }
         }
 
-        jpAlertPanel.revalidate();
-        jpAlertPanel.repaint();
+        contentPanel.revalidate();
+        contentPanel.repaint();
     }
     
     private void addSampleSales() {

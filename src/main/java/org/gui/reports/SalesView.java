@@ -1,5 +1,6 @@
-package org.gui.sales;
+package org.gui.reports;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -7,24 +8,37 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
-import org.gui.component.ListaDeProductos.prueba;
-import org.utils.Product;
+import javax.swing.plaf.basic.BasicScrollBarUI;
+import org.gui.component.CustomScrollPane;
+import org.gui.component.ListaDeProductos.ItemProduct;
+import org.services.utils.Product;
 
 public class SalesView extends javax.swing.JPanel {
 
     private ArrayList<Product> gProducts;
-    private ArrayList<prueba> gCartProducts;
+    private ArrayList<ItemProduct> gCartProducts;
     private Map<String, CartItem> cartItems;
     private double subtotal;
     private double tax;
@@ -58,26 +72,28 @@ public class SalesView extends javax.swing.JPanel {
     }
 
     private void setupStyle() {
-        // Main panel styling
         this.setBackground(new Color(249, 250, 251));
 
-        // Search panel styling
         jpaBuscador.setBackground(Color.WHITE);
         jpaBuscador.setBorder(BorderFactory.createLineBorder(new Color(240, 240, 240)));
 
-        // Search field styling
         jTextFieldBuscarProducto.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jTextFieldBuscarProducto.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jTextFieldBuscarProducto.setFont(new Font("Segoe UI", 0, 14));
 
-        // Products panel styling
         jpaProductos.setBackground(Color.WHITE);
-        jpaProductos.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        jpaProductos.setLayout(new BorderLayout());
 
-        // Cart panel styling
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(Color.WHITE);
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        CustomScrollPane scrollPane = new CustomScrollPane(contentPanel);
+        jpaProductos.add(scrollPane, BorderLayout.CENTER);
+
         jPanelAreaListaProductos.setBackground(Color.WHITE);
         jPanelAreaListaProductos.setBorder(BorderFactory.createLineBorder(new Color(240, 240, 240)));
 
-        // Estilo del botón de registro
         jToggleButton1.setBackground(new Color(63, 81, 181));
         jToggleButton1.setForeground(Color.WHITE);
         jToggleButton1.setFocusPainted(false);
@@ -85,15 +101,22 @@ public class SalesView extends javax.swing.JPanel {
     }
 
     private void setupProductsPanel() {
-        jpaProductos.removeAll();
-        jpaProductos.setLayout(new GridLayout(2, 3, 15, 15));
-        jpaProductos.setPreferredSize(new Dimension(557, 400));
+        // Obtener el contentPanel del ScrollPane
+        JScrollPane scrollPane = (JScrollPane) jpaProductos.getComponent(0);
+        JPanel contentPanel = (JPanel) scrollPane.getViewport().getView();
+        contentPanel.removeAll();
 
         for (Product lProduct : gProducts) {
-            prueba lCartProduct = new prueba(lProduct);
+            ItemProduct lCartProduct = new ItemProduct(lProduct);
 
-            // Add click listener to cart button
-            lCartProduct.getCartButton().addMouseListener(new MouseAdapter() {
+            if (gCartProducts.size() > 0) {
+                contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+
+            lCartProduct.setMaximumSize(new Dimension(Integer.MAX_VALUE, lCartProduct.getPreferredSize().height));
+            lCartProduct.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            lCartProduct.getAddToCartButton().addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     addToCart(lProduct);
@@ -101,11 +124,11 @@ public class SalesView extends javax.swing.JPanel {
             });
 
             gCartProducts.add(lCartProduct);
-            jpaProductos.add(lCartProduct);
+            contentPanel.add(lCartProduct);
         }
 
-        jpaProductos.revalidate();
-        jpaProductos.repaint();
+        contentPanel.revalidate();
+        contentPanel.repaint();
     }
 
     private void setupCartControls() {

@@ -8,20 +8,15 @@ import java.awt.Image;
 import java.io.File;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-
-
 import org.services.product.ProductService;
 import org.services.product.CategoryService;
-import org.services.supplier.SupplierService;
 import org.services.utils.Category;
 import org.services.utils.Product;
-import org.services.utils.Supplier;
 
 /**
  *
@@ -33,9 +28,6 @@ public class ProductView extends javax.swing.JPanel {
     private String gURLImage;
     private ProductService gProductService;
     private CategoryService gCategoryService;
-    private List<Category> gCategories;
-    private List<Supplier> gSuppliers;
-    private SupplierService gSupplierService;
 
     /**
      * Creates new form Product
@@ -44,46 +36,26 @@ public class ProductView extends javax.swing.JPanel {
         initComponents();
         gProductService = new ProductService();
         gCategoryService = new CategoryService();
-        gSupplierService = new SupplierService();
         cargarCategorias();
-        jtAddProveedor.setVisible(false);
     }
     private void cargarCategorias() {
         try {
-            gCategories= gCategoryService.getAllCategories();
-            List<String> categoryNames = new ArrayList<>();
-        
-            for (Category category : gCategories) {
-                categoryNames.add(category.toString());
+            // Obtenemos las categorías
+            List<Category> categories = gCategoryService.getAllCategories();
+
+            // Creamos un modelo de combo para el JComboBox que tiene un tipo Category
+            DefaultComboBoxModel<Category> model = new DefaultComboBoxModel<>(categories.toArray(new Category[0]));
+
+            // Agregamos cada categoría al modelo
+            for (Category category : categories) {
+                model.addElement(category);
             }
 
-            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(categoryNames.toArray(new String[0]));
+            // Establecemos el modelo en el JComboBox
             jcCategoria.setModel(model);
+
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al cargar las categorías: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    
-    private void cargarProveedores() {
-        try {
-            gSuppliers = gSupplierService.getAllSuppliers();
-            List<String> supplierNames = new ArrayList<>();
-
-            // Agregar los proveedores existentes
-            for (Supplier supplier : gSuppliers) {
-                supplierNames.add(supplier.getCompanyName());
-            }
-
-            // Agregar la opción para añadir nuevo proveedor
-            supplierNames.add("Agregar nuevo proveedor");
-
-            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(supplierNames.toArray(new String[0]));
-            jcSelectProveedor.setModel(model);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, 
-                "Error al cargar los proveedores: " + e.getMessage(), 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
         }
     }
     /**
@@ -198,8 +170,8 @@ public class ProductView extends javax.swing.JPanel {
         jlFotoP.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jPanel2.add(jlFotoP, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 20, -1, -1));
 
-        jlFoto.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jlFoto.setText(" imagen");
+        jlFoto.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jlFoto.setText("imagen");
         jlFoto.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jlFoto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jlFoto.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
@@ -294,12 +266,15 @@ public class ProductView extends javax.swing.JPanel {
             lProduct.setName(jtNombreP.getText());
             lProduct.setUnitPrice(Double.parseDouble(jtPrecioU.getText()));
                 
-            lProduct.setCategoryId(extractCategoryId());
+            Category selectedCategory = (Category) jcCategoria.getSelectedItem();
+            if (selectedCategory != null) {
+                lProduct.setCategoryId(selectedCategory.getgId());
+            }
             
             lProduct.setCurrentStock(Integer.parseInt(jtCantidad.getText()));
             lProduct.setMinimumStock(10); 
             lProduct.setEntryDate(obtenerFechaTexto());
-            lProduct.setSupplierId(extractSupplinerId());
+            lProduct.setSupplierName(jtAddProveedor.getText());
             lProduct.setImage(gURLImage); 
             lProduct.setStatus(true); 
 
@@ -311,33 +286,6 @@ public class ProductView extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jbRegistrarEMouseClicked
 
-    
-    private int extractCategoryId() {
-        String selectedCategoryName = (String) jcCategoria.getSelectedItem();
-
-        for (Category category : gCategories) {
-            if (category.toString().equals(selectedCategoryName)) {
-                return category.getId();
-            }
-        }
-
-        throw new IllegalArgumentException("Category not found: " + selectedCategoryName);
-    }
-    
-    
-    private int extractSupplinerId() {
-        String selectedSupplinerName = (String) jcCategoria.getSelectedItem();
-
-        for (Category category : gCategories) {
-            if (category.toString().equals(selectedSupplinerName)) {
-                return category.getId();
-            }
-        }
-
-        throw new IllegalArgumentException("Category not found: " + selectedSupplinerName);
-    }
-    
-    
     private void jcSelectProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcSelectProveedorActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jcSelectProveedorActionPerformed
@@ -347,7 +295,7 @@ public class ProductView extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton jbRegistrarE;
-    private javax.swing.JComboBox<String> jcCategoria;
+    private javax.swing.JComboBox<Category> jcCategoria;
     private javax.swing.JComboBox<String> jcSelectProveedor;
     private com.toedter.calendar.JDateChooser jdFechaE;
     private javax.swing.JLabel jlCantidad;

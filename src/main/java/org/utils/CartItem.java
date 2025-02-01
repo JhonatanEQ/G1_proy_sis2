@@ -4,6 +4,8 @@
  */
 package org.utils;
 
+import org.services.utils.Product;
+
 /**
  *
  * @author HP

@@ -55,5 +55,14 @@ public class ProductService {
             return false;
         }
     }
-    
+
+    public Product findProductByCode(String codigo) {
+        try (Connection conn = gConnDB.getConnection()) {
+            return ProductModel.findProductByCode(conn, codigo);
+        } catch (SQLException e) {
+            // Es mejor lanzar una excepción que retornar null
+            // para que la capa superior pueda manejar el error apropiadamente
+            throw new RuntimeException("Error al buscar el producto por código: " + e.getMessage(), e);
+        }
+    }    
 }

@@ -88,4 +88,34 @@ public class ProductModel {
             return rowsAffected > 0;
         }
     }
+    
+    public static Product findProductByCode(Connection conn, String codigo) throws SQLException {
+    String query = "SELECT id, codigo, nombre, precio_unitario, categoria_id, stock_actual, " +
+                  "stock_minimo, fecha_entrada, imagen_url, activo, proveedor_id " +
+                  "FROM productos WHERE codigo = ?";
+    
+    try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+        pstmt.setString(1, codigo.trim());
+        
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                Product producto = new Product();
+                producto.setId(rs.getInt("id"));
+                producto.setCode(rs.getString("codigo"));
+                producto.setName(rs.getString("nombre"));
+                producto.setUnitPrice(rs.getDouble("precio_unitario"));
+                producto.setCategoryId(rs.getInt("categoria_id"));
+                producto.setCurrentStock(rs.getInt("stock_actual"));
+                producto.setMinimumStock(rs.getInt("stock_minimo"));
+                producto.setEntryDate(rs.getString("fecha_entrada"));
+                producto.setImage(rs.getString("imagen_url"));
+                producto.setStatus(rs.getBoolean("activo"));
+                producto.setSupplierId(rs.getInt("proveedor_id"));
+                
+                return producto;
+            }
+            return null; // Retorna null si no encuentra el producto
+        }
+    }
+}
 }

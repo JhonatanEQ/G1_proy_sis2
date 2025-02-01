@@ -4,19 +4,17 @@
  */
 package org.gui.home;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 import org.gui.alerts.AlertsView;
 import org.gui.billing.BillingView;
+import org.gui.reports.SalesView;
 import org.gui.dashboad.Dashboard;
 import org.gui.inventory.InventoryView;
 import org.gui.product.ProductView;
 import org.gui.reports.ReportsViews;
-import org.gui.sales.SalesView;
 import org.gui.settings.Settings;
-
 /**
  *
  * @author Encin

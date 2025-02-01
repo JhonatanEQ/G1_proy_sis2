@@ -30,17 +30,7 @@ public class ProductService {
         }
     }
     
-    public boolean insertOneProduct(Product product) {
-         System.out.println("Código: " + product.getCode());
-            System.out.println("Nombre: " + product.getName());
-            System.out.println("Precio Unitario: " + product.getUnitPrice());
-            System.out.println("Categoría: " + product.getCategoryId());
-            System.out.println("Stock Actual: " + product.getCurrentStock());
-            System.out.println("Stock Mínimo: " + product.getMinimumStock());
-            System.out.println("Fecha Entrada: " + product.getEntryDate());
-            System.out.println("Proveedor: " + product.getSupplierName());
-            System.out.println("Imagen URL: " + product.getImage());
-            System.out.println("Estado: " + product.getStatus());
+    public boolean insertOneProduct(Product product)  {
         try (Connection conn = gConnDB.getConnection()) {
             return ProductModel.insertOneProduct(conn, product);
         } catch (SQLException e) { 

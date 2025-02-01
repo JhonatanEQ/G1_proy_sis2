@@ -19,6 +19,9 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.swing.Timer;
+import javax.swing.SwingUtilities;
+import java.util.ArrayList;
 
 public class InventoryView extends javax.swing.JPanel {
     private DefaultTableModel tableModel;
@@ -138,24 +141,24 @@ private void deshabilitarEdicionTabla(){
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"", "", "", "", "", null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null}
+                {"", "", "", "", "", null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Codigo", "Nombre", "Precio", "Categoria", "Stock Actual", "Stock Minimo", "Fecha de entrada", "Proveedor", "Estado"
+                "ID", "Codigo", "Nombre", "Precio", "Categoria", "Stock Actual", "Fecha de entrada", "Proveedor", "Estado"
             }
         ));
         jTable1.setGridColor(new java.awt.Color(204, 204, 204));
@@ -318,6 +321,9 @@ private void cargarDatosDesdeBD() {
         List<Product> productos = productService.getAllProducts();
         tableModel.setRowCount(0); // Limpiar la tabla
         
+        // Lista para almacenar productos con bajo stock
+        List<String> productosConBajoStock = new ArrayList<>();
+        
         for (Product producto : productos) {
             tableModel.addRow(new Object[]{
                 producto.getId(),
@@ -326,21 +332,37 @@ private void cargarDatosDesdeBD() {
                 producto.getUnitPrice(),
                 producto.getCategoryId(),
                 producto.getCurrentStock(),
-                producto.getMinimumStock(),
+                //producto.getMinimumStock(),
                 producto.getEntryDate(),
                 producto.getSupplierName(),
                 (producto.getCurrentStock() <= producto.getMinimumStock()) ? "Bajo stock" : "En stock"
             });
 
-            // Mostrar alerta si el stock está bajo
+            // Almacenar productos con bajo stock en lugar de mostrar la alerta inmediatamente
             if (producto.getCurrentStock() <= producto.getMinimumStock()) {
-                JOptionPane.showMessageDialog(this, 
-                    "¡Alerta! El producto " + producto.getName() + " tiene stock bajo.", 
-                    "Alerta de Stock", JOptionPane.WARNING_MESSAGE);
+                productosConBajoStock.add(producto.getName());
             }
         }
+        
+        // Esperar un breve momento para que el dashboard se cargue completamente
+        SwingUtilities.invokeLater(() -> {
+            // Mostrar las alertas después de un pequeño delay
+            Timer timer = new Timer(300, e -> {
+                // Mostrar alertas para productos con bajo stock
+                for (String nombreProducto : productosConBajoStock) {
+                    JOptionPane.showMessageDialog(this, 
+                        "¡Alerta! El producto " + nombreProducto + " tiene stock bajo.", 
+                        "Alerta de Stock", JOptionPane.WARNING_MESSAGE);
+                }
+            });
+            timer.setRepeats(false);
+            timer.start();
+        });
+        
     } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Error al cargar datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, 
+            "Error al cargar datos: " + e.getMessage(), 
+            "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
 }    

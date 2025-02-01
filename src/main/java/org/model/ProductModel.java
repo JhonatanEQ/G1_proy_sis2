@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.model;
 
 import java.sql.Connection;
@@ -13,19 +9,8 @@ import java.util.List;
 import org.services.utils.Product;
 import org.services.utils.Utils;
 
-
-
-/**
- *
- * @author Encin
- */
 public class ProductModel {
     
-    
-
-    // Getters and Setters
-    
-
     public static List<Product> getAll(Connection conn) throws SQLException {
         String query = "SELECT * FROM productos";
         List<Product> products = new ArrayList<>();
@@ -50,8 +35,9 @@ public class ProductModel {
     }
     
     public static boolean insertOneProduct(Connection conn, Product product) throws SQLException {
-        String query = "INSERT INTO productos (codigo, nombre, precio_unitario, categoria_id, stock_actual, stock_minimo, fecha_entrada, nombre_proveedor, imagen_url, activo) "
-                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO productos (codigo, nombre, precio_unitario, categoria_id, " +
+                      "stock_actual, stock_minimo, fecha_entrada, nombre_proveedor, imagen_url, activo) " +
+                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, product.getCode());
@@ -60,27 +46,41 @@ public class ProductModel {
             stmt.setInt(4, product.getCategoryId());
             stmt.setInt(5, product.getCurrentStock());
             stmt.setInt(6, product.getMinimumStock());
-            stmt.setDate(7, (java.sql.Date) Utils.convertToDate(product.getEntryDate()));
+            stmt.setDate(7, Utils.convertToDate(product.getEntryDate()));
             stmt.setString(8, product.getSupplierName());
             stmt.setString(9, product.getImage());
             stmt.setBoolean(10, product.getStatus());
+            
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
 
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-        }
-    }
     public static boolean updateProductStockAndDate(Connection conn, Product product) throws SQLException {
-        String query = "UPDATE productos SET stock_actual = ?, fecha_entrada = ? WHERE id = ?";
-    
-         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, product.getCurrentStock());
-            stmt.setDate(2, (java.sql.Date) Utils.convertToDate(product.getEntryDate()));
-            stmt.setInt(3, product.getId());
+        String query = "UPDATE productos SET stock_actual = ?, precio_unitario = ?, fecha_entrada = ? WHERE id = ?";
         
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            // Actualizar stock
+            stmt.setInt(1, product.getCurrentStock());
+            
+            // Actualizar precio
+            stmt.setDouble(2, product.getUnitPrice());
+            
+            // Convertir y establecer la fecha usando el Utils mejorado
+            java.sql.Date sqlDate = Utils.convertToDate(product.getEntryDate());
+            stmt.setDate(3, sqlDate);
+            
+            // ID del producto a actualizar
+            stmt.setInt(4, product.getId());
+            
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar el producto: " + e.getMessage());
+            throw e;
         }
     }
+
     public static boolean deleteProduct(Connection conn, int productId) throws SQLException {
         String query = "DELETE FROM productos WHERE id = ?";
     

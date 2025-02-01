@@ -24,8 +24,6 @@ public class ProductModel {
     
 
     // Getters and Setters
-    
-
     public static List<Product> getAll(Connection conn) throws SQLException {
         String query = "SELECT * FROM productos";
         List<Product> products = new ArrayList<>();
@@ -40,9 +38,9 @@ public class ProductModel {
                 p.setCurrentStock(rs.getInt("stock_actual"));
                 p.setMinimumStock(rs.getInt("stock_minimo"));
                 p.setEntryDate(rs.getString("fecha_entrada"));
-                p.setSupplierName(rs.getString("nombre_proveedor"));
                 p.setImage(rs.getString("imagen_url"));
                 p.setStatus(rs.getBoolean("activo"));
+                p.setSupplierId(rs.getInt("proveedor_id"));
                 products.add(p);
             }
         }
@@ -50,7 +48,7 @@ public class ProductModel {
     }
     
     public static boolean insertOneProduct(Connection conn, Product product) throws SQLException {
-        String query = "INSERT INTO productos (codigo, nombre, precio_unitario, categoria_id, stock_actual, stock_minimo, fecha_entrada, nombre_proveedor, imagen_url, activo) "
+        String query = "INSERT INTO productos (codigo, nombre, precio_unitario, categoria_id, stock_actual, stock_minimo, fecha_entrada, imagen_url, activo, proveedor_id) "
                      + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -61,9 +59,9 @@ public class ProductModel {
             stmt.setInt(5, product.getCurrentStock());
             stmt.setInt(6, product.getMinimumStock());
             stmt.setDate(7, (java.sql.Date) Utils.convertToDate(product.getEntryDate()));
-            stmt.setString(8, product.getSupplierName());
-            stmt.setString(9, product.getImage());
-            stmt.setBoolean(10, product.getStatus());
+            stmt.setString(8, product.getImage());
+            stmt.setBoolean(9, product.getStatus());
+            stmt.setInt(10, product.getSupplierId());
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;

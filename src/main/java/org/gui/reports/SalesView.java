@@ -33,7 +33,7 @@ import javax.swing.JToggleButton;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import org.gui.component.CustomScrollPane;
 import org.gui.component.ListaDeProductos.ItemProduct;
-import org.utils.Product;
+import org.services.utils.Product;
 
 public class SalesView extends javax.swing.JPanel {
 

@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Map;
-import org.utils.Product;
+import org.services.utils.Product;
 import org.utils.CartItem;
 
 public class CartPanel extends JPanel {

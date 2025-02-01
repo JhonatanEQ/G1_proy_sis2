@@ -14,10 +14,14 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+
+
 import org.services.product.ProductService;
 import org.services.product.CategoryService;
+import org.services.supplier.SupplierService;
 import org.services.utils.Category;
 import org.services.utils.Product;
+import org.services.utils.Supplier;
 
 /**
  *
@@ -30,6 +34,8 @@ public class ProductView extends javax.swing.JPanel {
     private ProductService gProductService;
     private CategoryService gCategoryService;
     private List<Category> gCategories;
+    private List<Supplier> gSuppliers;
+    private SupplierService gSupplierService;
 
     /**
      * Creates new form Product
@@ -38,7 +44,9 @@ public class ProductView extends javax.swing.JPanel {
         initComponents();
         gProductService = new ProductService();
         gCategoryService = new CategoryService();
+        gSupplierService = new SupplierService();
         cargarCategorias();
+        jtAddProveedor.setVisible(false);
     }
     private void cargarCategorias() {
         try {
@@ -53,6 +61,29 @@ public class ProductView extends javax.swing.JPanel {
             jcCategoria.setModel(model);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al cargar las categorías: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void cargarProveedores() {
+        try {
+            gSuppliers = gSupplierService.getAllSuppliers();
+            List<String> supplierNames = new ArrayList<>();
+
+            // Agregar los proveedores existentes
+            for (Supplier supplier : gSuppliers) {
+                supplierNames.add(supplier.getCompanyName());
+            }
+
+            // Agregar la opción para añadir nuevo proveedor
+            supplierNames.add("Agregar nuevo proveedor");
+
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(supplierNames.toArray(new String[0]));
+            jcSelectProveedor.setModel(model);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error al cargar los proveedores: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
         }
     }
     /**
@@ -268,7 +299,7 @@ public class ProductView extends javax.swing.JPanel {
             lProduct.setCurrentStock(Integer.parseInt(jtCantidad.getText()));
             lProduct.setMinimumStock(10); 
             lProduct.setEntryDate(obtenerFechaTexto());
-            lProduct.setSupplierName(jtAddProveedor.getText());
+            lProduct.setSupplierId(extractSupplinerId());
             lProduct.setImage(gURLImage); 
             lProduct.setStatus(true); 
 
@@ -292,6 +323,21 @@ public class ProductView extends javax.swing.JPanel {
 
         throw new IllegalArgumentException("Category not found: " + selectedCategoryName);
     }
+    
+    
+    private int extractSupplinerId() {
+        String selectedSupplinerName = (String) jcCategoria.getSelectedItem();
+
+        for (Category category : gCategories) {
+            if (category.toString().equals(selectedSupplinerName)) {
+                return category.getId();
+            }
+        }
+
+        throw new IllegalArgumentException("Category not found: " + selectedSupplinerName);
+    }
+    
+    
     private void jcSelectProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcSelectProveedorActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jcSelectProveedorActionPerformed

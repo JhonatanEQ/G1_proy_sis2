@@ -10,7 +10,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
-import org.utils.Product;
+import org.services.utils.Product;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.BorderFactory;

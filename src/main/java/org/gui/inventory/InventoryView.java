@@ -328,7 +328,7 @@ private void cargarDatosDesdeBD() {
                 producto.getCurrentStock(),
                 producto.getMinimumStock(),
                 producto.getEntryDate(),
-                producto.getSupplierName(),
+                producto.getSupplierId(),
                 (producto.getCurrentStock() <= producto.getMinimumStock()) ? "Bajo stock" : "En stock"
             });
 

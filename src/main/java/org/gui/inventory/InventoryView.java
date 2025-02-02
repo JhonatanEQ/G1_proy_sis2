@@ -6,7 +6,7 @@ package org.gui.inventory;
 
 /**
  *
- * @author Vidal zenzano jonas :v
+ * @author Vidal zenzano jonas :v y cristian xD
  */
 import org.services.product.ProductService;
 import org.services.utils.Product;
@@ -184,14 +184,59 @@ private void deshabilitarEdicionTabla(){
 
     private void txt_buscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_buscarActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(this,"Funcion de busqueda no implementada.");
+        // Método para manejar la acción del campo de búsqueda (ahora solo actúa como entrada de texto)
+                                              
+        // Este método solo permite ingresar el texto, no busca automáticamente.
+        // La búsqueda se realizará cuando el usuario haga clic en el botón "Filtrar".
+    
+        //JOptionPane.showMessageDialog(this,"Funcion de busqueda no implementada.");
     }//GEN-LAST:event_txt_buscarActionPerformed
 
     private void txt_filterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_filterActionPerformed
-        // TODO add your handling code here:
-        JOptionPane.showMessageDialog(this,"Funcion de filtro no implementada.");
-    }//GEN-LAST:event_txt_filterActionPerformed
+         String filtro = txt_buscar.getText().trim();
+        
+        if (filtro.isEmpty()) {
+            filtrarProductos(""); // Pasamos una cadena vacía para indicar que no hay filtro
+        }else {
+        filtrarProductos(filtro); // Aplicar el filtro
+        }
 
+        
+    }//GEN-LAST:event_txt_filterActionPerformed
+private void filtrarProductos(String filtro) {
+        try {
+             List<Product> productosFiltrados = productService.getFilteredProducts(filtro);
+               if (filtro.isEmpty()) {
+            // Si el filtro está vacío, obtener todos los productos
+                 productosFiltrados = productService.getAllProducts();
+            } else {
+            // Si hay un filtro, aplicar la búsqueda
+                productosFiltrados = productService.getFilteredProducts(filtro);
+            }
+            tableModel.setRowCount(0); // Limpiar la tabla
+
+            for (Product producto : productosFiltrados) {
+                tableModel.addRow(new Object[]{
+                    producto.getId(),
+                    producto.getCode(),
+                    producto.getName(),
+                    producto.getUnitPrice(),
+                    producto.getCategoryId(),
+                    producto.getCurrentStock(),
+                    producto.getMinimumStock(),
+                    producto.getEntryDate(),
+                    producto.getSupplierId(),
+                    (producto.getCurrentStock() <= producto.getMinimumStock()) ? "Bajo stock" : "En stock"
+                });
+            }
+
+            if (!filtro.isEmpty() && productosFiltrados.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No se encontraron productos con el filtro ingresado.");
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Error al filtrar datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
     private void txt_modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_modificarActionPerformed
         // TODO add your handling code here:                                              
      int selectedRow = jTable1.getSelectedRow();

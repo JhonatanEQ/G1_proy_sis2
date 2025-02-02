@@ -23,7 +23,7 @@ public class Product {
     private int gCurrentStock;
     private int gMinimumStock;
     private String gEntryDate;
-    private String gSupplierName;
+    private int gSupplierId;
     private String gImage;
     private boolean gStatus;
 
@@ -42,7 +42,7 @@ public class Product {
 
     // Constructor with parameters
     public Product(int lId, String lCode, String lName, double lUnitPrice, int lCategoryId,
-                   int lCurrentStock, int lMinimumStock, String lEntryDate, String lSupplierName, 
+                   int lCurrentStock, int lMinimumStock, String lEntryDate, int lSupplierId, 
                    String lImageUrl, boolean lStatus ) {
         this.gId = lId;
         this.gCode = lCode;
@@ -52,7 +52,7 @@ public class Product {
         this.gCurrentStock = lCurrentStock;
         this.gMinimumStock = lMinimumStock;
         this.gEntryDate = lEntryDate;
-        this.gSupplierName = lSupplierName;
+        this.gSupplierId = lSupplierId;
         this.gImage = lImageUrl;
         this.gStatus = lStatus ;
     }
@@ -122,12 +122,12 @@ public class Product {
         this.gEntryDate = lEntryDate;
     }
 
-    public String getSupplierName() {
-        return gSupplierName;
+    public int getSupplierId() {
+        return gSupplierId;
     }
 
-    public void setSupplierName(String lSupplierName) {
-        this.gSupplierName = lSupplierName;
+    public void setSupplierId(int lSupplierId) {
+        this.gSupplierId = lSupplierId;
     }
 
     public String getImage() {
@@ -144,26 +144,6 @@ public class Product {
 
     public void setStatus(boolean lStatus ) {
         this.gStatus = lStatus ;
-    }
-
-    // CRUD methods
-    public static List<Product> getAll(Connection lConn) throws Exception {
-        String lQuery = "SELECT * FROM productos";
-        List<Product> lProducts = new ArrayList<>();
-
-        try (PreparedStatement lStmt = lConn.prepareStatement(lQuery);
-             ResultSet lRs = lStmt.executeQuery()) {
-            while (lRs.next()) {
-                lProducts.add(new Product(
-                        lRs.getInt("id"), lRs.getString("codigo"), lRs.getString("nombre"),
-                        lRs.getDouble("precio_unitario"), lRs.getInt("categoria_id"),
-                        lRs.getInt("stock_actual"), lRs.getInt("stock_minimo"),
-                        lRs.getString("fecha_entrada"), lRs.getString("nombre_proveedor"),
-                        lRs.getString("imagen_url"), lRs.getBoolean("activo")
-                ));
-            }
-        }
-        return lProducts;
     }
 }
 

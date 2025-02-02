@@ -5,11 +5,10 @@
 package org.gui.home;
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 import org.gui.alerts.AlertsView;
 import org.gui.billing.BillingView;
-import org.gui.reports.SalesView;
+import org.gui.sales.SalesView;
 import org.gui.dashboad.Dashboard;
 import org.gui.inventory.InventoryView;
 import org.gui.product.ProductView;

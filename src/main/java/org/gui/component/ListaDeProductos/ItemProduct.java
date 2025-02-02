@@ -14,6 +14,7 @@ import org.services.utils.Product;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -40,55 +41,47 @@ public class ItemProduct extends javax.swing.JPanel {
     
     
     private void setupStyle() {
-        // Main panel styling
         this.setBackground(Color.WHITE);
-        this.setBorder(new RoundedBorder(10, new Color(240, 240, 240)));
-        
-        // Product panel styling
+        this.setBorder(new RoundedBorder(8, new Color(240, 240, 240)));
+        this.setPreferredSize(new Dimension(300, 45));
+
         mainPanel.setBackground(Color.WHITE);
-        mainPanel.setLayout(new BorderLayout(10, 5));
-        
-        // Create product info panel
-        JPanel productInfoPanel = new JPanel(new BorderLayout(8, 0));
-        productInfoPanel.setBackground(Color.WHITE);
-        
-        // Image label
-        productImageLabel.setPreferredSize(new Dimension(45, 45));
-        productInfoPanel.add(productImageLabel, BorderLayout.WEST);
-        
-        // Name and status panel
-        JPanel nameStatusPanel = new JPanel(new GridLayout(2, 1, 0, 2));
-        nameStatusPanel.setBackground(Color.WHITE);
-        nameStatusPanel.add(productNameLabel);
-        nameStatusPanel.add(statusLabel);
-        productInfoPanel.add(nameStatusPanel, BorderLayout.CENTER);
-        
-        // Cart and price panel
-        JPanel cartPanel = new JPanel(new BorderLayout(15, 0)); // 15px de separación horizontal
-        cartPanel.setBackground(Color.WHITE);
-        cartPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 5));
-        
-        // Price panel
-        JPanel pricePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 0));
+        mainPanel.setLayout(new GridLayout(1, 5, 10, 0));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 8, 5, 8));
+
+        JPanel imagePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        imagePanel.setBackground(Color.WHITE);
+        productImageLabel.setPreferredSize(new Dimension(30, 30));
+        imagePanel.add(productImageLabel);
+
+        JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        namePanel.setBackground(Color.WHITE);
+        productNameLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        namePanel.add(productNameLabel);
+
+        JPanel pricePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 0));
         pricePanel.setBackground(Color.WHITE);
-        pricePanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10)); // 10px padding derecho
+        currencySymbolLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        priceValueLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
         pricePanel.add(currencySymbolLabel);
         pricePanel.add(priceValueLabel);
-        
-        // Add to cart button styling
-        addToCartButton.setBorder(new RoundedBorder(15, new Color(230, 230, 230)));
-        addToCartButton.setPreferredSize(new Dimension(30, 30));
-        addToCartButton.setHorizontalAlignment(SwingConstants.CENTER);
-        
-        cartPanel.add(pricePanel, BorderLayout.CENTER);
-        cartPanel.add(addToCartButton, BorderLayout.EAST);
-        
-        // Add all components to main panel
-        mainPanel.add(productInfoPanel, BorderLayout.WEST);
-        mainPanel.add(cartPanel, BorderLayout.EAST);
-        
-        // Add padding to main panel
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        statusPanel.setBackground(Color.WHITE);
+        statusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        statusPanel.add(statusLabel);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        buttonPanel.setBackground(Color.WHITE);
+        addToCartButton.setBorder(new RoundedBorder(12, new Color(230, 230, 230)));
+        addToCartButton.setPreferredSize(new Dimension(25, 25));
+        buttonPanel.add(addToCartButton);
+
+        mainPanel.add(imagePanel); 
+        mainPanel.add(namePanel); 
+        mainPanel.add(pricePanel);  
+        mainPanel.add(statusPanel);    
+        mainPanel.add(buttonPanel);    
     }
     
     /**

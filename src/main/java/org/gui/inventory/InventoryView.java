@@ -361,26 +361,16 @@ private void cargarDatosDesdeBD() {
         }
         
                    // Esperar un breve momento para que el dashboard se cargue completamente
-                  SwingUtilities.invokeLater(() -> {
-                 // Mostrar las alertas después de un pequeño delay
-                   Timer timer = new Timer(300, e -> {
-                  // Mostrar alertas para productos con bajo stock
-                  for (String nombreProducto : productosConBajoStock) {
-                    JOptionPane.showMessageDialog(this, 
-                        "¡Alerta! El producto " + nombreProducto + " tiene stock bajo.", 
-                        "Alerta de Stock", JOptionPane.WARNING_MESSAGE);
-                     }
-                 });
-                timer.setRepeats(false);
-               timer.start();
-              });
                   
             }  catch (SQLException e) {
             JOptionPane.showMessageDialog(this, 
             "Error al cargar datos: " + e.getMessage(), 
             "Error", JOptionPane.ERROR_MESSAGE);
              
-        }
-    } 
+           }
+      } 
+         public void refreshData() {
+           cargarDatosDesdeBD();
+    }
 }    
 

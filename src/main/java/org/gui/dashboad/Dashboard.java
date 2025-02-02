@@ -10,6 +10,13 @@ import java.awt.*;
 import java.util.*;
 import org.gui.component.CartLowStockAlert;
 import org.gui.component.CustomScrollPane;
+import java.util.List;  // Esta es la que necesitas para List
+import java.util.LinkedList;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import org.services.product.ProductService;
+import org.services.utils.Product;
 
 /**
  *
@@ -19,15 +26,17 @@ public class Dashboard extends javax.swing.JPanel {
     
     private static final int MAX_ITEMS = 3;
     private LinkedList<JpRecentSales> recentSalesQueue;
+    private ProductService productService; // Agregar esta línea
 
     /**
      * Creates new form Dashboard
      */
     public Dashboard() {
         initComponents();
+         productService = new ProductService(); // Inicializar en el constructor
         setupRecentSales();   
         setupLowStockAlerts();   
-        addSampleSales();
+         loadDashboardData();
     }
     
     private void setupRecentSales() {
@@ -106,48 +115,143 @@ public class Dashboard extends javax.swing.JPanel {
     }
 
     public void addLowStockAlert(String productName, int remainingItems) {
-        JPanel contentPanel = (JPanel) jpAlertPanel.getClientProperty("contentPanel");
-        if (contentPanel == null) return;
+    JPanel contentPanel = (JPanel) jpAlertPanel.getClientProperty("contentPanel");
+    if (contentPanel == null) return;
 
-        CartLowStockAlert alertPanel = new CartLowStockAlert();
-        alertPanel.setAlertInfo(productName, remainingItems);
-        alertPanel.addRestockListener(e -> handleRestock(productName));
-        alertPanel.setBackground(Color.WHITE);
-        alertPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, alertPanel.getPreferredSize().height));
-        alertPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    CartLowStockAlert alertPanel = new CartLowStockAlert();
+    alertPanel.setAlertInfo(productName, remainingItems);
+    alertPanel.addRestockListener(e -> handleRestock(productName));
+    alertPanel.setBackground(Color.WHITE);
+    alertPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, alertPanel.getPreferredSize().height));
+    alertPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+    if (contentPanel.getComponentCount() > 0) {
+        contentPanel.add(Box.createVerticalStrut(10), 0);
+    }
+
+    contentPanel.add(alertPanel, 0);
+
+    while (contentPanel.getComponentCount() > MAX_ITEMS * 2) {
+        contentPanel.remove(contentPanel.getComponentCount() - 1);
         if (contentPanel.getComponentCount() > 0) {
-            contentPanel.add(Box.createVerticalStrut(10), 0);
-        }
-
-        contentPanel.add(alertPanel, 0);
-
-        while (contentPanel.getComponentCount() > MAX_ITEMS * 2) {
             contentPanel.remove(contentPanel.getComponentCount() - 1);
-            if (contentPanel.getComponentCount() > 0) {
-                contentPanel.remove(contentPanel.getComponentCount() - 1);
+        }
+    }
+
+    contentPanel.revalidate();
+    contentPanel.repaint();
+}
+    
+ private void loadDashboardData() {
+    try {
+        // Usar getAll() que ya existe
+        List<Product> products = productService.getAllProducts();
+        int lowStockCount = 0;
+        
+        // Limpiar alertas existentes
+        JPanel contentPanel = (JPanel) jpAlertPanel.getClientProperty("contentPanel");
+        if (contentPanel != null) {
+            contentPanel.removeAll();
+        }
+        
+        // Procesar cada producto
+        for (Product producto : products) {
+            // Verificar si tiene bajo stock
+            if (producto.getCurrentStock() < producto.getMinimumStock()) {
+                addLowStockAlert(producto.getName(), producto.getCurrentStock());
+                lowStockCount++;
             }
         }
-
-        contentPanel.revalidate();
-        contentPanel.repaint();
+        
+        // Actualizar contador en el dashboard
+        jLabel14.setText(String.valueOf(lowStockCount));
+        
+        // Calcular y actualizar porcentaje
+        double percentage = products.isEmpty() ? 0 : 
+            ((double) lowStockCount / products.size()) * 100;
+        jLabel12.setText(String.format("%.1f", percentage));
+        
+        // Actualizar la interfaz
+        if (contentPanel != null) {
+            contentPanel.revalidate();
+            contentPanel.repaint();
+        }
+        
+    } catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this,
+            "Error al cargar datos del dashboard: " + e.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
     }
-    
-    private void addSampleSales() {
-        addRecentSale("1234", "hace 2 horas", 523.45);
-        addRecentSale("2234", "hace 1 hora", 323.45);
-        addRecentSale("3234", "hace 30 minutos", 423.45);
-
-        addLowStockAlert("Producto 1", 2);
-        addLowStockAlert("Producto 3", 2);
-        addLowStockAlert("Producto 4", 2);
-
-    }
-    
+}
 
     private void handleRestock(String productName) {
-        System.out.println("Resurtiendo " + productName);
+    try {
+        // Buscar el producto por nombre
+        List<Product> products = productService.getAllProducts();
+        Product productToRestock = products.stream()
+            .filter(p -> p.getName().equals(productName))
+            .findFirst()
+            .orElse(null);
+            
+        if (productToRestock != null) {
+            String input = JOptionPane.showInputDialog(this,
+                "Ingrese la cantidad a añadir al stock:",
+                "Resurtir " + productName,
+                JOptionPane.QUESTION_MESSAGE);
+                
+            if (input != null && !input.trim().isEmpty()) {
+                try {
+                    int additionalStock = Integer.parseInt(input.trim());
+                    if (additionalStock > 0) {
+                        int newStock = productToRestock.getCurrentStock() + additionalStock;
+                        productToRestock.setCurrentStock(newStock);
+                        productToRestock.setEntryDate(
+                            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .format(new Date()));
+                        
+                        if (productService.updateProductStockAndDate(productToRestock)) {
+                            JOptionPane.showMessageDialog(this,
+                                "Stock actualizado exitosamente");
+                                
+                            // Recargar los datos del dashboard
+                            loadDashboardData();
+                            
+                            // Actualizar el inventario si está abierto
+                            Window[] windows = Window.getWindows();
+                            for (Window window : windows) {
+                                if (window instanceof JFrame) {
+                                    for (Component comp : ((JFrame) window).getContentPane().getComponents()) {
+                                        if (comp instanceof org.gui.inventory.InventoryView) {
+                                            ((org.gui.inventory.InventoryView) comp).refreshData();
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                            "La cantidad debe ser mayor a 0",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this,
+                        "Por favor ingrese un número válido",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this,
+            "Error al actualizar el stock: " + e.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
     }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.

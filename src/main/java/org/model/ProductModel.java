@@ -10,6 +10,12 @@ import java.util.List;
 import org.services.utils.Product;
 import org.services.utils.Utils;
 
+
+
+/**
+ *
+ * @author Encinas
+ */
 public class ProductModel {
     
     
@@ -37,7 +43,45 @@ public class ProductModel {
         }
         return products;
     }
+    public static List<Product> getFilteredProducts(Connection conn, String filtro) throws SQLException {
+    List<Product> productos = new ArrayList<>();
     
+    // Consulta SQL corregida
+    String query = "SELECT * FROM productos " +
+                   "WHERE CAST(id AS TEXT) LIKE ? OR " +
+                   "nombre LIKE ? OR " +
+                   "codigo LIKE ? OR " +
+                   "categoria_id IN (SELECT id FROM categorias WHERE nombre LIKE ?)";
+
+    try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        // Convertir el filtro a un patrón de búsqueda
+        String likePattern = "%" + filtro + "%";
+        
+        // Asignar los parámetros
+        stmt.setString(1, likePattern); // id (convertido a texto)
+        stmt.setString(2, likePattern); // nombre
+        stmt.setString(3, likePattern); // código
+        stmt.setString(4, likePattern); // categoría
+
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Product producto = new Product();
+                producto.setId(rs.getInt("id"));
+                producto.setCode(rs.getString("codigo"));
+                producto.setName(rs.getString("nombre"));
+                producto.setUnitPrice(rs.getDouble("precio_unitario"));
+                producto.setCategoryId(rs.getInt("categoria_id"));
+                producto.setCurrentStock(rs.getInt("stock_actual"));
+                producto.setMinimumStock(rs.getInt("stock_minimo"));
+                producto.setEntryDate(rs.getString("fecha_entrada"));
+                producto.setSupplierId(rs.getInt("proveedor_id"));
+
+                productos.add(producto);
+            }
+        }
+    }
+    return productos;
+}
     public static boolean insertOneProduct(Connection conn, Product product) throws SQLException {
         String query = "INSERT INTO productos (codigo, nombre, precio_unitario, categoria_id, stock_actual, stock_minimo, fecha_entrada, imagen_url, activo, proveedor_id) "
                      + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -123,4 +167,71 @@ public class ProductModel {
         }
     }
 }
+     public static Product findProductByName(Connection conn, String nombre) throws SQLException {
+    String query = "SELECT id, codigo, nombre, precio_unitario, categoria_id, stock_actual, " +
+                  "stock_minimo, fecha_entrada, imagen_url, activo, proveedor_id " +
+                  "FROM productos WHERE nombre = ?";
+    
+    try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+        pstmt.setString(1, nombre.trim());
+        
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                Product producto = new Product();
+                producto.setId(rs.getInt("id"));
+                producto.setCode(rs.getString("codigo"));
+                producto.setName(rs.getString("nombre"));
+                producto.setUnitPrice(rs.getDouble("precio_unitario"));
+                producto.setCategoryId(rs.getInt("categoria_id"));
+                producto.setCurrentStock(rs.getInt("stock_actual"));
+                producto.setMinimumStock(rs.getInt("stock_minimo"));
+                producto.setEntryDate(rs.getString("fecha_entrada"));
+                producto.setImage(rs.getString("imagen_url"));
+                producto.setStatus(rs.getBoolean("activo"));
+                producto.setSupplierId(rs.getInt("proveedor_id"));
+                
+                return producto;
+            }
+            return null; // Retorna null si no encuentra el producto
+        }
+    }
+    
+} 
+    
+    
+    
+    
+    public static List<Product> findProductsByCategory(Connection conn, int categoriaId) throws SQLException {
+    String query = "SELECT id, codigo, nombre, precio_unitario, categoria_id, stock_actual, " +
+                   "stock_minimo, fecha_entrada, imagen_url, activo, proveedor_id " +
+                   "FROM productos WHERE categoria_id = ?";
+    
+    List<Product> productos = new ArrayList<>();
+    
+    try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+        pstmt.setInt(1, categoriaId); // Filtrar por ID de categoría
+        
+        try (ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                Product producto = new Product();
+                producto.setId(rs.getInt("id"));
+                producto.setCode(rs.getString("codigo"));
+                producto.setName(rs.getString("nombre"));
+                producto.setUnitPrice(rs.getDouble("precio_unitario"));
+                producto.setCategoryId(rs.getInt("categoria_id"));
+                producto.setCurrentStock(rs.getInt("stock_actual"));
+                producto.setMinimumStock(rs.getInt("stock_minimo"));
+                producto.setEntryDate(rs.getString("fecha_entrada"));
+                producto.setImage(rs.getString("imagen_url"));
+                producto.setStatus(rs.getBoolean("activo"));
+                producto.setSupplierId(rs.getInt("proveedor_id"));
+                
+                productos.add(producto);
+            }
+        }
+    }
+    
+    return productos;
 }
+}
+

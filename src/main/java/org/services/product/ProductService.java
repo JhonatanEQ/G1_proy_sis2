@@ -29,7 +29,14 @@ public class ProductService {
             return new ArrayList<>();
         }
     }
-    
+    public List<Product> getFilteredProducts(String filtro) throws SQLException {
+        try (Connection conn = gConnDB.getConnection()) {
+            return ProductModel.getFilteredProducts(conn, filtro);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
     public boolean insertOneProduct(Product product)  {
         try (Connection conn = gConnDB.getConnection()) {
             return ProductModel.insertOneProduct(conn, product);
@@ -57,6 +64,15 @@ public class ProductService {
     }
 
     public Product findProductByCode(String codigo) {
+        try (Connection conn = gConnDB.getConnection()) {
+            return ProductModel.findProductByCode(conn, codigo);
+        } catch (SQLException e) {
+            // Es mejor lanzar una excepción que retornar null
+            // para que la capa superior pueda manejar el error apropiadamente
+            throw new RuntimeException("Error al buscar el producto por código: " + e.getMessage(), e);
+        }
+    }    
+    public Product findProductByName(String codigo) {
         try (Connection conn = gConnDB.getConnection()) {
             return ProductModel.findProductByCode(conn, codigo);
         } catch (SQLException e) {

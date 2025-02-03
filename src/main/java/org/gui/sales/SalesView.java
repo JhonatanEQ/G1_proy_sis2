@@ -1,40 +1,48 @@
 package org.gui.sales;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
+
+
 import org.gui.component.CustomScrollPane;
 import org.gui.component.ListaDeProductos.ItemProduct;
 import org.gui.component.ListaDeProductos.ItemSalesProduct;
+import org.gui.component.RoundedBorder;
+import org.gui.home.Home;
 import org.services.utils.Product;
+import org.services.product.ProductService;
+import org.services.utils.Sale;
+import org.services.utils.SalesDetail;
+import org.services.sales.SalesServcice;
+
+
 
 public class SalesView extends javax.swing.JPanel {
+    
+    
+    private static final Color BACKGROUND_COLOR = new Color(249, 250, 251);
+    private static final Color WHITE = Color.WHITE;
+    private static final Color LIGHT_GRAY = new Color(240, 240, 240);
+    private static final Color DARK_BLUE = new Color(63, 81, 181);
+    private static final Dimension PANEL_SIZE = new Dimension(740, 540);
 
+   
     private ArrayList<Product> gProducts;
     private ArrayList<ItemProduct> gCartProducts;
     private Map<String, CartItem> cartItems;
     private JPanel cartItemsPanel;
+    
+    
     private double subtotal;
     private double tax;
     private double total;
-
-    // Lista de JLabel para los productos en el carrito
-    private JLabel[] productLabels = new JLabel[6];
-    private JLabel[] quantityLabels = new JLabel[6];
 
     public SalesView() {
         cartItems = new HashMap<>();
@@ -46,177 +54,116 @@ public class SalesView extends javax.swing.JPanel {
     }
 
     private void initializeProducts() {
-        // Initialize global lists
         gProducts = new ArrayList<>();
         gCartProducts = new ArrayList<>();
 
-        // Add sample products - you can modify this to load from your actual data source
-        gProducts.add(new Product("Mouse", 39.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 212927.png", false));
-        gProducts.add(new Product("Notebook", 12.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 213659.png", false));
-        gProducts.add(new Product("USB Cable", 8.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 213704.png", false));
-        gProducts.add(new Product("Keyboard", 29.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 213930.png", false));
-        gProducts.add(new Product("Laptop", 599.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 223435.png", false));
-        gProducts.add(new Product("Power Source", 199.99, "C:\\Users\\HP\\Desktop\\imagenes\\Screenshot 2025-01-26 223615.png", false));
+        ProductService productService = new ProductService();
+        try {
+            gProducts = (ArrayList<Product>) productService.getAllProducts();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar los productos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
 
     private void setupStyle() {
-        this.setBackground(new Color(249, 250, 251));
+        this.setBackground(BACKGROUND_COLOR);
 
-        jpaBuscador.setBackground(Color.WHITE);
-        jpaBuscador.setBorder(BorderFactory.createLineBorder(new Color(240, 240, 240)));
+        jpaBuscador.setBackground(WHITE);
+        jpaBuscador.setBorder(BorderFactory.createLineBorder(LIGHT_GRAY));
 
         jTextFieldBuscarProducto.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jTextFieldBuscarProducto.setFont(new Font("Segoe UI", 0, 14));
+        jTextFieldBuscarProducto.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        jpaProductos.setBackground(Color.WHITE);
+        jpaProductos.setBackground(WHITE);
         jpaProductos.setLayout(new BorderLayout());
 
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setBackground(Color.WHITE);
+        contentPanel.setBackground(WHITE);
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         CustomScrollPane scrollPane = new CustomScrollPane(contentPanel);
         jpaProductos.add(scrollPane, BorderLayout.CENTER);
 
-        jPanelAreaListaProductos.setBackground(Color.WHITE);
-        jPanelAreaListaProductos.setBorder(BorderFactory.createLineBorder(new Color(240, 240, 240)));
+        jPanelAreaListaProductos.setBackground(WHITE);
+        jPanelAreaListaProductos.setBorder(BorderFactory.createLineBorder(LIGHT_GRAY));
 
-        jToggleButton1.setBackground(new Color(63, 81, 181));
-        jToggleButton1.setForeground(Color.WHITE);
+        jToggleButton1.setBackground(DARK_BLUE);
+        jToggleButton1.setForeground(WHITE);
         jToggleButton1.setFocusPainted(false);
         jToggleButton1.setBorderPainted(false);
+
+        txt_filter.setBorder(new RoundedBorder(10, LIGHT_GRAY));
     }
 
-    private void setupProductsPanel() {
-        // Obtener el contentPanel del ScrollPane
+     private void setupProductsPanel() {
         JScrollPane scrollPane = (JScrollPane) jpaProductos.getComponent(0);
         JPanel contentPanel = (JPanel) scrollPane.getViewport().getView();
         contentPanel.removeAll();
 
-        for (Product lProduct : gProducts) {
-            ItemProduct lCartProduct = new ItemProduct(lProduct);
-
-            if (gCartProducts.size() > 0) {
+        for (Product product : gProducts) {
+            ItemProduct itemProduct = new ItemProduct(product, this);
+            if (!gCartProducts.isEmpty()) {
                 contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
             }
-
-            lCartProduct.setMaximumSize(new Dimension(Integer.MAX_VALUE, lCartProduct.getPreferredSize().height));
-            lCartProduct.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-            lCartProduct.getAddToCartButton().addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    addToCart(lProduct);
-                }
-            });
-
-            gCartProducts.add(lCartProduct);
-            contentPanel.add(lCartProduct);
+            itemProduct.setMaximumSize(new Dimension(Integer.MAX_VALUE, itemProduct.getPreferredSize().height));
+            itemProduct.setAlignmentX(Component.LEFT_ALIGNMENT);
+            gCartProducts.add(itemProduct);
+            contentPanel.add(itemProduct);
         }
-
         contentPanel.revalidate();
         contentPanel.repaint();
     }
-    
+
     private void setupCartPanel() {
         cartItemsPanel = new JPanel();
         cartItemsPanel.setLayout(new BoxLayout(cartItemsPanel, BoxLayout.Y_AXIS));
-        cartItemsPanel.setBackground(Color.WHITE);
+        cartItemsPanel.setBackground(WHITE);
 
         JScrollPane scrollPane = new CustomScrollPane(cartItemsPanel);
         scrollPane.setBorder(null);
 
         jpItemSalesProduct.setLayout(new BorderLayout());
-        jpItemSalesProduct.setBackground(Color.WHITE);
+        jpItemSalesProduct.setBackground(WHITE);
         jpItemSalesProduct.add(scrollPane, BorderLayout.CENTER);
     }
     
-    private void addToCart(Product product) {
-        String productId = product.getName();
+    public void addToCart(Product product) {
+        String productId = String.valueOf(product.getId());
         if (cartItems.containsKey(productId)) {
             CartItem item = cartItems.get(productId);
             item.incrementQuantity();
-            // Buscar y actualizar el ItemSalesProduct existente
-            for (Component comp : cartItemsPanel.getComponents()) {
-                if (comp instanceof ItemSalesProduct) {
-                    ItemSalesProduct itemSales = (ItemSalesProduct) comp;
-                    if (itemSales.getProduct().getName().equals(productId)) {
-                        itemSales.setQuantity(item.getQuantity());
-                        break;
-                    }
-                }
-            }
+            updateCartItem(productId, item.getQuantity());
         } else {
-            // Crear nuevo CartItem y ItemSalesProduct
             CartItem cartItem = new CartItem(product);
             cartItems.put(productId, cartItem);
             ItemSalesProduct itemSales = new ItemSalesProduct(product);
-
-            // Agregar listeners para los botones + y -
-            itemSales.getMinusButton().addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    CartItem item = cartItems.get(productId);
-                    if (item.getQuantity() > 1) {
-                        item.decrementQuantity();
-                        itemSales.setQuantity(item.getQuantity());
-                        updateCartDisplay();
-                    }
-                }
-            });
-
-            itemSales.getPlusButton().addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    CartItem item = cartItems.get(productId);
-                    item.incrementQuantity();
-                    itemSales.setQuantity(item.getQuantity());
-                    updateCartDisplay();
-                }
-            });
-
-            // Agregar botón de eliminar
-            itemSales.getDeleteButton().addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    cartItems.remove(productId);
-                    cartItemsPanel.remove(itemSales);
-                    cartItemsPanel.revalidate();
-                    cartItemsPanel.repaint();
-                    updateCartDisplay();
-                }
-            });
-
+            setupItemSalesListeners(itemSales, productId);
             cartItemsPanel.add(itemSales);
             if (cartItemsPanel.getComponentCount() > 1) {
                 cartItemsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
             }
         }
-
         cartItemsPanel.revalidate();
         cartItemsPanel.repaint();
         updateCartDisplay();
     }
 
-
-    private void addCartRow(Product product) {
-        for (int i = 0; i < productLabels.length; i++) {
-            if (productLabels[i].getText().equals("Producto " + (i + 1))) {
-                // Encontramos una fila vacía, actualizamos con el nuevo producto
-                productLabels[i].setText(product.getName());
-                quantityLabels[i].setText("1"); // Inicializar con cantidad 1
-                break;
+    private void updateCartItem(String productId, int quantity) {
+        for (Component comp : cartItemsPanel.getComponents()) {
+            if (comp instanceof ItemSalesProduct) {
+                ItemSalesProduct itemSales = (ItemSalesProduct) comp;
+                if (String.valueOf(itemSales.getProduct().getId()).equals(productId)) {
+                    itemSales.setQuantity(quantity);
+                    break;
+                }
             }
         }
     }
-
+    
     private void updateCartDisplay() {
-        subtotal = 0;
-        for (CartItem item : cartItems.values()) {
-            subtotal += item.getTotal();
-        }
-
+        subtotal = cartItems.values().stream().mapToDouble(CartItem::getTotal).sum();
         tax = subtotal * 0.10;
         total = subtotal + tax;
 
@@ -225,51 +172,83 @@ public class SalesView extends javax.swing.JPanel {
         jLabel36.setText(String.format("$%.2f", total));
     }
 
-    private void incrementQuantity(String productId) {
-        CartItem item = cartItems.get(productId);
-        if (item != null) {
-            item.incrementQuantity();
-            updateCartDisplay();
-        }
-    }
-
-    private void decrementQuantity(String productId) {
-        CartItem item = cartItems.get(productId);
-        if (item != null && item.getQuantity() > 1) {
-            item.decrementQuantity();
-            updateCartDisplay();
-        }
-    }
 
     private void registerSale() {
         if (total > 0) {
-            int response = JOptionPane.showConfirmDialog(
-                this,
-                "¿Desea registrar la venta por $" + String.format("%.2f", total) + "?",
-                "Confirmar Venta",
-                JOptionPane.YES_NO_OPTION
-            );
+            int response = JOptionPane.showConfirmDialog(this, 
+                "¿Desea registrar la venta por $" + String.format("%.2f", total) + "?", 
+                "Confirmar Venta", 
+                JOptionPane.YES_NO_OPTION);
 
             if (response == JOptionPane.YES_OPTION) {
-                clearCart();
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Venta registrada exitosamente",
-                    "Éxito",
-                    JOptionPane.INFORMATION_MESSAGE
-                );
-            }
+                int facturaResponse = JOptionPane.showConfirmDialog(this,
+                    "¿Desea generar factura?",
+                    "Facturación",
+                    JOptionPane.YES_NO_OPTION);
 
-            if (response == JOptionPane.NO_OPTION) {
-                clearCart();
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Venta no registrada",
-                    "",
-                    JOptionPane.INFORMATION_MESSAGE
-                );
+                try {
+                    Sale sale = new Sale();
+                    sale.setDate(new Date());
+                    sale.setSubtotal(subtotal);
+                    sale.setTax(tax);
+                    sale.setTotal(total);
+
+                    var details = new ArrayList<SalesDetail>();
+                    for (Map.Entry<String, CartItem> entry : cartItems.entrySet()) {
+                        CartItem item = entry.getValue();
+                        Product product = item.getProduct();
+
+                        SalesDetail detail = new SalesDetail();
+                        detail.setIdProduct(product.getId());
+                        detail.setQuantity(item.getQuantity());
+                        detail.setUnitPrice(product.getUnitPrice());
+                        detail.setSubtotal(item.getTotal());
+                        details.add(detail);
+                    }
+                    sale.setDetails(details);
+
+                    SalesServcice saleService = new SalesServcice();
+                    if (saleService.save(sale)) {
+                        if (facturaResponse == JOptionPane.YES_OPTION) {
+                            // Comentado temporalmente
+                            // openFacturaScreen(sale);
+                        }
+                        clearCart();
+                        JOptionPane.showMessageDialog(this, 
+                            "Venta registrada exitosamente", 
+                            "Éxito", 
+                            JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(this, 
+                            "Error al registrar la venta", 
+                            "Error", 
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Error: " + e.getMessage(), 
+                        "Error", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
+     }
+
+    private void openFacturaScreen(Sale sale) {
+        // Obtener referencia al JFrame principal
+        Home homeFrame = (Home) SwingUtilities.getWindowAncestor(this);
+
+        // Actualizar BillingView con la venta
+        //homeFrame.getBillingPanel().setSaleData(sale);
+
+        // Simular clic en jpBilling
+        homeFrame.handleMenuClick(
+            homeFrame.getBillingButton(), 
+            homeFrame.getIconBilling(),
+            "/org/images/inv_select.png",
+            homeFrame.getLabelBilling(),
+            homeFrame.getBillingPanel()
+        );
     }
 
     private void clearCart() {
@@ -284,18 +263,45 @@ public class SalesView extends javax.swing.JPanel {
         updateCartDisplay();
     }
 
-    private JLabel findQuantityLabel(String productName) {
-    for (int i = 0; i < productLabels.length; i++) {
-        if (productLabels[i].getText().equals(productName)) {
-            return quantityLabels[i];
-        }
-    }
-    return null;
-    }
+    
+    private void setupItemSalesListeners(ItemSalesProduct itemSales, String productId) {
+        itemSales.getMinusButton().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                CartItem item = cartItems.get(productId);
+                if (item.getQuantity() > 1) {
+                    item.decrementQuantity();
+                    itemSales.setQuantity(item.getQuantity());
+                    updateCartDisplay();
+                }
+            }
+        });
 
-    // Inner class to handle cart items
+        itemSales.getPlusButton().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                CartItem item = cartItems.get(productId);
+                item.incrementQuantity();
+                itemSales.setQuantity(item.getQuantity());
+                updateCartDisplay();
+            }
+        });
+
+        itemSales.getDeleteButton().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                cartItems.remove(productId);
+                cartItemsPanel.remove(itemSales);
+                cartItemsPanel.revalidate();
+                cartItemsPanel.repaint();
+                updateCartDisplay();
+            }
+        });
+    }
+    
+    // Clase interna para manejar los elementos del carrito
     private class CartItem {
-        private Product product;
+        private final Product product;
         private int quantity;
 
         public CartItem(Product product) {
@@ -405,6 +411,11 @@ public class SalesView extends javax.swing.JPanel {
         jToggleButton1.setBackground(new java.awt.Color(0, 102, 255));
         jToggleButton1.setForeground(new java.awt.Color(255, 255, 255));
         jToggleButton1.setText("Registrar Venta");
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
         jPanelAreaListaProductos.add(jToggleButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 450, 170, -1));
 
         jLabel31.setForeground(new java.awt.Color(153, 153, 153));
@@ -417,11 +428,11 @@ public class SalesView extends javax.swing.JPanel {
 
         jLabel33.setFont(new java.awt.Font("Segoe UI Semibold", 1, 12)); // NOI18N
         jLabel33.setText("$ 0.00");
-        jPanelAreaListaProductos.add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 360, -1, -1));
+        jPanelAreaListaProductos.add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 360, 60, -1));
 
         jLabel34.setFont(new java.awt.Font("Segoe UI Semibold", 1, 12)); // NOI18N
         jLabel34.setText("$ 0.00");
-        jPanelAreaListaProductos.add(jLabel34, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 380, -1, -1));
+        jPanelAreaListaProductos.add(jLabel34, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 380, 60, -1));
 
         jLabel35.setFont(new java.awt.Font("Segoe UI Semibold", 1, 12)); // NOI18N
         jLabel35.setText("Total");
@@ -429,7 +440,7 @@ public class SalesView extends javax.swing.JPanel {
 
         jLabel36.setFont(new java.awt.Font("Segoe UI Semibold", 1, 12)); // NOI18N
         jLabel36.setText("$ 0.00");
-        jPanelAreaListaProductos.add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 420, -1, -1));
+        jPanelAreaListaProductos.add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 420, 60, -1));
 
         jLabel37.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         jLabel37.setText("Lista de productos ");
@@ -487,15 +498,14 @@ public class SalesView extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextFieldBuscarProductoActionPerformed
 
     private void txt_filterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_filterActionPerformed
-     //   String filtro = txt_buscar.getText().trim();
-
-      //  if (filtro.isEmpty()) {
-         //   filtrarProductos(""); // Pasamos una cadena vacía para indicar que no hay filtro
-      //  }else {
-         //   filtrarProductos(filtro); // Aplicar el filtro
-     //   }
 
     }//GEN-LAST:event_txt_filterActionPerformed
+
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+
+        registerSale();
+
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -7,8 +7,12 @@ package org.gui.billing;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import org.services.utils.Sale;
+
 
 public class BillingView extends javax.swing.JPanel {
+
+    private Sale currentSale;
 
     public BillingView() {
         initComponents();
@@ -153,8 +157,9 @@ public class BillingView extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
+
 }

@@ -629,7 +629,7 @@ public class Home extends javax.swing.JFrame {
         textLabel.setForeground(Color.decode(textColor));
     }
     
-    private void handleMenuClick(JPanel panel, JLabel icon, String iconPathSelected, JLabel textLabel, JPanel targetPanel) {
+    public void handleMenuClick(JPanel panel, JLabel icon, String iconPathSelected, JLabel textLabel, JPanel targetPanel) {
         // Restablecer el estado del panel previamente seleccionado
         if (gSelectedPanel != null) {
             resetPanelState(gSelectedPanel);
@@ -654,4 +654,21 @@ public class Home extends javax.swing.JFrame {
         }
         // Agregar más paneles aquí según sea necesario...
     }
+
+    public BillingView getBillingPanel() {
+        return gBillingPanel;
+    }
+
+    public JPanel getBillingButton() {
+        return jpBilling;
+    }
+    
+    public JLabel getIconBilling() {
+        return jlIconB;
+    }
+
+    public JLabel getLabelBilling() {
+        return jlBilling;
+    }
+
 }

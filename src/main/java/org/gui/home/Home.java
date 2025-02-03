@@ -662,6 +662,10 @@ public class Home extends javax.swing.JFrame {
         if (targetPanel == gInventoryPanel) {
             ((InventoryView) gInventoryPanel).refreshData();
         }
+        // Actualizar el dashboard si se está cambiando a ese panel
+         else if (targetPanel == gDashboardPanel) {
+        ((Dashboard)gDashboardPanel).loadDashboardData();
+    }
 
         showPanel(targetPanel);
     }

@@ -134,7 +134,7 @@ public class Dashboard extends javax.swing.JPanel {
     contentPanel.repaint();
 }
     
- private void loadDashboardData() {
+ public void loadDashboardData() {
     try {
         List<Product> products = productService.getAllProducts();
         int lowStockCount = 0;
@@ -147,9 +147,7 @@ public class Dashboard extends javax.swing.JPanel {
         
         // Procesar cada producto
         for (Product producto : products) {
-            // Verificar si tiene bajo stock
             if (producto.getCurrentStock() <= producto.getMinimumStock()) {
-                // Añadir alerta de bajo stock
                 addLowStockAlert(producto.getName(), producto.getCurrentStock());
                 lowStockCount++;
             }
@@ -158,10 +156,10 @@ public class Dashboard extends javax.swing.JPanel {
         // Actualizar contador en el dashboard
         jLabel14.setText(String.valueOf(lowStockCount));
         
-        // Calcular y actualizar porcentaje de productos en bajo stock
+        // Calcular y actualizar porcentaje
         double percentage = products.isEmpty() ? 0 : 
             ((double) lowStockCount / products.size()) * 100;
-        jLabel12.setText(String.format("%.1f", percentage) + "%");
+        jLabel12.setText(String.format("%.1f", percentage));
         
         // Actualizar la interfaz
         if (contentPanel != null) {

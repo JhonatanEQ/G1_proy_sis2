@@ -211,6 +211,7 @@ public class SalesView extends javax.swing.JPanel {
         boolean generateInvoice = askForInvoice();
         Sale sale = createSaleWithDetails();
 
+
         try {
             if (processSale(sale, generateInvoice)) {
                 showSuccessMessage();
@@ -287,13 +288,21 @@ public class SalesView extends javax.swing.JPanel {
         if (!saleService.save(sale)) {
             return false;
         }
-
+        
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
         if (generateInvoice) {
             // Comentado temporalmente
             // openFacturaScreen(sale);
         }
         return true;
     }
+    
+
 
     private void showSuccessMessage() {
         JOptionPane.showMessageDialog(this, 

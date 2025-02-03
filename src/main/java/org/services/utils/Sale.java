@@ -16,6 +16,8 @@ public class Sale {
     private int idSale;
     private Date date; 
     private double subtotal; 
+     private double discount;
+    private double discountPercentage;
     private double tax; 
     private double total; 
     private List<SalesDetail> details; 
@@ -80,6 +82,22 @@ public class Sale {
 
     public void setDetails(List<SalesDetail> details) {
         this.details = details;
+    }
+    
+     public double getDiscount() {
+        return discount;
+    }
+    
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+    
+    public double getDiscountPercentage() {
+        return discountPercentage;
+    }
+    
+    public void setDiscountPercentage(double discountPercentage) {
+        this.discountPercentage = discountPercentage;
     }
 
     @Override

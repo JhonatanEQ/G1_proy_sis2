@@ -1,13 +1,16 @@
 package org.gui.component.ListaDeProductos;
 
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import org.services.utils.Product;
@@ -72,7 +75,6 @@ public class ItemProduct extends javax.swing.JPanel {
         rightPanel.add(statusLabel);
 
         addToCartButton.setPreferredSize(new Dimension(30, 30));
-        addToCartButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         rightPanel.add(addToCartButton);
 
         this.add(imagePanel, BorderLayout.WEST);
@@ -109,12 +111,33 @@ public class ItemProduct extends javax.swing.JPanel {
         ImageIcon addIcon = new ImageIcon(getClass().getResource("/org/images/plus.png"));
         Image scaledAdd = addIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         addToCartButton.setIcon(new ImageIcon(scaledAdd));
-        addToCartButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        addToCartButton.setCursor(status ? new Cursor(Cursor.DEFAULT_CURSOR) : new Cursor(Cursor.HAND_CURSOR));
+        addToCartButton.setEnabled(!status);
+        if (status) {
+            addToCartButton.setIcon(new ImageIcon(makeImageTranslucent(scaledAdd, 0.5f)));
+        }
+    }
+    
+    private Image makeImageTranslucent(Image image, float opacity) {
+        BufferedImage translucent = new BufferedImage(
+            image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = translucent.createGraphics();
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
+        g2d.drawImage(image, 0, 0, null);
+        g2d.dispose();
+        return translucent;
     }
 
     private void addToCartButtonClicked(java.awt.event.MouseEvent evt) {
-        // En lugar de mostrar un mensaje, agregamos el producto al carrito
-        salesView.addToCart(gProduct);
+        boolean status = gProduct.getCurrentStock() <= gProduct.getMinimumStock();
+        if (!status) {
+            salesView.addToCart(gProduct);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "Este producto no está disponible para la venta.",
+                "Producto Inactivo",
+                JOptionPane.WARNING_MESSAGE);
+        }
     }
     
     @SuppressWarnings("unchecked")

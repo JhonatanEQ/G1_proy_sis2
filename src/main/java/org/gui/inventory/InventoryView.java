@@ -379,9 +379,9 @@ private void filtrarProductos(String filtro) {
     private javax.swing.JButton txt_modificar;
     // End of variables declaration//GEN-END:variables
 
-private void cargarDatosDesdeBD() {
-    SwingUtilities.invokeLater(() -> {
-        try {
+     private void cargarDatosDesdeBD() {
+         SwingUtilities.invokeLater(() -> {
+         try {
             List<Product> productos = productService.getAllProducts();
             tableModel.setRowCount(0); // Limpiar la tabla
         

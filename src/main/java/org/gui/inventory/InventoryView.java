@@ -42,6 +42,8 @@ public class InventoryView extends javax.swing.JPanel {
 // Nueva función para deshabilitar edición
 private void deshabilitarEdicionTabla(){
     jTable1.setDefaultEditor(Object.class, null);
+    jTable1.getTableHeader().setResizingAllowed(false);
+    jTable1.getTableHeader().setReorderingAllowed(false);
         
     }
 
@@ -378,42 +380,39 @@ private void filtrarProductos(String filtro) {
     // End of variables declaration//GEN-END:variables
 
 private void cargarDatosDesdeBD() {
-              try {
-             List<Product> productos = productService.getAllProducts();
-             tableModel.setRowCount(0); // Limpiar la tabla
+    SwingUtilities.invokeLater(() -> {
+        try {
+            List<Product> productos = productService.getAllProducts();
+            tableModel.setRowCount(0); // Limpiar la tabla
         
-              // Lista para almacenar productos con bajo stock
-             List<String> productosConBajoStock = new ArrayList<>();
+            List<String> productosConBajoStock = new ArrayList<>();
         
-             for (Product producto : productos) {
-             tableModel.addRow(new Object[]{
-                producto.getId(),
-                producto.getCode(),
-                producto.getName(),
-                producto.getUnitPrice(),
-                producto.getCategoryId(),
-                producto.getCurrentStock(),
-                //producto.getMinimumStock(),
-                producto.getEntryDate(),
-                producto.getSupplierId(),
-                (producto.getCurrentStock() <= producto.getMinimumStock()) ? "Bajo stock" : "En stock"
-                 });
+            for (Product producto : productos) {
+                tableModel.addRow(new Object[]{
+                    producto.getId(),
+                    producto.getCode(),
+                    producto.getName(),
+                    producto.getUnitPrice(),
+                    producto.getCategoryId(),
+                    producto.getCurrentStock(),
+                    producto.getEntryDate(),
+                    producto.getSupplierId(),
+                    (producto.getCurrentStock() <= producto.getMinimumStock()) ? "Bajo stock" : "En stock"
+                });
 
-                  // Almacenar productos con bajo stock en lugar de mostrar la alerta inmediatamente
-                 if (producto.getCurrentStock() <= producto.getMinimumStock()) {
-                  productosConBajoStock.add(producto.getName());
-                 }
-        }
-        
-                   // Esperar un breve momento para que el dashboard se cargue completamente
-                  
-            }  catch (SQLException e) {
+                if (producto.getCurrentStock() <= producto.getMinimumStock()) {
+                    productosConBajoStock.add(producto.getName());
+                }
+            }
+            
+            tableModel.fireTableDataChanged();
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, 
-            "Error al cargar datos: " + e.getMessage(), 
-            "Error", JOptionPane.ERROR_MESSAGE);
-             
-           }
-      } 
+                "Error al cargar datos: " + e.getMessage(), 
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    });
+}
          public void refreshData() {
            cargarDatosDesdeBD();
     }

@@ -40,19 +40,24 @@ public class Home extends javax.swing.JFrame {
      * Creates new form Home
      */
     public Home() {
-        initComponents();
-        gDashboardPanel = new Dashboard();
-        gProductPanel = new ProductView();
-        gInventoryPanel = new InventoryView();
-        gSalesPanel = new SalesView();
-        gBillingPanel = new BillingView();
-        gAlertsPanel = new AlertsView();
-        gReportsPanel = new ReportsViews();
-        gSettingsPanel = new Settings();
-        jpView.add(gDashboardPanel, BorderLayout.CENTER);
-        initDefaultSelection();
-        
-    }
+    initComponents();
+    
+    // Crear primero el panel de inventario
+    gInventoryPanel = new InventoryView();
+    
+    // Crear ProductView pasándole la referencia del inventario
+    gProductPanel = new ProductView(gInventoryPanel);
+    
+    gDashboardPanel = new Dashboard();
+    gSalesPanel = new SalesView();
+    gBillingPanel = new BillingView();
+    gAlertsPanel = new AlertsView();
+    gReportsPanel = new ReportsViews();
+    gSettingsPanel = new Settings();
+    
+    jpView.add(gDashboardPanel, BorderLayout.CENTER);
+    initDefaultSelection();
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -631,16 +636,22 @@ public class Home extends javax.swing.JFrame {
     }
     
     private void handleMenuClick(JPanel panel, JLabel icon, String iconPathSelected, JLabel textLabel, JPanel targetPanel) {
-        // Restablecer el estado del panel previamente seleccionado
-        if (gSelectedPanel != null) {
-            resetPanelState(gSelectedPanel);
-        }
-
-        // Aplicar el estado seleccionado al nuevo panel
-        handleMouseEntered(panel, icon, iconPathSelected, textLabel, "#F1F6FD", "#4061DB");
-        gSelectedPanel = panel;
-        showPanel(targetPanel);
+    // Restablecer el estado del panel previamente seleccionado
+    if (gSelectedPanel != null) {
+        resetPanelState(gSelectedPanel);
     }
+
+    // Aplicar el estado seleccionado al nuevo panel
+    handleMouseEntered(panel, icon, iconPathSelected, textLabel, "#F1F6FD", "#4061DB");
+    gSelectedPanel = panel;
+    
+    // Actualizar el inventario si se está cambiando a ese panel
+    if (targetPanel == gInventoryPanel) {
+        ((InventoryView)gInventoryPanel).refreshData();
+    }
+    
+    showPanel(targetPanel);
+}
 
     // Método para restablecer el estado de un panel
     private void resetPanelState(JPanel panel) {

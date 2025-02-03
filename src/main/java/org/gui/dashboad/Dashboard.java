@@ -114,7 +114,7 @@ public class Dashboard extends javax.swing.JPanel {
         contentPanel.repaint();
     }
 
-    public void addLowStockAlert(String productName, int remainingItems) {
+   public void addLowStockAlert(String productName, int remainingItems) {
     JPanel contentPanel = (JPanel) jpAlertPanel.getClientProperty("contentPanel");
     if (contentPanel == null) return;
 
@@ -126,25 +126,16 @@ public class Dashboard extends javax.swing.JPanel {
     alertPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
     if (contentPanel.getComponentCount() > 0) {
-        contentPanel.add(Box.createVerticalStrut(10), 0);
+        contentPanel.add(Box.createVerticalStrut(10));
     }
 
-    contentPanel.add(alertPanel, 0);
-
-    while (contentPanel.getComponentCount() > MAX_ITEMS * 2) {
-        contentPanel.remove(contentPanel.getComponentCount() - 1);
-        if (contentPanel.getComponentCount() > 0) {
-            contentPanel.remove(contentPanel.getComponentCount() - 1);
-        }
-    }
-
+    contentPanel.add(alertPanel);
     contentPanel.revalidate();
     contentPanel.repaint();
 }
     
  private void loadDashboardData() {
     try {
-        // Usar getAll() que ya existe
         List<Product> products = productService.getAllProducts();
         int lowStockCount = 0;
         
@@ -157,7 +148,8 @@ public class Dashboard extends javax.swing.JPanel {
         // Procesar cada producto
         for (Product producto : products) {
             // Verificar si tiene bajo stock
-            if (producto.getCurrentStock() < producto.getMinimumStock()) {
+            if (producto.getCurrentStock() <= producto.getMinimumStock()) {
+                // Añadir alerta de bajo stock
                 addLowStockAlert(producto.getName(), producto.getCurrentStock());
                 lowStockCount++;
             }
@@ -166,10 +158,10 @@ public class Dashboard extends javax.swing.JPanel {
         // Actualizar contador en el dashboard
         jLabel14.setText(String.valueOf(lowStockCount));
         
-        // Calcular y actualizar porcentaje
+        // Calcular y actualizar porcentaje de productos en bajo stock
         double percentage = products.isEmpty() ? 0 : 
             ((double) lowStockCount / products.size()) * 100;
-        jLabel12.setText(String.format("%.1f", percentage));
+        jLabel12.setText(String.format("%.1f", percentage) + "%");
         
         // Actualizar la interfaz
         if (contentPanel != null) {

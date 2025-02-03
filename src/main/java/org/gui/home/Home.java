@@ -4,22 +4,27 @@
  */
 package org.gui.home;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import org.gui.alerts.AlertsView;
 import org.gui.billing.BillingView;
-import org.gui.sales.SalesView;
 import org.gui.dashboad.Dashboard;
 import org.gui.inventory.InventoryView;
 import org.gui.product.ProductView;
 import org.gui.reports.ReportsViews;
+import org.gui.sales.SalesView;
 import org.gui.settings.Settings;
+
 /**
  *
  * @author Encin
  */
 public class Home extends javax.swing.JFrame {
-    
+
     /**
      * Variables Globales
      */
@@ -32,25 +37,28 @@ public class Home extends javax.swing.JFrame {
     private final ReportsViews gReportsPanel;
     private final Settings gSettingsPanel;
     private JPanel gSelectedPanel;
-    
-    
 
     /**
      * Creates new form Home
      */
     public Home() {
         initComponents();
-        gDashboardPanel = new Dashboard();
-        gProductPanel = new ProductView();
+
+        // Crear primero el panel de inventario
         gInventoryPanel = new InventoryView();
+
+        // Crear ProductView pasándole la referencia del inventario
+        gProductPanel = new ProductView(gInventoryPanel);
+
+        gDashboardPanel = new Dashboard();
         gSalesPanel = new SalesView();
         gBillingPanel = new BillingView();
         gAlertsPanel = new AlertsView();
         gReportsPanel = new ReportsViews();
         gSettingsPanel = new Settings();
+
         jpView.add(gDashboardPanel, BorderLayout.CENTER);
         initDefaultSelection();
-        
     }
 
     /**
@@ -112,6 +120,7 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpDashboardMouseClicked(evt);
             }
+
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jpDashboardMouseEntered(evt);
             }
@@ -132,20 +141,20 @@ public class Home extends javax.swing.JFrame {
         javax.swing.GroupLayout jpDashboardLayout = new javax.swing.GroupLayout(jpDashboard);
         jpDashboard.setLayout(jpDashboardLayout);
         jpDashboardLayout.setHorizontalGroup(
-            jpDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpDashboardLayout.createSequentialGroup()
-                .addComponent(jlIconD, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jlDasboard, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15))
+                jpDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jpDashboardLayout.createSequentialGroup()
+                                .addComponent(jlIconD, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jlDasboard, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(15, 15, 15))
         );
         jpDashboardLayout.setVerticalGroup(
-            jpDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpDashboardLayout.createSequentialGroup()
-                .addGroup(jpDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jlDasboard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jlIconD, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                jpDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jpDashboardLayout.createSequentialGroup()
+                                .addGroup(jpDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jlDasboard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jlIconD, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jpMenu.add(jpDashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 150, 40));
@@ -156,9 +165,11 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpInventoryMouseClicked(evt);
             }
+
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jpInventoryMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 jpInventoryMouseExited(evt);
             }
@@ -172,17 +183,17 @@ public class Home extends javax.swing.JFrame {
         javax.swing.GroupLayout jpInventoryLayout = new javax.swing.GroupLayout(jpInventory);
         jpInventory.setLayout(jpInventoryLayout);
         jpInventoryLayout.setHorizontalGroup(
-            jpInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpInventoryLayout.createSequentialGroup()
-                .addComponent(jlIconInv, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlInv, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                jpInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jpInventoryLayout.createSequentialGroup()
+                                .addComponent(jlIconInv, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jlInv, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
         );
         jpInventoryLayout.setVerticalGroup(
-            jpInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jlIconInv, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-            .addComponent(jlInv, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                jpInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jlIconInv, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                        .addComponent(jlInv, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jpMenu.add(jpInventory, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 150, 40));
@@ -193,9 +204,11 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpProductMouseClicked(evt);
             }
+
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jpProductMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 jpProductMouseExited(evt);
             }
@@ -210,16 +223,16 @@ public class Home extends javax.swing.JFrame {
         javax.swing.GroupLayout jpProductLayout = new javax.swing.GroupLayout(jpProduct);
         jpProduct.setLayout(jpProductLayout);
         jpProductLayout.setHorizontalGroup(
-            jpProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpProductLayout.createSequentialGroup()
-                .addComponent(jlIconP, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlProduct, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))
+                jpProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jpProductLayout.createSequentialGroup()
+                                .addComponent(jlIconP, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jlProduct, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))
         );
         jpProductLayout.setVerticalGroup(
-            jpProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jlIconP, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-            .addComponent(jlProduct, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                jpProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jlIconP, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                        .addComponent(jlProduct, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jpMenu.add(jpProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 180, 150, 40));
@@ -230,9 +243,11 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpSalesMouseClicked(evt);
             }
+
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jpSalesMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 jpSalesMouseExited(evt);
             }
@@ -246,16 +261,16 @@ public class Home extends javax.swing.JFrame {
         javax.swing.GroupLayout jpSalesLayout = new javax.swing.GroupLayout(jpSales);
         jpSales.setLayout(jpSalesLayout);
         jpSalesLayout.setHorizontalGroup(
-            jpSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpSalesLayout.createSequentialGroup()
-                .addComponent(jlIconSales, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlSales, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))
+                jpSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jpSalesLayout.createSequentialGroup()
+                                .addComponent(jlIconSales, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jlSales, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))
         );
         jpSalesLayout.setVerticalGroup(
-            jpSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jlIconSales, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-            .addComponent(jlSales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                jpSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jlIconSales, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                        .addComponent(jlSales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jpMenu.add(jpSales, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 240, 150, 40));
@@ -266,9 +281,11 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpBillingMouseClicked(evt);
             }
+
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jpBillingMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 jpBillingMouseExited(evt);
             }
@@ -282,16 +299,16 @@ public class Home extends javax.swing.JFrame {
         javax.swing.GroupLayout jpBillingLayout = new javax.swing.GroupLayout(jpBilling);
         jpBilling.setLayout(jpBillingLayout);
         jpBillingLayout.setHorizontalGroup(
-            jpBillingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpBillingLayout.createSequentialGroup()
-                .addComponent(jlIconB, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlBilling, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
+                jpBillingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jpBillingLayout.createSequentialGroup()
+                                .addComponent(jlIconB, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jlBilling, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
         );
         jpBillingLayout.setVerticalGroup(
-            jpBillingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jlIconB, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-            .addComponent(jlBilling, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                jpBillingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jlIconB, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                        .addComponent(jlBilling, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jpMenu.add(jpBilling, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 300, 150, 40));
@@ -302,9 +319,11 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpAlertsMouseClicked(evt);
             }
+
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jpAlertsMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 jpAlertsMouseExited(evt);
             }
@@ -318,16 +337,16 @@ public class Home extends javax.swing.JFrame {
         javax.swing.GroupLayout jpAlertsLayout = new javax.swing.GroupLayout(jpAlerts);
         jpAlerts.setLayout(jpAlertsLayout);
         jpAlertsLayout.setHorizontalGroup(
-            jpAlertsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpAlertsLayout.createSequentialGroup()
-                .addComponent(jlIconA, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlAlerts, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
+                jpAlertsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jpAlertsLayout.createSequentialGroup()
+                                .addComponent(jlIconA, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jlAlerts, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
         );
         jpAlertsLayout.setVerticalGroup(
-            jpAlertsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jlIconA, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-            .addComponent(jlAlerts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                jpAlertsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jlIconA, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                        .addComponent(jlAlerts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jpMenu.add(jpAlerts, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 360, 150, 40));
@@ -338,9 +357,11 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpReportsMouseClicked(evt);
             }
+
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jpReportsMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 jpReportsMouseExited(evt);
             }
@@ -354,16 +375,16 @@ public class Home extends javax.swing.JFrame {
         javax.swing.GroupLayout jpReportsLayout = new javax.swing.GroupLayout(jpReports);
         jpReports.setLayout(jpReportsLayout);
         jpReportsLayout.setHorizontalGroup(
-            jpReportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpReportsLayout.createSequentialGroup()
-                .addComponent(jlIconR, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlReports, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
+                jpReportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jpReportsLayout.createSequentialGroup()
+                                .addComponent(jlIconR, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jlReports, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
         );
         jpReportsLayout.setVerticalGroup(
-            jpReportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jlIconR, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-            .addComponent(jlReports, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                jpReportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jlIconR, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                        .addComponent(jlReports, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jpMenu.add(jpReports, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 420, 150, 40));
@@ -374,9 +395,11 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jpSettingsMouseClicked(evt);
             }
+
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jpSettingsMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 jpSettingsMouseExited(evt);
             }
@@ -390,16 +413,16 @@ public class Home extends javax.swing.JFrame {
         javax.swing.GroupLayout jpSettingsLayout = new javax.swing.GroupLayout(jpSettings);
         jpSettings.setLayout(jpSettingsLayout);
         jpSettingsLayout.setHorizontalGroup(
-            jpSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpSettingsLayout.createSequentialGroup()
-                .addComponent(jlIconSet, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlSettings, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
+                jpSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jpSettingsLayout.createSequentialGroup()
+                                .addComponent(jlIconSet, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jlSettings, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
         );
         jpSettingsLayout.setVerticalGroup(
-            jpSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jlIconSet, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-            .addComponent(jlSettings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                jpSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jlIconSet, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                        .addComponent(jlSettings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jpMenu.add(jpSettings, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 480, 150, 40));
@@ -599,18 +622,15 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel jpView;
     // End of variables declaration//GEN-END:variables
 
-
-
-
     private void showPanel(JPanel panel) {
         jpView.removeAll();
         jpView.add(panel, BorderLayout.CENTER);
         jpView.revalidate();
         jpView.repaint();
     }
-    
+
     private void initDefaultSelection() {
-        gSelectedPanel = jpDashboard; 
+        gSelectedPanel = jpDashboard;
         handleMouseEntered(jpDashboard, jlIconD, "/org/images/dashH.png", jlDasboard, "#F1F6FD", "#4061DB");
         showPanel(gDashboardPanel);
     }
@@ -628,16 +648,21 @@ public class Home extends javax.swing.JFrame {
         icon.setIcon(new javax.swing.ImageIcon(getClass().getResource(iconPath)));
         textLabel.setForeground(Color.decode(textColor));
     }
-    
+
     public void handleMenuClick(JPanel panel, JLabel icon, String iconPathSelected, JLabel textLabel, JPanel targetPanel) {
         // Restablecer el estado del panel previamente seleccionado
         if (gSelectedPanel != null) {
             resetPanelState(gSelectedPanel);
         }
-
         // Aplicar el estado seleccionado al nuevo panel
         handleMouseEntered(panel, icon, iconPathSelected, textLabel, "#F1F6FD", "#4061DB");
         gSelectedPanel = panel;
+
+        // Actualizar el inventario si se está cambiando a ese panel
+        if (targetPanel == gInventoryPanel) {
+            ((InventoryView) gInventoryPanel).refreshData();
+        }
+
         showPanel(targetPanel);
     }
 
@@ -647,7 +672,7 @@ public class Home extends javax.swing.JFrame {
             handleMouseExited(jpDashboard, jlIconD, "/org/images/dash_select.png", jlDasboard, "#FFFFFF", "#4E5561");
         } else if (panel == jpInventory) {
             handleMouseExited(jpInventory, jlIconInv, "/org/images/inv.png", jlInv, "#FFFFFF", "#4E5561");
-        }else if (panel == jpProduct) {
+        } else if (panel == jpProduct) {
             handleMouseExited(jpProduct, jlIconP, "/org/images/product.png", jlProduct, "#FFFFFF", "#4E5561");
         } else if (panel == jpSales) {
             handleMouseExited(jpSales, jlIconSales, "/org/images/sales.png", jlSales, "#FFFFFF", "#4E5561");
@@ -662,7 +687,7 @@ public class Home extends javax.swing.JFrame {
     public JPanel getBillingButton() {
         return jpBilling;
     }
-    
+
     public JLabel getIconBilling() {
         return jlIconB;
     }

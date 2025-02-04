@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.model;
 
 import java.sql.Connection;
@@ -10,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.services.utils.Product;
 import org.services.utils.Utils;
 
@@ -51,8 +48,7 @@ public class ProductModel {
     
     // Consulta SQL corregida
     String query = "SELECT * FROM productos " +
-                   "WHERE CAST(id AS TEXT) LIKE ? OR " +
-                   "nombre LIKE ? OR " +
+                   "WHERE nombre LIKE ? OR " +
                    "codigo LIKE ? OR " +
                    "categoria_id IN (SELECT id FROM categorias WHERE nombre LIKE ?)";
 
@@ -61,10 +57,10 @@ public class ProductModel {
         String likePattern = "%" + filtro + "%";
         
         // Asignar los parámetros
-        stmt.setString(1, likePattern); // id (convertido a texto)
-        stmt.setString(2, likePattern); // nombre
-        stmt.setString(3, likePattern); // código
-        stmt.setString(4, likePattern); // categoría
+        //stmt.setString(1, likePattern); // id (convertido a texto)
+        stmt.setString(1, likePattern); // nombre
+        stmt.setString(2, likePattern); // código
+        stmt.setString(3, likePattern); // categoría
 
         try (ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
@@ -105,18 +101,32 @@ public class ProductModel {
             return rowsAffected > 0;
         }
     }
+
     public static boolean updateProductStockAndDate(Connection conn, Product product) throws SQLException {
-        String query = "UPDATE productos SET stock_actual = ?, fecha_entrada = ? WHERE id = ?";
-    
-         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, product.getCurrentStock());
-            stmt.setDate(2, (java.sql.Date) Utils.convertToDate(product.getEntryDate()));
-            stmt.setInt(3, product.getId());
+        String query = "UPDATE productos SET stock_actual = ?, precio_unitario = ?, fecha_entrada = ? WHERE id = ?";
         
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            // Actualizar stock
+            stmt.setInt(1, product.getCurrentStock());
+            
+            // Actualizar precio
+            stmt.setDouble(2, product.getUnitPrice());
+            
+            // Convertir y establecer la fecha usando el Utils mejorado
+            java.sql.Date sqlDate = Utils.convertToDate(product.getEntryDate());
+            stmt.setDate(3, sqlDate);
+            
+            // ID del producto a actualizar
+            stmt.setInt(4, product.getId());
+            
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar el producto: " + e.getMessage());
+            throw e;
         }
     }
+
     public static boolean deleteProduct(Connection conn, int productId) throws SQLException {
         String query = "DELETE FROM productos WHERE id = ?";
     
@@ -191,36 +201,64 @@ public class ProductModel {
     
     
     public static List<Product> findProductsByCategory(Connection conn, int categoriaId) throws SQLException {
-    String query = "SELECT id, codigo, nombre, precio_unitario, categoria_id, stock_actual, " +
-                   "stock_minimo, fecha_entrada, imagen_url, activo, proveedor_id " +
-                   "FROM productos WHERE categoria_id = ?";
-    
-    List<Product> productos = new ArrayList<>();
-    
-    try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-        pstmt.setInt(1, categoriaId); // Filtrar por ID de categoría
-        
-        try (ResultSet rs = pstmt.executeQuery()) {
-            while (rs.next()) {
-                Product producto = new Product();
-                producto.setId(rs.getInt("id"));
-                producto.setCode(rs.getString("codigo"));
-                producto.setName(rs.getString("nombre"));
-                producto.setUnitPrice(rs.getDouble("precio_unitario"));
-                producto.setCategoryId(rs.getInt("categoria_id"));
-                producto.setCurrentStock(rs.getInt("stock_actual"));
-                producto.setMinimumStock(rs.getInt("stock_minimo"));
-                producto.setEntryDate(rs.getString("fecha_entrada"));
-                producto.setImage(rs.getString("imagen_url"));
-                producto.setStatus(rs.getBoolean("activo"));
-                producto.setSupplierId(rs.getInt("proveedor_id"));
-                
-                productos.add(producto);
+        String query = "SELECT id, codigo, nombre, precio_unitario, categoria_id, stock_actual, " +
+                       "stock_minimo, fecha_entrada, imagen_url, activo, proveedor_id " +
+                       "FROM productos WHERE categoria_id = ?";
+
+        List<Product> productos = new ArrayList<>();
+
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, categoriaId); // Filtrar por ID de categoría
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Product producto = new Product();
+                    producto.setId(rs.getInt("id"));
+                    producto.setCode(rs.getString("codigo"));
+                    producto.setName(rs.getString("nombre"));
+                    producto.setUnitPrice(rs.getDouble("precio_unitario"));
+                    producto.setCategoryId(rs.getInt("categoria_id"));
+                    producto.setCurrentStock(rs.getInt("stock_actual"));
+                    producto.setMinimumStock(rs.getInt("stock_minimo"));
+                    producto.setEntryDate(rs.getString("fecha_entrada"));
+                    producto.setImage(rs.getString("imagen_url"));
+                    producto.setStatus(rs.getBoolean("activo"));
+                    producto.setSupplierId(rs.getInt("proveedor_id"));
+
+                    productos.add(producto);
+                }
             }
         }
+
+        return productos;
     }
     
-    return productos;
-}
+    public static List<Product> getProductsByDate(Connection conn, java.util.Date date) throws SQLException {
+        String query = "SELECT * FROM productos WHERE DATE(fecha_entrada) = ?";
+        List<Product> products = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setDate(1, new java.sql.Date(date.getTime()));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                   Product producto = new Product();
+                    producto.setId(rs.getInt("id"));
+                    producto.setCode(rs.getString("codigo"));
+                    producto.setName(rs.getString("nombre"));
+                    producto.setUnitPrice(rs.getDouble("precio_unitario"));
+                    producto.setCategoryId(rs.getInt("categoria_id"));
+                    producto.setCurrentStock(rs.getInt("stock_actual"));
+                    producto.setMinimumStock(rs.getInt("stock_minimo"));
+                    producto.setEntryDate(rs.getString("fecha_entrada"));
+                    producto.setImage(rs.getString("imagen_url"));
+                    producto.setStatus(rs.getBoolean("activo"));
+                    producto.setSupplierId(rs.getInt("proveedor_id"));
+                    products.add(producto);
+                }
+            }
+        }
+        return products;
+    }
 }
 

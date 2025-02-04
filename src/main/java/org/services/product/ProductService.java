@@ -81,4 +81,13 @@ public class ProductService {
             throw new RuntimeException("Error al buscar el producto por código: " + e.getMessage(), e);
         }
     }    
+    public List<Product> getProductsByDate(java.util.Date date) throws SQLException {
+        try (Connection conn = gConnDB.getConnection()) {
+            return ProductModel.getProductsByDate(conn, date);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+    
 }

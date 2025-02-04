@@ -67,6 +67,7 @@ private void deshabilitarEdicionTabla(){
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
+        setBackground(new java.awt.Color(249, 250, 251));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 140, 730, -1));
 

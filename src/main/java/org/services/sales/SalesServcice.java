@@ -16,7 +16,7 @@ public class SalesServcice {
         this.gConnDB = new DatabaseConnection();
     }
     
-    public List<Sale> getAllProducts() throws SQLException {
+    public List<Sale> getAllSales() throws SQLException {
         try (Connection conn = gConnDB.getConnection()) {
             return SaleModel.getAll(conn);
         } catch (SQLException e) {
@@ -45,6 +45,23 @@ public class SalesServcice {
                 conn.rollback();
                 throw e;
             }
+        }
+    }
+    
+     public List<Sale> getRecentSales(int limit) throws SQLException {
+        try (Connection conn = gConnDB.getConnection()) {
+            SaleModel saleModel = new SaleModel();
+            return saleModel.getRecentSales(conn, limit);
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+     
+    public List<Sale> getSalesByDate(java.util.Date date) throws SQLException {
+        try (Connection conn = gConnDB.getConnection()) {
+            return SaleModel.getSalesByDate(conn, date);
+        } catch (SQLException e) {
+            return new ArrayList<>();
         }
     }
 }

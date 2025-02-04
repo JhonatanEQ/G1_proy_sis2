@@ -4,11 +4,12 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import javax.swing.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 
 
 import org.gui.component.CustomScrollPane;
@@ -130,11 +131,26 @@ public class SalesView extends javax.swing.JPanel {
     }
     
     public void addToCart(Product product) {
+        if (product.getCurrentStock() <= product.getMinimumStock()) {
+            JOptionPane.showMessageDialog(this,
+                "Este producto no está disponible para la venta.",
+                "Producto Inactivo",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         String productId = String.valueOf(product.getId());
         if (cartItems.containsKey(productId)) {
             CartItem item = cartItems.get(productId);
-            item.incrementQuantity();
-            updateCartItem(productId, item.getQuantity());
+            if (item.getQuantity() < product.getCurrentStock()) {
+                item.incrementQuantity();
+                updateCartItem(productId, item.getQuantity());
+            } else {
+                JOptionPane.showMessageDialog(this,
+                    "No hay suficiente stock disponible.",
+                    "Stock Insuficiente",
+                    JOptionPane.WARNING_MESSAGE);
+            }
         } else {
             CartItem cartItem = new CartItem(product);
             cartItems.put(productId, cartItem);
@@ -165,7 +181,17 @@ public class SalesView extends javax.swing.JPanel {
     private void updateCartDisplay() {
         subtotal = cartItems.values().stream().mapToDouble(CartItem::getTotal).sum();
         tax = subtotal * 0.10;
-        total = subtotal + tax;
+        double subtotalWithTax = subtotal + tax;
+        double discount = 0.0;
+
+        if (subtotalWithTax > 1500) {
+            discount = subtotalWithTax * 0.05;
+            jlDescuento.setText("5%");
+        } else {
+            jlDescuento.setText("0%");
+        }
+
+        total = subtotalWithTax - discount;
 
         jLabel33.setText(String.format("$%.2f", subtotal));
         jLabel34.setText(String.format("$%.2f", tax));
@@ -174,65 +200,124 @@ public class SalesView extends javax.swing.JPanel {
 
 
     private void registerSale() {
-        if (total > 0) {
-            int response = JOptionPane.showConfirmDialog(this, 
-                "¿Desea registrar la venta por $" + String.format("%.2f", total) + "?", 
-                "Confirmar Venta", 
-                JOptionPane.YES_NO_OPTION);
-
-            if (response == JOptionPane.YES_OPTION) {
-                int facturaResponse = JOptionPane.showConfirmDialog(this,
-                    "¿Desea generar factura?",
-                    "Facturación",
-                    JOptionPane.YES_NO_OPTION);
-
-                try {
-                    Sale sale = new Sale();
-                    sale.setDate(new Date());
-                    sale.setSubtotal(subtotal);
-                    sale.setTax(tax);
-                    sale.setTotal(total);
-
-                    var details = new ArrayList<SalesDetail>();
-                    for (Map.Entry<String, CartItem> entry : cartItems.entrySet()) {
-                        CartItem item = entry.getValue();
-                        Product product = item.getProduct();
-
-                        SalesDetail detail = new SalesDetail();
-                        detail.setIdProduct(product.getId());
-                        detail.setQuantity(item.getQuantity());
-                        detail.setUnitPrice(product.getUnitPrice());
-                        detail.setSubtotal(item.getTotal());
-                        details.add(detail);
-                    }
-                    sale.setDetails(details);
-
-                    SalesServcice saleService = new SalesServcice();
-                    if (saleService.save(sale)) {
-                        if (facturaResponse == JOptionPane.YES_OPTION) {
-                            // Comentado temporalmente
-                            // openFacturaScreen(sale);
-                        }
-                        clearCart();
-                        JOptionPane.showMessageDialog(this, 
-                            "Venta registrada exitosamente", 
-                            "Éxito", 
-                            JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        JOptionPane.showMessageDialog(this, 
-                            "Error al registrar la venta", 
-                            "Error", 
-                            JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(this, 
-                        "Error: " + e.getMessage(), 
-                        "Error", 
-                        JOptionPane.ERROR_MESSAGE);
-                }
-            }
+        if (total <= 0) {
+            return;
         }
-     }
+
+        if (!confirmSale()) {
+            return;
+        }
+
+        boolean generateInvoice = askForInvoice();
+        Sale sale = createSaleWithDetails();
+
+
+        try {
+            if (processSale(sale, generateInvoice)) {
+                showSuccessMessage();
+                clearCart();
+            } else {
+                showErrorMessage("Error al registrar la venta");
+            }
+        } catch (SQLException e) {
+            showErrorMessage("Error: " + e.getMessage());
+        }
+    }
+
+    private boolean confirmSale() {
+        String message = String.format("¿Desea registrar la venta por $%.2f?", total);
+        int response = JOptionPane.showConfirmDialog(this, message, 
+            "Confirmar Venta", JOptionPane.YES_NO_OPTION);
+        return response == JOptionPane.YES_OPTION;
+    }
+
+    private boolean askForInvoice() {
+        int response = JOptionPane.showConfirmDialog(this,
+            "¿Desea generar factura?",
+            "Facturación",
+            JOptionPane.YES_NO_OPTION);
+        return response == JOptionPane.YES_OPTION;
+    }
+
+    private Sale createSaleWithDetails() {
+        Sale sale = new Sale();
+        sale.setDate(new Date());
+        sale.setSubtotal(subtotal);
+        sale.setTax(tax);
+
+        applyDiscountIfApplicable(sale);
+        sale.setTotal(total);
+        sale.setDetails(createSaleDetails());
+
+        return sale;
+    }
+
+    private void applyDiscountIfApplicable(Sale sale) {
+        double subtotalWithTax = subtotal + tax;
+        if (subtotalWithTax > 1500) {
+            double discount = subtotalWithTax * 0.05;
+            sale.setDiscount(discount);
+            sale.setDiscountPercentage(5.0);
+        } else {
+            sale.setDiscount(0.0);
+            sale.setDiscountPercentage(0.0);
+        }
+    }
+
+    private List<SalesDetail> createSaleDetails() {
+        List<SalesDetail> details = new ArrayList<>();
+        for (Map.Entry<String, CartItem> entry : cartItems.entrySet()) {
+            CartItem item = entry.getValue();
+            details.add(createSaleDetail(item));
+        }
+        return details;
+    }
+
+    private SalesDetail createSaleDetail(CartItem item) {
+        Product product = item.getProduct();
+        SalesDetail detail = new SalesDetail();
+        detail.setIdProduct(product.getId());
+        detail.setQuantity(item.getQuantity());
+        detail.setUnitPrice(product.getUnitPrice());
+        detail.setSubtotal(item.getTotal());
+        return detail;
+    }
+
+    private boolean processSale(Sale sale, boolean generateInvoice) throws SQLException {
+        SalesServcice saleService = new SalesServcice();
+        if (!saleService.save(sale)) {
+            return false;
+        }
+        
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        if (generateInvoice) {
+            // Comentado temporalmente
+            // openFacturaScreen(sale);
+        }
+        return true;
+    }
+    
+
+
+    private void showSuccessMessage() {
+        JOptionPane.showMessageDialog(this, 
+            "Venta registrada exitosamente", 
+            "Éxito", 
+            JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, 
+            message, 
+            "Error", 
+            JOptionPane.ERROR_MESSAGE);
+    }
+    
 
     private void openFacturaScreen(Sale sale) {
         // Obtener referencia al JFrame principal
@@ -353,6 +438,8 @@ public class SalesView extends javax.swing.JPanel {
         jLabel38 = new javax.swing.JLabel();
         jpItemSalesProduct = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
+        jlDscu = new javax.swing.JLabel();
+        jlDescuento = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(249, 250, 251));
         setPreferredSize(new java.awt.Dimension(740, 540));
@@ -416,7 +503,7 @@ public class SalesView extends javax.swing.JPanel {
                 jToggleButton1ActionPerformed(evt);
             }
         });
-        jPanelAreaListaProductos.add(jToggleButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 450, 170, -1));
+        jPanelAreaListaProductos.add(jToggleButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 460, 170, -1));
 
         jLabel31.setForeground(new java.awt.Color(153, 153, 153));
         jLabel31.setText("Sub Total");
@@ -436,11 +523,11 @@ public class SalesView extends javax.swing.JPanel {
 
         jLabel35.setFont(new java.awt.Font("Segoe UI Semibold", 1, 12)); // NOI18N
         jLabel35.setText("Total");
-        jPanelAreaListaProductos.add(jLabel35, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, -1, -1));
+        jPanelAreaListaProductos.add(jLabel35, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 430, -1, -1));
 
         jLabel36.setFont(new java.awt.Font("Segoe UI Semibold", 1, 12)); // NOI18N
         jLabel36.setText("$ 0.00");
-        jPanelAreaListaProductos.add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 420, 60, -1));
+        jPanelAreaListaProductos.add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 430, 60, -1));
 
         jLabel37.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         jLabel37.setText("Lista de productos ");
@@ -460,6 +547,14 @@ public class SalesView extends javax.swing.JPanel {
 
         jPanelAreaListaProductos.add(jpItemSalesProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 190, 310));
         jPanelAreaListaProductos.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 190, 10));
+
+        jlDscu.setForeground(new java.awt.Color(153, 153, 153));
+        jlDscu.setText("Desc");
+        jPanelAreaListaProductos.add(jlDscu, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 400, -1, -1));
+
+        jlDescuento.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jlDescuento.setText("0%");
+        jPanelAreaListaProductos.add(jlDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 400, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -522,6 +617,8 @@ public class SalesView extends javax.swing.JPanel {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextFieldBuscarProducto;
     private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JLabel jlDescuento;
+    private javax.swing.JLabel jlDscu;
     private javax.swing.JPanel jpItemSalesProduct;
     private javax.swing.JPanel jpaBuscador;
     private javax.swing.JPanel jpaProductos;

@@ -1,6 +1,7 @@
 package org.gui.component.ListaDeProductos;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import org.gui.component.CircleBorder;
@@ -16,6 +17,7 @@ public class ItemSalesProduct extends JPanel {
     private int quantity;
     private ImageIcon deleteIcon;
     private ImageIcon deleteHoverIcon;
+    private final int maxStock = 0;
 
     public ItemSalesProduct(Product product) {
         this.product = product;
@@ -118,20 +120,54 @@ public class ItemSalesProduct extends JPanel {
 
         plusButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                quantity++;
-                quantityLabel.setText(String.valueOf(quantity));
+                int currentStock = product.getCurrentStock();
+                if (currentStock <= product.getMinimumStock()) {
+                    JOptionPane.showMessageDialog(ItemSalesProduct.this,
+                        "El producto ya no está disponible para la venta.",
+                        "Producto Inactivo",
+                        JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                
+                if (quantity < currentStock) {
+                    quantity++;
+                    quantityLabel.setText(String.valueOf(quantity));
+                } 
+            }
+            
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                int currentStock = product.getCurrentStock();
+                if (quantity >= currentStock || currentStock <= product.getMinimumStock()) {
+                    plusButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    String tooltipText = currentStock <= product.getMinimumStock() ? 
+                        "Producto no disponible" : 
+                        "Stock máximo alcanzado: " + currentStock;
+                    plusButton.setToolTipText(tooltipText);
+                } else {
+                    plusButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                    plusButton.setToolTipText("Stock disponible: " + (currentStock - quantity));
+                }
             }
         });
+    }
+    
+    public void setQuantity(int newQuantity) {
+        int currentStock = product.getCurrentStock();
+        if (newQuantity <= currentStock && newQuantity > 0) {
+            this.quantity = newQuantity;
+            quantityLabel.setText(String.valueOf(quantity));
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "La cantidad solicitada excede el stock disponible.",
+                "Stock Insuficiente",
+                JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     // Getters
     public int getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-        quantityLabel.setText(String.valueOf(quantity));
     }
 
     public Product getProduct() {

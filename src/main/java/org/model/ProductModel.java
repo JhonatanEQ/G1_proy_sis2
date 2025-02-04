@@ -202,36 +202,64 @@ public class ProductModel {
     
     
     public static List<Product> findProductsByCategory(Connection conn, int categoriaId) throws SQLException {
-    String query = "SELECT id, codigo, nombre, precio_unitario, categoria_id, stock_actual, " +
-                   "stock_minimo, fecha_entrada, imagen_url, activo, proveedor_id " +
-                   "FROM productos WHERE categoria_id = ?";
-    
-    List<Product> productos = new ArrayList<>();
-    
-    try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-        pstmt.setInt(1, categoriaId); // Filtrar por ID de categoría
-        
-        try (ResultSet rs = pstmt.executeQuery()) {
-            while (rs.next()) {
-                Product producto = new Product();
-                producto.setId(rs.getInt("id"));
-                producto.setCode(rs.getString("codigo"));
-                producto.setName(rs.getString("nombre"));
-                producto.setUnitPrice(rs.getDouble("precio_unitario"));
-                producto.setCategoryId(rs.getInt("categoria_id"));
-                producto.setCurrentStock(rs.getInt("stock_actual"));
-                producto.setMinimumStock(rs.getInt("stock_minimo"));
-                producto.setEntryDate(rs.getString("fecha_entrada"));
-                producto.setImage(rs.getString("imagen_url"));
-                producto.setStatus(rs.getBoolean("activo"));
-                producto.setSupplierId(rs.getInt("proveedor_id"));
-                
-                productos.add(producto);
+        String query = "SELECT id, codigo, nombre, precio_unitario, categoria_id, stock_actual, " +
+                       "stock_minimo, fecha_entrada, imagen_url, activo, proveedor_id " +
+                       "FROM productos WHERE categoria_id = ?";
+
+        List<Product> productos = new ArrayList<>();
+
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, categoriaId); // Filtrar por ID de categoría
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Product producto = new Product();
+                    producto.setId(rs.getInt("id"));
+                    producto.setCode(rs.getString("codigo"));
+                    producto.setName(rs.getString("nombre"));
+                    producto.setUnitPrice(rs.getDouble("precio_unitario"));
+                    producto.setCategoryId(rs.getInt("categoria_id"));
+                    producto.setCurrentStock(rs.getInt("stock_actual"));
+                    producto.setMinimumStock(rs.getInt("stock_minimo"));
+                    producto.setEntryDate(rs.getString("fecha_entrada"));
+                    producto.setImage(rs.getString("imagen_url"));
+                    producto.setStatus(rs.getBoolean("activo"));
+                    producto.setSupplierId(rs.getInt("proveedor_id"));
+
+                    productos.add(producto);
+                }
             }
         }
+
+        return productos;
     }
     
-    return productos;
-}
+    public static List<Product> getProductsByDate(Connection conn, java.util.Date date) throws SQLException {
+        String query = "SELECT * FROM productos WHERE DATE(fecha_entrada) = ?";
+        List<Product> products = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setDate(1, new java.sql.Date(date.getTime()));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                   Product producto = new Product();
+                    producto.setId(rs.getInt("id"));
+                    producto.setCode(rs.getString("codigo"));
+                    producto.setName(rs.getString("nombre"));
+                    producto.setUnitPrice(rs.getDouble("precio_unitario"));
+                    producto.setCategoryId(rs.getInt("categoria_id"));
+                    producto.setCurrentStock(rs.getInt("stock_actual"));
+                    producto.setMinimumStock(rs.getInt("stock_minimo"));
+                    producto.setEntryDate(rs.getString("fecha_entrada"));
+                    producto.setImage(rs.getString("imagen_url"));
+                    producto.setStatus(rs.getBoolean("activo"));
+                    producto.setSupplierId(rs.getInt("proveedor_id"));
+                    products.add(producto);
+                }
+            }
+        }
+        return products;
+    }
 }
 

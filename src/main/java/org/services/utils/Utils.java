@@ -1,25 +1,35 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.services.utils;
 
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.sql.Date;
-/**
- *
- * @author Encin
- */
+
 public class Utils {
-    // Static method to convert String to java.sql.Date
     public static Date convertToDate(String dateStr) {
+        if (dateStr == null || dateStr.trim().isEmpty()) {
+            return new Date(System.currentTimeMillis());
+        }
+
         try {
-            // Assuming the date is in "yyyy-MM-dd" format
-            return Date.valueOf(dateStr); // Convert String to Date
-        } catch (IllegalArgumentException e) {
-            // Handle the case where the String is not in the expected format
-            e.printStackTrace();
-            return null; // Return null if invalid format
+            // First try to parse with datetime format
+            SimpleDateFormat fullFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            java.util.Date parsedDate = fullFormat.parse(dateStr);
+            return new Date(parsedDate.getTime());
+        } catch (ParseException e1) {
+            try {
+                // If that fails, try just the date format
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                java.util.Date parsedDate = dateFormat.parse(dateStr);
+                return new Date(parsedDate.getTime());
+            } catch (ParseException e2) {
+                try {
+                    // Last attempt - try direct SQL date parsing
+                    return Date.valueOf(dateStr);
+                } catch (IllegalArgumentException e3) {
+                    // If all parsing attempts fail, return current date
+                    return new Date(System.currentTimeMillis());
+                }
+            }
         }
     }
 }

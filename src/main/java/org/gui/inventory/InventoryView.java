@@ -19,6 +19,9 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.swing.Timer;
+import javax.swing.SwingUtilities;
+import java.util.ArrayList;
 
 public class InventoryView extends javax.swing.JPanel {
     private DefaultTableModel tableModel;
@@ -39,6 +42,8 @@ public class InventoryView extends javax.swing.JPanel {
 // Nueva función para deshabilitar edición
 private void deshabilitarEdicionTabla(){
     jTable1.setDefaultEditor(Object.class, null);
+    jTable1.getTableHeader().setResizingAllowed(false);
+    jTable1.getTableHeader().setReorderingAllowed(false);
         
     }
 
@@ -138,24 +143,24 @@ private void deshabilitarEdicionTabla(){
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"", "", "", "", "", null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null}
+                {"", "", "", "", "", null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Codigo", "Nombre", "Precio", "Categoria", "Stock Actual", "Stock Minimo", "Fecha de entrada", "Proveedor", "Estado"
+                "ID", "Codigo", "Nombre", "Precio", "Categoria", "Stock Actual", "Fecha de entrada", "Proveedor", "Estado"
             }
         ));
         jTable1.setGridColor(new java.awt.Color(204, 204, 204));
@@ -238,82 +243,98 @@ private void filtrarProductos(String filtro) {
     }
 }
     private void txt_modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_modificarActionPerformed
-        // TODO add your handling code here:                                              
-     int selectedRow = jTable1.getSelectedRow();
-     if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "Seleccione una fila para modificar.");
+        // TODO add your handling code here:                                                                                  
+    int selectedRow = jTable1.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Por favor seleccione un producto para modificar.", 
+            "Selección requerida", JOptionPane.WARNING_MESSAGE);
         return;
     }
     
-    // Obtener los datos de la fila seleccionada
-    int productId = (int) jTable1.getValueAt(selectedRow, 0); // Suponiendo que el ID está en la primera columna
-    String codigo = String.valueOf(jTable1.getValueAt(selectedRow, 1));
-    String nombre = String.valueOf(jTable1.getValueAt(selectedRow, 2));
-    double precio = Double.parseDouble(String.valueOf(jTable1.getValueAt(selectedRow, 3)));
-    int stockActual = Integer.parseInt(String.valueOf(jTable1.getValueAt(selectedRow, 5)));
-    int stockMinimo = Integer.parseInt(String.valueOf(jTable1.getValueAt(selectedRow, 6)));
-
-    // Mostrar cuadro de diálogo para editar
-    JTextField txtCodigo = new JTextField(codigo);
-    txtCodigo.setEditable(false);
-    JTextField txtNombre = new JTextField(nombre);
-    txtNombre.setEditable(false);
-    JTextField txtPrecio = new JTextField(String.valueOf(precio));
-    JTextField txtStock = new JTextField(String.valueOf(stockActual));
-
-    Object[] message = {
-        "Código:", txtCodigo,
-        "Nombre:", txtNombre,
-        "Precio:", txtPrecio,
-        "Stock Actual:", txtStock
-    };
-
-         int option = JOptionPane.showConfirmDialog(this, message, "Modificar Producto", JOptionPane.OK_CANCEL_OPTION);
-         if (option == JOptionPane.OK_OPTION) {
-          try {
-            // Validar datos numéricos
-            double nuevoPrecio = Double.parseDouble(txtPrecio.getText());
-            int nuevoStock = Integer.parseInt(txtStock.getText());
-
-            // Obtener fecha y hora actual del sistema
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String fechaHoraActual = sdf.format(new Date());
-
-            // Crear objeto Producto con los nuevos valores
-            Product updatedProduct = new Product();
-            updatedProduct.setId(productId);
-            updatedProduct.setCode(codigo);
-            updatedProduct.setName(nombre);
-            updatedProduct.setUnitPrice(nuevoPrecio);
-            updatedProduct.setCurrentStock(nuevoStock);
-            updatedProduct.setEntryDate(fechaHoraActual);
-
-            // Llamar al servicio para actualizar en la BD
-            ProductService productService = new ProductService();
-            boolean success = productService.updateProductStockAndDate(updatedProduct);
-
-            if (success) {
-                JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.");
-
-                // Actualizar la tabla visualmente
-                jTable1.setValueAt(nuevoPrecio, selectedRow, 3);
-                jTable1.setValueAt(nuevoStock, selectedRow, 5);
-                jTable1.setValueAt(fechaHoraActual, selectedRow, 7);
-
-                // Actualizar el estado basado en el stock
-                String nuevoEstado = nuevoStock <= stockMinimo ? "Bajo stock" : "En stock";
-                jTable1.setValueAt(nuevoEstado, selectedRow, 9);
-            } else {
-                JOptionPane.showMessageDialog(this, "Error al actualizar el producto.", "Error", JOptionPane.ERROR_MESSAGE);
+    try {
+        // Obtener los datos de la fila seleccionada
+        int productId = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
+        String codigo = jTable1.getValueAt(selectedRow, 1).toString();
+        String nombre = jTable1.getValueAt(selectedRow, 2).toString();
+        double precioActual = Double.parseDouble(jTable1.getValueAt(selectedRow, 3).toString());
+        int stockActual = Integer.parseInt(jTable1.getValueAt(selectedRow, 5).toString());
+        
+        // Crear el panel personalizado para el diálogo
+        JPanel panel = new JPanel();
+        panel.setLayout(new java.awt.GridLayout(6, 2, 5, 5));
+        
+        // Añadir componentes al panel
+        panel.add(new JLabel("Código:"));
+        JTextField txtCodigo = new JTextField(codigo);
+        txtCodigo.setEditable(false);
+        panel.add(txtCodigo);
+        
+        panel.add(new JLabel("Nombre:"));
+        JTextField txtNombre = new JTextField(nombre);
+        txtNombre.setEditable(false);
+        panel.add(txtNombre);
+        
+        panel.add(new JLabel("Precio actual:"));
+        JTextField txtPrecio = new JTextField(String.valueOf(precioActual));
+        panel.add(txtPrecio);
+        
+        panel.add(new JLabel("Stock actual:"));
+        JTextField txtStock = new JTextField(String.valueOf(stockActual));
+        panel.add(txtStock);
+        
+        // Mostrar el diálogo personalizado
+        int result = JOptionPane.showConfirmDialog(this, panel, 
+            "Modificar Producto", JOptionPane.OK_CANCEL_OPTION, 
+            JOptionPane.PLAIN_MESSAGE);
+            
+        if (result == JOptionPane.OK_OPTION) {
+            try {
+                // Validar y obtener los nuevos valores
+                double nuevoPrecio = Double.parseDouble(txtPrecio.getText().trim());
+                int nuevoStock = Integer.parseInt(txtStock.getText().trim());
+                
+                if (nuevoPrecio < 0 || nuevoStock < 0) {
+                    throw new NumberFormatException("Los valores no pueden ser negativos");
+                }
+                
+                // Crear el objeto Product con los nuevos datos
+                Product producto = new Product();
+                producto.setId(productId);
+                producto.setCode(codigo);
+                producto.setName(nombre);
+                producto.setUnitPrice(nuevoPrecio);
+                producto.setCurrentStock(nuevoStock);
+                producto.setEntryDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                    .format(new java.util.Date()));
+                
+                // Actualizar en la base de datos
+                if (productService.updateProductStockAndDate(producto)) {
+                    // Actualizar la tabla
+                    jTable1.setValueAt(nuevoPrecio, selectedRow, 3);
+                    jTable1.setValueAt(nuevoStock, selectedRow, 5);
+                    JOptionPane.showMessageDialog(this, 
+                        "Producto actualizado exitosamente", 
+                        "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    
+                    // Recargar los datos de la tabla
+                    cargarDatosDesdeBD();
+                } else {
+                    JOptionPane.showMessageDialog(this, 
+                        "Error al actualizar el producto", 
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, 
+                    "Por favor ingrese valores numéricos válidos", 
+                    "Error de entrada", JOptionPane.ERROR_MESSAGE);
             }
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, 
-                "Error: Verifique que el precio y stock sean números válidos", 
-                "Error", JOptionPane.ERROR_MESSAGE);
         }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, 
+            "Error al procesar la modificación: " + e.getMessage(), 
+            "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
     }
-
 
     }//GEN-LAST:event_txt_modificarActionPerformed
 
@@ -358,35 +379,42 @@ private void filtrarProductos(String filtro) {
     private javax.swing.JButton txt_modificar;
     // End of variables declaration//GEN-END:variables
 
-private void cargarDatosDesdeBD() {
-    try {
-        List<Product> productos = productService.getAllProducts();
-        tableModel.setRowCount(0); // Limpiar la tabla
+     private void cargarDatosDesdeBD() {
+         SwingUtilities.invokeLater(() -> {
+         try {
+            List<Product> productos = productService.getAllProducts();
+            tableModel.setRowCount(0); // Limpiar la tabla
         
-        for (Product producto : productos) {
-            tableModel.addRow(new Object[]{
-                producto.getId(),
-                producto.getCode(),
-                producto.getName(),
-                producto.getUnitPrice(),
-                producto.getCategoryId(),
-                producto.getCurrentStock(),
-                producto.getMinimumStock(),
-                producto.getEntryDate(),
-                producto.getSupplierId(),
-                (producto.getCurrentStock() <= producto.getMinimumStock()) ? "Bajo stock" : "En stock"
-            });
+            List<String> productosConBajoStock = new ArrayList<>();
+        
+            for (Product producto : productos) {
+                tableModel.addRow(new Object[]{
+                    producto.getId(),
+                    producto.getCode(),
+                    producto.getName(),
+                    producto.getUnitPrice(),
+                    producto.getCategoryId(),
+                    producto.getCurrentStock(),
+                    producto.getEntryDate(),
+                    producto.getSupplierId(),
+                    (producto.getCurrentStock() <= producto.getMinimumStock()) ? "Bajo stock" : "En stock"
+                });
 
-            // Mostrar alerta si el stock está bajo
-            if (producto.getCurrentStock() <= producto.getMinimumStock()) {
-                JOptionPane.showMessageDialog(this, 
-                    "¡Alerta! El producto " + producto.getName() + " tiene stock bajo.", 
-                    "Alerta de Stock", JOptionPane.WARNING_MESSAGE);
+                if (producto.getCurrentStock() <= producto.getMinimumStock()) {
+                    productosConBajoStock.add(producto.getName());
+                }
             }
+            
+            tableModel.fireTableDataChanged();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error al cargar datos: " + e.getMessage(), 
+                "Error", JOptionPane.ERROR_MESSAGE);
         }
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Error al cargar datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
+    });
 }
+         public void refreshData() {
+           cargarDatosDesdeBD();
+    }
 }    
 

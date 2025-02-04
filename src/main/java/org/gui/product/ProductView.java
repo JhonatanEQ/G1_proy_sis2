@@ -15,6 +15,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import org.gui.inventory.InventoryView;
 
 
 import org.services.product.ProductService;
@@ -37,19 +38,33 @@ public class ProductView extends javax.swing.JPanel {
     private List<Category> gCategories;
     private List<Supplier> gSuppliers;
     private SupplierService gSupplierService;
+    private InventoryView inventoryView;
 
     /**
      * Creates new form Product
      */
-    public ProductView() {
-        initComponents();
-        gProductService = new ProductService();
-        gCategoryService = new CategoryService();
-        gSupplierService = new SupplierService();
-        cargarCategorias();
-        cargarProveedores();
-        jtAddProveedor.setVisible(false);
-    }
+    // Constructor con parámetros
+public ProductView(InventoryView inventoryView) {
+    this.inventoryView = inventoryView;
+    commonInit();
+}
+
+// Constructor sin parámetros
+public ProductView() {
+    this.inventoryView = null;
+    commonInit();
+}
+
+// Método privado para inicialización común
+private void commonInit() {
+    initComponents();
+    gProductService = new ProductService();
+    gCategoryService = new CategoryService();
+    gSupplierService = new SupplierService();
+    cargarCategorias();
+    cargarProveedores();
+    jtAddProveedor.setVisible(false);
+}
     private void cargarCategorias() {
         try {
             gCategories= gCategoryService.getAllCategories();
@@ -308,7 +323,11 @@ public class ProductView extends javax.swing.JPanel {
 
                 gProductService.insertOneProduct(lProduct);
                 JOptionPane.showMessageDialog(this, "Producto registrado exitosamente.");
-
+                
+                // Actualizar la vista del inventario si existe la referencia
+            if (inventoryView != null) {
+                inventoryView.refreshData();
+            }
                 // Limpiar campos después del registro exitoso
                 limpiarCamposRegistro();
 

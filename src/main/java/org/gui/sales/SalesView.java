@@ -593,9 +593,28 @@ public class SalesView extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextFieldBuscarProductoActionPerformed
 
     private void txt_filterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_filterActionPerformed
-
+    String filtro = jTextFieldBuscarProducto.getText().trim(); // Obtener el texto del campo de búsqueda
+    
+        if (filtro.isEmpty()) {
+           // Si el filtro está vacío, mostrar todos los productos
+          initializeProducts(); // Recargar todos los productos
+        } else {
+          // Si hay un filtro, aplicar la búsqueda
+         filtrarProductos(filtro); // Filtrar productos
+        }   
+    
+    setupProductsPanel(); // Actualizar la lista de productos en la interfaz
     }//GEN-LAST:event_txt_filterActionPerformed
-
+    private void filtrarProductos(String filtro) {
+        ProductService productService = new ProductService();
+        try {
+          // Obtener los productos filtrados
+         gProducts = (ArrayList<Product>) productService.getFilteredProducts(filtro);
+        } catch (SQLException e) {
+         JOptionPane.showMessageDialog(this, "Error al filtrar productos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+         e.printStackTrace();
+        }
+}
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
 
         registerSale();

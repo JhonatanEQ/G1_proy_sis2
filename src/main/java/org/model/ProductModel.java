@@ -51,8 +51,7 @@ public class ProductModel {
     
     // Consulta SQL corregida
     String query = "SELECT * FROM productos " +
-                   "WHERE CAST(id AS TEXT) LIKE ? OR " +
-                   "nombre LIKE ? OR " +
+                   "WHERE nombre LIKE ? OR " +
                    "codigo LIKE ? OR " +
                    "categoria_id IN (SELECT id FROM categorias WHERE nombre LIKE ?)";
 
@@ -61,10 +60,10 @@ public class ProductModel {
         String likePattern = "%" + filtro + "%";
         
         // Asignar los parámetros
-        stmt.setString(1, likePattern); // id (convertido a texto)
-        stmt.setString(2, likePattern); // nombre
-        stmt.setString(3, likePattern); // código
-        stmt.setString(4, likePattern); // categoría
+        //stmt.setString(1, likePattern); // id (convertido a texto)
+        stmt.setString(1, likePattern); // nombre
+        stmt.setString(2, likePattern); // código
+        stmt.setString(3, likePattern); // categoría
 
         try (ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {

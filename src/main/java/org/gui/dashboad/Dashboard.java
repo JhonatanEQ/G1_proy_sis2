@@ -13,6 +13,7 @@ import org.gui.component.CustomScrollPane;
 import java.util.List;  // Esta es la que necesitas para List
 import java.util.LinkedList;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.services.product.ProductService;
@@ -30,7 +31,11 @@ public class Dashboard extends javax.swing.JPanel {
     private LinkedList<JpRecentSales> recentSalesQueue;
     private ProductService productService; 
     private static double previousTotalSales = 0;
-private static int previousTotalProducts = 0;
+    private static int previousTotalProducts = 0;
+    private List<Product> cachedProducts;
+private List<Sale> cachedSales;
+private Date lastCacheUpdate;
+private static final long CACHE_DURATION = 60000; // 1 minuto en milisegundos
 
     /**
      * Creates new form Dashboard
@@ -145,57 +150,7 @@ private static int previousTotalProducts = 0;
         contentPanel.repaint();
     }
     
-    private void loadDashboardData() {
-        try {
-            // Fetch all products
-            List<Product> products = productService.getAllProducts();
-            int lowStockCount = 0;
-
-            JPanel contentPanel = (JPanel) jpAlertPanel.getClientProperty("contentPanel");
-            if (contentPanel != null) {
-                contentPanel.removeAll();
-            }
-            double totalSales = calculateTotalSales();
-            double salesGrowthPercentage = calculateSalesGrowthPercentage();
-            previousTotalSales = totalSales;
-
-            jlTotalSales.setText(String.format("%.2f", totalSales));
-            jlTotalPorcentaje.setText(String.format("%.1f", salesGrowthPercentage) + "%");
-            
-            int totalProducts = calculateTotalProductsStock();
-            double productsGrowthPercentage = calculateProductsGrowthPercentage();
-
-            jlTotalProducts.setText(String.valueOf(totalProducts));
-            jlTotalPP.setText(String.format("%.1f", productsGrowthPercentage) + "%");
-
-            for (Product producto : products) {
-                if (producto.getCurrentStock() <= producto.getMinimumStock()) {
-                    addLowStockAlert(producto.getName(), producto.getCurrentStock());
-                    lowStockCount++;
-                }
-            }
-
-            jLabel14.setText(String.valueOf(lowStockCount));
-
-            double percentage = products.isEmpty() ? 0 : 
-                ((double) lowStockCount / products.size()) * 100;
-            jLabel12.setText(String.format("%.1f", percentage) + "%");
-
-            if (contentPanel != null) {
-                contentPanel.revalidate();
-                contentPanel.repaint();
-            }
-
-            loadRecentSales();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this,
-                "Error al cargar datos del dashboard: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-        }
-    }
+   
     private void loadRecentSales() throws SQLException {
         JPanel contentPanel = (JPanel) jpRecentSalesContent.getClientProperty("contentPanel");
         if (contentPanel != null) {
@@ -220,7 +175,139 @@ private static int previousTotalProducts = 0;
             contentPanel.repaint();
         }
     }
+ public void loadDashboardData() {
+    try {
+        if (shouldUpdateCache()) {
+            updateCache();
+        }
 
+        // Clear existing alerts
+        JPanel contentPanel = (JPanel) jpAlertPanel.getClientProperty("contentPanel");
+        if (contentPanel != null) {
+            contentPanel.removeAll();
+        }
+
+        // Process sales statistics in one pass
+        Date currentDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        Date todayStart = calendar.getTime();
+        
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        Date yesterdayStart = calendar.getTime();
+
+        // Variables para ventas
+        double currentDayTotalSales = 0;
+        double previousDayTotalSales = 0;
+        double totalSales = 0;
+
+        // Procesar estadísticas de ventas
+        for (Sale sale : cachedSales) {
+            Date saleDate = sale.getDate();
+            double amount = sale.getTotal();
+            totalSales += amount;
+            
+            if (saleDate != null) {
+                if (saleDate.after(todayStart)) {
+                    currentDayTotalSales += amount;
+                } else if (saleDate.after(yesterdayStart)) {
+                    previousDayTotalSales += amount;
+                }
+            }
+        }
+
+        // Calcular crecimiento de ventas
+        double salesGrowthPercentage = previousDayTotalSales == 0 ? 0 :
+            ((currentDayTotalSales - previousDayTotalSales) / previousDayTotalSales) * 100;
+
+        // Actualizar UI de ventas
+        jlTotalSales.setText(String.format("%.2f", totalSales));
+        jlTotalPorcentaje.setText(String.format("%.1f", salesGrowthPercentage) + "%");
+
+        // Variables para productos
+        int currentDayTotalStock = 0;
+        int previousDayTotalStock = 0;
+        int totalStock = 0;
+        int lowStockCount = 0;
+
+        // Procesar estadísticas de productos
+        SimpleDateFormat[] dateFormats = {
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
+            new SimpleDateFormat("yyyy-MM-dd")
+        };
+
+        for (Product producto : cachedProducts) {
+            int stock = producto.getCurrentStock();
+            totalStock += stock;
+            
+            // Manejo robusto de fechas
+            Date entryDate = null;
+            String dateStr = producto.getEntryDate();
+            
+            if (dateStr != null && !dateStr.trim().isEmpty()) {
+                for (SimpleDateFormat format : dateFormats) {
+                    try {
+                        entryDate = format.parse(dateStr);
+                        break;  // Si el parseo es exitoso, salir del loop
+                    } catch (ParseException e) {
+                        continue;  // Intentar con el siguiente formato
+                    }
+                }
+            }
+            
+            // Si no se pudo parsear la fecha, usar la fecha actual
+            if (entryDate == null) {
+                entryDate = new Date();
+            }
+
+            // Actualizar contadores según la fecha
+            if (entryDate.after(todayStart)) {
+                currentDayTotalStock += stock;
+            } else if (entryDate.after(yesterdayStart)) {
+                previousDayTotalStock += stock;
+            }
+
+            // Verificar stock bajo
+            if (stock <= producto.getMinimumStock()) {
+                addLowStockAlert(producto.getName(), stock);
+                lowStockCount++;
+            }
+        }
+
+        // Calcular crecimiento de productos
+        double productsGrowthPercentage = previousDayTotalStock == 0 ? 0 :
+            ((currentDayTotalStock - previousDayTotalStock) / (double) previousDayTotalStock) * 100;
+
+        // Actualizar UI de productos
+        jlTotalProducts.setText(String.valueOf(totalStock));
+        jlTotalPP.setText(String.format("%.1f", productsGrowthPercentage) + "%");
+
+        // Actualizar UI de stock bajo
+        jLabel14.setText(String.valueOf(lowStockCount));
+        double percentage = cachedProducts.isEmpty() ? 0 : 
+            ((double) lowStockCount / cachedProducts.size()) * 100;
+        jLabel12.setText(String.format("%.1f", percentage) + "%");
+
+        // Actualizar ventas recientes
+        updateRecentSales();
+
+        // Refrescar UI
+        if (contentPanel != null) {
+            contentPanel.revalidate();
+            contentPanel.repaint();
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this,
+            "Error al cargar datos del dashboard: " + e.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
+    }
+}
     private void handleRestock(String productName) {
         try {
             // Buscar el producto por nombre
@@ -327,84 +414,41 @@ private static int previousTotalProducts = 0;
     }
     
     
-    private int calculateTotalProductsStock() throws SQLException {
-
-        return productService.getAllProducts()
-                .stream()
-                .mapToInt(Product::getCurrentStock)
-                .sum();
-    }
-    private double calculateTotalSales() throws SQLException {
-        SalesServcice salesService = new SalesServcice();
-
-        return salesService.getAllSales()
-                .stream()
-                .mapToDouble(Sale::getTotal)
-                .sum();
-    }
-    
-    
-    
-    private double calculatePreviousDayTotalSales() throws SQLException {
-        SalesServcice salesService = new SalesServcice();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, -1);
-        Date previousDayDate = calendar.getTime();
-
-        return salesService.getSalesByDate(previousDayDate)
-                .stream()
-                .mapToDouble(Sale::getTotal)
-                .sum();
+   private void updateRecentSales() {
+    JPanel contentPanel = (JPanel) jpRecentSalesContent.getClientProperty("contentPanel");
+    if (contentPanel != null) {
+        contentPanel.removeAll();
+        recentSalesQueue.clear();
     }
 
-    private double calculateCurrentDayTotalSales() throws SQLException {
-        SalesServcice salesService = new SalesServcice();
+    // Sort sales by date in descending order
+    List<Sale> recentSales = new ArrayList<>(cachedSales);
+    Collections.sort(recentSales, (a, b) -> b.getDate().compareTo(a.getDate()));
 
-        Date currentDate = new Date();
-
-        return salesService.getSalesByDate(currentDate)
-                .stream()
-                .mapToDouble(Sale::getTotal)
-                .sum();
+    // Take only the most recent MAX_ITEMS sales
+    for (int i = 0; i < Math.min(MAX_ITEMS, recentSales.size()); i++) {
+        Sale sale = recentSales.get(i);
+        String orderNumber = String.format("%04d", sale.getIdSale());
+        String timeAgo = calculateTimeAgo(sale.getDate());
+        addRecentSale(orderNumber, timeAgo, sale.getTotal());
     }
 
-    private double calculateSalesGrowthPercentage() throws SQLException {
-        double previousDayTotalSales = calculatePreviousDayTotalSales();
-        double currentDayTotalSales = calculateCurrentDayTotalSales();
-
-        if (previousDayTotalSales == 0) return 0;
-        return ((currentDayTotalSales - previousDayTotalSales) / previousDayTotalSales) * 100;
+    if (contentPanel != null) {
+        contentPanel.revalidate();
+        contentPanel.repaint();
     }
+}
+    private boolean shouldUpdateCache() {
+        if (lastCacheUpdate == null) return true;
+          return System.currentTimeMillis() - lastCacheUpdate.getTime() > CACHE_DURATION;
+}
 
-    private int calculatePreviousDayTotalProductsStock() throws SQLException {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, -1);
-        Date previousDayDate = calendar.getTime();
-
-        return productService.getProductsByDate(previousDayDate)
-                .stream()
-                .mapToInt(Product::getCurrentStock)
-                .sum();
-    }
-
-    private int calculateCurrentDayTotalProductsStock() throws SQLException {
-        Date currentDate = new Date();
-
-        return productService.getProductsByDate(currentDate)
-                .stream()
-                .mapToInt(Product::getCurrentStock)
-                .sum();
-    }
-    
-
-    private double calculateProductsGrowthPercentage() throws SQLException {
-        int previousDayTotalProductsStock = calculatePreviousDayTotalProductsStock();
-        int currentDayTotalProductsStock = calculateCurrentDayTotalProductsStock();
-
-        if (previousDayTotalProductsStock == 0) return 0;
-        return ((currentDayTotalProductsStock - previousDayTotalProductsStock) / (double) previousDayTotalProductsStock) * 100;
-    }
+    private void updateCache() throws SQLException {
+          cachedProducts = productService.getAllProducts();
+          SalesServcice salesService = new SalesServcice();
+          cachedSales = salesService.getAllSales();
+          lastCacheUpdate = new Date();
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

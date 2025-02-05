@@ -260,5 +260,16 @@ public class ProductModel {
         }
         return products;
     }
+    
+    public static boolean updateStockAfterSale(Connection conn, int productId, int quantitySold) throws SQLException {
+        String query = "UPDATE productos SET stock_actual = stock_actual - ? WHERE id = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, quantitySold);
+            stmt.setInt(2, productId);
+
+            return stmt.executeUpdate() > 0;
+        }
+    }
 }
 

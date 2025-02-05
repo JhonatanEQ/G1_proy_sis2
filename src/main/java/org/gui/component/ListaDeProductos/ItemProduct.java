@@ -84,7 +84,7 @@ public class ItemProduct extends javax.swing.JPanel {
     
     private void loadProductData() {
         
-        boolean status = gProduct.getCurrentStock()<=gProduct.getMinimumStock();
+        boolean status = gProduct.getCurrentStock()==0;
         // Image setup
         if (gProduct.getImage() != null && !gProduct.getImage().isEmpty()) {
             ImageIcon icon = new ImageIcon(gProduct.getImage());

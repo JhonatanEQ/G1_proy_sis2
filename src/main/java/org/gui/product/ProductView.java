@@ -15,6 +15,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import org.gui.home.Home;
 import org.gui.inventory.InventoryView;
 
 
@@ -324,11 +326,12 @@ private void commonInit() {
                 gProductService.insertOneProduct(lProduct);
                 JOptionPane.showMessageDialog(this, "Producto registrado exitosamente.");
                 
-                // Actualizar la vista del inventario si existe la referencia
-            if (inventoryView != null) {
-                inventoryView.refreshData();
-            }
-                // Limpiar campos después del registro exitoso
+                
+                
+                Home home = (Home) SwingUtilities.getWindowAncestor(this);
+                if (home != null) {
+                    home.requestViewsUpdate();
+                }
                 limpiarCamposRegistro();
 
             } catch (Exception e) {
@@ -553,12 +556,6 @@ private void commonInit() {
         if (gURLImage == null || gURLImage.isEmpty()) {
             mensajeError.append("- Debe seleccionar una imagen para el producto.\n");
         }
-        
-        if (jcCategoria.getSelectedItem() == null || 
-            jcCategoria.getSelectedItem().toString().equals("Seleccionar categoría")) {
-            mensajeError.append("- Debe seleccionar una categoría.\n");
-        }
-
         
 
         if (mensajeError.length() > 0) {

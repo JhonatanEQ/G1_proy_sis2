@@ -8,6 +8,7 @@ package org.gui.inventory;
  *
  * @author Vidal zenzano jonas :v y cristian xD
  */
+import java.awt.Cursor;
 import org.services.product.ProductService;
 import org.services.utils.Product;
 import javax.swing.*;
@@ -379,43 +380,53 @@ private void filtrarProductos(String filtro) {
     private javax.swing.JButton txt_filter;
     private javax.swing.JButton txt_modificar;
     // End of variables declaration//GEN-END:variables
+    
+    private void cargarDatosDesdeBD() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-     private void cargarDatosDesdeBD() {
-         SwingUtilities.invokeLater(() -> {
-         try {
-            List<Product> productos = productService.getAllProducts();
-            tableModel.setRowCount(0); // Limpiar la tabla
-        
-            List<String> productosConBajoStock = new ArrayList<>();
-        
-            for (Product producto : productos) {
-                tableModel.addRow(new Object[]{
-                    producto.getId(),
-                    producto.getCode(),
-                    producto.getName(),
-                    producto.getUnitPrice(),
-                    producto.getCategoryId(),
-                    producto.getCurrentStock(),
-                    producto.getEntryDate(),
-                    producto.getSupplierId(),
-                    (producto.getCurrentStock() <= producto.getMinimumStock()) ? "Bajo stock" : "En stock"
-                });
+        SwingWorker<List<Product>, Void> worker = new SwingWorker<>() {
+            @Override
+            protected List<Product> doInBackground() throws Exception {
+                return productService.getAllProducts();
+            }
 
-                if (producto.getCurrentStock() <= producto.getMinimumStock()) {
-                    productosConBajoStock.add(producto.getName());
+            @Override
+            protected void done() {
+                try {
+                    List<Product> productos = get();
+                    tableModel.setRowCount(0);
+
+                    for (Product producto : productos) {
+                        tableModel.addRow(new Object[]{
+                            producto.getId(),
+                            producto.getCode(),
+                            producto.getName(),
+                            producto.getUnitPrice(),
+                            producto.getCategoryId(),
+                            producto.getCurrentStock(),
+                            producto.getEntryDate(),
+                            producto.getSupplierId(),
+                            (producto.getCurrentStock() <= producto.getMinimumStock()) ? "Bajo stock" : "En stock"
+                        });
+                    }
+
+                    tableModel.fireTableDataChanged();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(InventoryView.this,
+                        "Error al cargar datos: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    setCursor(Cursor.getDefaultCursor());
                 }
             }
-            
-            tableModel.fireTableDataChanged();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, 
-                "Error al cargar datos: " + e.getMessage(), 
-                "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    });
-}
-         public void refreshData() {
-           cargarDatosDesdeBD();
+        };
+
+        worker.execute();
+    }
+    
+    public void refreshData() {
+        cargarDatosDesdeBD();
     }
 }    
 

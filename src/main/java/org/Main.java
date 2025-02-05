@@ -9,11 +9,14 @@ import org.gui.home.Home;
 public class Main {
     public static void main(String[] args) {
         // Verificar conexión a la base de datos antes de lanzar la UI
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            System.out.println("✅ Conexión a PostgreSQL exitosa.");
+       try {
+            DatabaseConnection.printConnectionDetails();
+            Connection conn = DatabaseConnection.getConnection();
+            System.out.println("Conexión exitosa!");
+            conn.close();
         } catch (SQLException e) {
-            System.err.println("❌ Error de conexión a la base de datos.");
-            return;
+            e.printStackTrace();
+            System.out.println("Error al conectar: " + e.getMessage());
         }
         
         

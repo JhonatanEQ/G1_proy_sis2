@@ -84,7 +84,7 @@ private void deshabilitarEdicionTabla(){
 
         txt_eliminar1.setBackground(new java.awt.Color(135, 206, 235));
         txt_eliminar1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        txt_eliminar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/eliminar .png"))); // NOI18N
+        txt_eliminar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/eliminar .png"))); // NOI18N
         txt_eliminar1.setText("Eliminar");
         txt_eliminar1.setMaximumSize(new java.awt.Dimension(95, 27));
         txt_eliminar1.setMinimumSize(new java.awt.Dimension(95, 27));
@@ -106,7 +106,7 @@ private void deshabilitarEdicionTabla(){
 
         txt_filter.setBackground(new java.awt.Color(135, 206, 235));
         txt_filter.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        txt_filter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/filtrar (1).png"))); // NOI18N
+        txt_filter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/filtrar (1).png"))); // NOI18N
         txt_filter.setText("Filter");
         txt_filter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -108,7 +108,7 @@ public class ItemProduct extends javax.swing.JPanel {
         statusLabel.setForeground(status ? new Color(231, 76, 60) : new Color(39, 174, 96));
         
         // Add to cart button icon
-        ImageIcon addIcon = new ImageIcon(getClass().getResource("/org/images/plus.png"));
+        ImageIcon addIcon = new ImageIcon(getClass().getResource("/images/plus.png"));
         Image scaledAdd = addIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         addToCartButton.setIcon(new ImageIcon(scaledAdd));
         addToCartButton.setCursor(status ? new Cursor(Cursor.DEFAULT_CURSOR) : new Cursor(Cursor.HAND_CURSOR));

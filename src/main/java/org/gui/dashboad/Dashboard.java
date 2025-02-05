@@ -554,7 +554,7 @@ public class Dashboard extends javax.swing.JPanel {
 
         jpTotalSales.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/dolar.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/dolar.png"))); // NOI18N
 
         jLabel5.setText("Total de ventas");
 
@@ -613,7 +613,7 @@ public class Dashboard extends javax.swing.JPanel {
         jLabel8.setText("Total de Productos ");
 
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/caja-de-entrega.png"))); // NOI18N
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/caja-de-entrega.png"))); // NOI18N
         jLabel9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         jlTotalPP.setText("999%");
@@ -655,7 +655,7 @@ public class Dashboard extends javax.swing.JPanel {
         jpLowStock.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/alerta.png"))); // NOI18N
+        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/alerta.png"))); // NOI18N
 
         jLabel12.setText("-999");
 

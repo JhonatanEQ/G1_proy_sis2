@@ -133,7 +133,7 @@ public class Home extends javax.swing.JFrame {
         jlDasboard.setText("Dashboard");
 
         jlIconDash.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jlIconDash.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/dash_select.png"))); // NOI18N
+        jlIconDash.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/dash_select.png"))); // NOI18N
         jlIconDash.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout jpDashboardLayout = new javax.swing.GroupLayout(jpDashboard);
@@ -171,7 +171,7 @@ public class Home extends javax.swing.JFrame {
         });
 
         jlIconInv.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jlIconInv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/inv.png"))); // NOI18N
+        jlIconInv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/inv.png"))); // NOI18N
 
         jlInv.setText("Inventario");
 
@@ -208,7 +208,7 @@ public class Home extends javax.swing.JFrame {
         });
 
         jlIconP.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jlIconP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/product.png"))); // NOI18N
+        jlIconP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/product.png"))); // NOI18N
         jlIconP.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jlProduct.setText("Producto");
@@ -245,7 +245,7 @@ public class Home extends javax.swing.JFrame {
         });
 
         jlIconSales.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jlIconSales.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/sales.png"))); // NOI18N
+        jlIconSales.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/sales.png"))); // NOI18N
 
         jlSales.setText("Ventas");
 
@@ -281,7 +281,7 @@ public class Home extends javax.swing.JFrame {
         });
 
         jlIconB.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jlIconB.setText("x");
+        jlIconB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/factura.png"))); // NOI18N
 
         jlBilling.setText("Facturas");
 
@@ -425,160 +425,160 @@ public class Home extends javax.swing.JFrame {
 
     private void jpDashboardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpDashboardMouseClicked
 
-        handleMenuClick(jpDashboard, jlIconDash, "/org/images/dash_select.png", jlDasboard, gDashboardPanel);
+        handleMenuClick(jpDashboard, jlIconDash, "/images/dash_select.png", jlDasboard, gDashboardPanel);
         refreshAllViews();
     }//GEN-LAST:event_jpDashboardMouseClicked
 
     private void jpInventoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpInventoryMouseClicked
         // TODO add your handling code here:
-        handleMenuClick(jpInventory, jlIconInv, "/org/images/inv_select.png", jlInv, gInventoryPanel);
+        handleMenuClick(jpInventory, jlIconInv, "/images/inv_select.png", jlInv, gInventoryPanel);
         refreshAllViews();
     }//GEN-LAST:event_jpInventoryMouseClicked
 
     private void jpProductMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpProductMouseClicked
-        handleMenuClick(jpProduct, jlIconP, "/org/images/product_select.png", jlProduct, gProductPanel);
+        handleMenuClick(jpProduct, jlIconP, "/images/product_select.png", jlProduct, gProductPanel);
         refreshAllViews();
     }//GEN-LAST:event_jpProductMouseClicked
 
     private void jpBillingMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpBillingMouseClicked
-        handleMenuClick(jpBilling, jlIconB, "/org/images/inv_select.png", jlBilling, gBillingPanel);
+        handleMenuClick(jpBilling, jlIconB, "/images/factura_select.png", jlBilling, gBillingPanel);
         refreshAllViews();
     }//GEN-LAST:event_jpBillingMouseClicked
 
     private void jpAlertsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpAlertsMouseClicked
         // TODO add your handling code here:
-        handleMenuClick(jpAlerts, jlIconA, "/org/images/inv_select.png", jlAlerts, gAlertsPanel);
-        refreshAllViews();
+        //handleMenuClick(jpAlerts, jlIconA, "/images/inv_select.png", jlAlerts, gAlertsPanel);
+        //refreshAllViews();
     }//GEN-LAST:event_jpAlertsMouseClicked
 
     private void jpReportsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpReportsMouseClicked
         // TODO add your handling code here:
-        handleMenuClick(jpReports, jlIconR, "/org/images/inv_select.png", jlReports, gReportsPanel);
-        refreshAllViews();
+        //handleMenuClick(jpReports, jlIconR, "/images/inv_select.png", jlReports, gReportsPanel);
+        //refreshAllViews();
     }//GEN-LAST:event_jpReportsMouseClicked
 
     private void jpSettingsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpSettingsMouseClicked
         // TODO add your handling code here:
-        handleMenuClick(jpSettings, jlIconSet, "/org/images/inv_select.png", jlSettings, gSettingsPanel);
-        refreshAllViews();
+        //handleMenuClick(jpSettings, jlIconSet, "/images/inv_select.png", jlSettings, gSettingsPanel);
+        //refreshAllViews();
     }//GEN-LAST:event_jpSettingsMouseClicked
 
     private void jpDashboardMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpDashboardMouseEntered
         // TODO add your handling code here:
         if (gSelectedPanel != jpSettings) {
-            handleMouseEntered(jpSettings, jlIconDash, "/org/images/dashH.png", jlDasboard, "#F1F6FD", "#4061DB");
+            handleMouseEntered(jpSettings, jlIconDash, "/images/dashH.png", jlDasboard, "#F1F6FD", "#4061DB");
         }
     }//GEN-LAST:event_jpDashboardMouseEntered
 
     private void jpInventoryMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpInventoryMouseEntered
         // TODO add your handling code here:
         if (gSelectedPanel != jpInventory) {
-            handleMouseEntered(jpInventory, jlIconInv, "/org/images/inv_select.png", jlInv, "#F1F6FD", "#4061DB");
+            handleMouseEntered(jpInventory, jlIconInv, "/images/inv_select.png", jlInv, "#F1F6FD", "#4061DB");
         }
     }//GEN-LAST:event_jpInventoryMouseEntered
 
     private void jpInventoryMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpInventoryMouseExited
         // TODO add your handling code here:
         if (gSelectedPanel != jpInventory) {
-            handleMouseExited(jpInventory, jlIconInv, "/org/images/inv.png", jlInv, "#FFFFFF", "#4E5561");
+            handleMouseExited(jpInventory, jlIconInv, "/images/inv.png", jlInv, "#FFFFFF", "#4E5561");
         }
     }//GEN-LAST:event_jpInventoryMouseExited
 
     private void jpProductMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpProductMouseEntered
         // TODO add your handling code here:
         if (gSelectedPanel != jpProduct) {
-            handleMouseEntered(jpProduct, jlIconP, "/org/images/product_select.png", jlProduct, "#F1F6FD", "#4061DB");
+            handleMouseEntered(jpProduct, jlIconP, "/images/product_select.png", jlProduct, "#F1F6FD", "#4061DB");
         }
     }//GEN-LAST:event_jpProductMouseEntered
 
     private void jpProductMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpProductMouseExited
         // TODO add your handling code here:
         if (gSelectedPanel != jpProduct) {
-            handleMouseExited(jpProduct, jlIconP, "/org/images/product.png", jlProduct, "#FFFFFF", "#4E5561");
+            handleMouseExited(jpProduct, jlIconP, "/images/product.png", jlProduct, "#FFFFFF", "#4E5561");
         }
     }//GEN-LAST:event_jpProductMouseExited
 
     private void jpSalesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpSalesMouseEntered
         // TODO add your handling code here:
         if (gSelectedPanel != jpSales) {
-            handleMouseEntered(jpSales, jlIconSales, "/org/images/sales_select.png", jlSales, "#F1F6FD", "#4061DB");
+            handleMouseEntered(jpSales, jlIconSales, "/images/sales_select.png", jlSales, "#F1F6FD", "#4061DB");
         }
     }//GEN-LAST:event_jpSalesMouseEntered
 
     private void jpSalesMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpSalesMouseExited
         // TODO add your handling code here:
         if (gSelectedPanel != jpSales) {
-            handleMouseExited(jpSales, jlIconSales, "/org/images/sales.png", jlSales, "#FFFFFF", "#4E5561");
+            handleMouseExited(jpSales, jlIconSales, "/images/sales.png", jlSales, "#FFFFFF", "#4E5561");
         }
     }//GEN-LAST:event_jpSalesMouseExited
 
     private void jpSalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpSalesMouseClicked
         // TODO add your handling code here:
-        handleMenuClick(jpSales, jlIconSales, "/org/images/inv_select.png", jlSales, gSalesPanel);
+        handleMenuClick(jpSales, jlIconSales, "/images/inv_select.png", jlSales, gSalesPanel);
         refreshAllViews();
     }//GEN-LAST:event_jpSalesMouseClicked
 
     private void jpBillingMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpBillingMouseEntered
         // TODO add your handling code here:
         if (gSelectedPanel != jpBilling) {
-            handleMouseEntered(jpBilling, jlIconB, "/org/images/product_select.png", jlBilling, "#F1F6FD", "#4061DB");
+            handleMouseEntered(jpBilling, jlIconB, "/images/factura_select.png", jlBilling, "#F1F6FD", "#4061DB");
         }
     }//GEN-LAST:event_jpBillingMouseEntered
 
     private void jpBillingMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpBillingMouseExited
         // TODO add your handling code here:
         if (gSelectedPanel != jpBilling) {
-            handleMouseExited(jpBilling, jlIconB, "/org/images/inv.png", jlBilling, "#FFFFFF", "#4E5561");
+            handleMouseExited(jpBilling, jlIconB, "/images/factura.png", jlBilling, "#FFFFFF", "#4E5561");
         }
     }//GEN-LAST:event_jpBillingMouseExited
 
     private void jpAlertsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpAlertsMouseEntered
         // TODO add your handling code here:
-        if (gSelectedPanel != jpAlerts) {
-            handleMouseEntered(jpAlerts, jlIconA, "/org/images/product_select.png", jlAlerts, "#F1F6FD", "#4061DB");
-        }
+        //if (gSelectedPanel != jpAlerts) {
+        //    handleMouseEntered(jpAlerts, jlIconA, "/images/product_select.png", jlAlerts, "#F1F6FD", "#4061DB");
+        //}
     }//GEN-LAST:event_jpAlertsMouseEntered
 
     private void jpAlertsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpAlertsMouseExited
         // TODO add your handling code here:
 
-        if (gSelectedPanel != jpAlerts) {
-            handleMouseExited(jpAlerts, jlIconA, "/org/images/inv.png", jlAlerts, "#FFFFFF", "#4E5561");
-        }
+        //if (gSelectedPanel != jpAlerts) {
+        //    handleMouseExited(jpAlerts, jlIconA, "/images/inv.png", jlAlerts, "#FFFFFF", "#4E5561");
+        //}
     }//GEN-LAST:event_jpAlertsMouseExited
 
     private void jpReportsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpReportsMouseEntered
         // TODO add your handling code here:
-        if (gSelectedPanel != jpReports) {
-            handleMouseEntered(jpReports, jlIconR, "/org/images/product_select.png", jlReports, "#F1F6FD", "#4061DB");
-        }
+        //if (gSelectedPanel != jpReports) {
+         //   handleMouseEntered(jpReports, jlIconR, "/images/product_select.png", jlReports, "#F1F6FD", "#4061DB");
+        //}
     }//GEN-LAST:event_jpReportsMouseEntered
 
     private void jpReportsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpReportsMouseExited
         // TODO add your handling code here:
-        if (gSelectedPanel != jpReports) {
-            handleMouseExited(jpReports, jlIconR, "/org/images/inv.png", jlReports, "#FFFFFF", "#4E5561");
-        }
+        //if (gSelectedPanel != jpReports) {
+        //    handleMouseExited(jpReports, jlIconR, "/images/inv.png", jlReports, "#FFFFFF", "#4E5561");
+        //}
     }//GEN-LAST:event_jpReportsMouseExited
 
     private void jpSettingsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpSettingsMouseEntered
         // TODO add your handling code here:
-        if (gSelectedPanel != jpSettings) {
-            handleMouseEntered(jpSettings, jlIconSet, "/org/images/product_select.png", jlSettings, "#F1F6FD", "#4061DB");
-        }
+        //if (gSelectedPanel != jpSettings) {
+        //    handleMouseEntered(jpSettings, jlIconSet, "/images/product_select.png", jlSettings, "#F1F6FD", "#4061DB");
+        //}
     }//GEN-LAST:event_jpSettingsMouseEntered
 
     private void jpSettingsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpSettingsMouseExited
         // TODO add your handling code here:
-        if (gSelectedPanel != jpSettings) {
-            handleMouseExited(jpSettings, jlIconSet, "/org/images/inv.png", jlSettings, "#FFFFFF", "#4E5561");
-        }
+        //if (gSelectedPanel != jpSettings) {
+        //    handleMouseExited(jpSettings, jlIconSet, "/images/inv.png", jlSettings, "#FFFFFF", "#4E5561");
+        //}
     }//GEN-LAST:event_jpSettingsMouseExited
 
     private void jpDashboardMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpDashboardMouseExited
         // TODO add your handling code here:
          if (gSelectedPanel != jpDashboard) {
-            handleMouseExited(jpDashboard, jlIconDash, "/org/images/dash_select.png", jlDasboard, "#FFFFFF", "#4E5561");
+            handleMouseExited(jpDashboard, jlIconDash, "/images/dash_select.png", jlDasboard, "#FFFFFF", "#4E5561");
         }
     }//GEN-LAST:event_jpDashboardMouseExited
 
@@ -623,7 +623,7 @@ public class Home extends javax.swing.JFrame {
 
     private void initDefaultSelection() {
         gSelectedPanel = jpDashboard;
-        handleMouseEntered(jpDashboard, jlIconDash, "/org/images/dashH.png", jlDasboard, "#F1F6FD", "#4061DB");
+        handleMouseEntered(jpDashboard, jlIconDash, "/images/dashH.png", jlDasboard, "#F1F6FD", "#4061DB");
         showPanel(gDashboardPanel);
     }
 
@@ -662,13 +662,15 @@ public class Home extends javax.swing.JFrame {
 
     private void resetPanelState(JPanel panel) {
         if (panel == jpDashboard) {
-            handleMouseExited(jpDashboard, jlIconDash, "/org/images/dash_select.png", jlDasboard, "#FFFFFF", "#4E5561");
+            handleMouseExited(jpDashboard, jlIconDash, "/images/dash_select.png", jlDasboard, "#FFFFFF", "#4E5561");
         } else if (panel == jpInventory) {
-            handleMouseExited(jpInventory, jlIconInv, "/org/images/inv.png", jlInv, "#FFFFFF", "#4E5561");
+            handleMouseExited(jpInventory, jlIconInv, "/images/inv.png", jlInv, "#FFFFFF", "#4E5561");
         } else if (panel == jpProduct) {
-            handleMouseExited(jpProduct, jlIconP, "/org/images/product.png", jlProduct, "#FFFFFF", "#4E5561");
+            handleMouseExited(jpProduct, jlIconP, "/images/product.png", jlProduct, "#FFFFFF", "#4E5561");
         } else if (panel == jpSales) {
-            handleMouseExited(jpSales, jlIconSales, "/org/images/sales.png", jlSales, "#FFFFFF", "#4E5561");
+            handleMouseExited(jpSales, jlIconSales, "/images/sales.png", jlSales, "#FFFFFF", "#4E5561");
+        } else if(panel == jpBilling) {
+            handleMouseExited(jpBilling, jlIconB, "/images/factura.png", jlBilling, "#FFFFFF", "#4E5561");
         }
         // Agregar más paneles aquí según sea necesario...
     }

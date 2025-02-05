@@ -372,7 +372,7 @@ public class SalesView extends javax.swing.JPanel {
         homeFrame.handleMenuClick(
             homeFrame.getBillingButton(), 
             homeFrame.getIconBilling(),
-            "/org/images/inv_select.png",
+            "/images/factura_select.png",
             homeFrame.getLabelBilling(),
             homeFrame.getBillingPanel()
         );
@@ -509,7 +509,7 @@ public class SalesView extends javax.swing.JPanel {
         txt_filter.setBackground(new java.awt.Color(0, 102, 255));
         txt_filter.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         txt_filter.setForeground(new java.awt.Color(255, 255, 255));
-        txt_filter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/images/filtrar (1).png"))); // NOI18N
+        txt_filter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/filtrar (1).png"))); // NOI18N
         txt_filter.setText("Filter");
         txt_filter.setBorder(null);
         txt_filter.addActionListener(new java.awt.event.ActionListener() {

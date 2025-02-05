@@ -37,9 +37,9 @@ public class ItemSalesProduct extends JPanel {
 
         // Botón eliminar
         
-        deleteIcon = new ImageIcon(getClass().getResource("/org/images/borrar.png"));
-        deleteHoverIcon = new ImageIcon(getClass().getResource("/org/images/delete.png"));
-        deleteButton = new JLabel(new ImageIcon(getClass().getResource("/org/images/borrar.png")));
+        deleteIcon = new ImageIcon(getClass().getResource("/images/borrar.png"));
+        deleteHoverIcon = new ImageIcon(getClass().getResource("/images/delete.png"));
+        deleteButton = new JLabel(new ImageIcon(getClass().getResource("/images/borrar.png")));
         deleteButton.setBackground(Color.WHITE);
         deleteButton.setOpaque(true);
         deleteButton.setBorder(null);
@@ -60,7 +60,7 @@ public class ItemSalesProduct extends JPanel {
         quantityPanel.setBackground(Color.WHITE);
 
         // Botón menos
-        minusButton = new JLabel(new ImageIcon(getClass().getResource("/org/images/signo-menos.png")));
+        minusButton = new JLabel(new ImageIcon(getClass().getResource("/images/signo-menos.png")));
         minusButton.setBackground(Color.WHITE);
         minusButton.setOpaque(true);
         minusButton.setBorder(null);
@@ -76,7 +76,7 @@ public class ItemSalesProduct extends JPanel {
         quantityLabel.setPreferredSize(new Dimension(40, 38));
 
         // Botón más
-        plusButton = new JLabel(new ImageIcon(getClass().getResource("/org/images/anadir.png")));
+        plusButton = new JLabel(new ImageIcon(getClass().getResource("/images/anadir.png")));
         plusButton.setBackground(Color.WHITE);
         plusButton.setOpaque(true);
         plusButton.setBorder(null);

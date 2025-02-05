@@ -516,7 +516,7 @@ public class BillingView extends JPanel {
             logoImage.setScaleImage(ScaleImageEnum.RETAIN_SHAPE);
 
             // Cargar la imagen del logo
-            String logoPath = getClass().getResource("/org/images/logo.png").toString();
+            String logoPath = getClass().getResource("/images/logo.png").toString();
             JRDesignExpression imageExpression = new JRDesignExpression();
             imageExpression.setText("\"" + logoPath + "\"");
             logoImage.setExpression(imageExpression);

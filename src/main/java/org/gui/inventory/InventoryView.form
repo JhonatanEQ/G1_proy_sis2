@@ -58,7 +58,7 @@
           <Font name="Segoe UI" size="14" style="1"/>
         </Property>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/org/images/eliminar .png"/>
+          <Image iconType="3" name="/images/eliminar .png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Eliminar"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -132,7 +132,7 @@
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/org/images/filtrar (1).png"/>
+              <Image iconType="3" name="/images/filtrar (1).png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Filter"/>
           </Properties>

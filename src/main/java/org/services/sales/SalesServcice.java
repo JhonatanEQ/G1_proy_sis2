@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.model.ProductModel;
 import org.model.SaleModel;
 import org.model.SalesDetailModel;
 import org.model.config.DatabaseConnection;
@@ -28,10 +29,20 @@ public class SalesServcice {
         try (Connection conn = gConnDB.getConnection()) {
             conn.setAutoCommit(false);
             try {
+                // Save the sale
                 if (SaleModel.save(conn, sale)) {
+                    // Save each detail and update product stock
                     for (SalesDetail detail : sale.getDetails()) {
                         detail.setIdSale(sale.getIdSale());
+                        
+                        // Save the sale detail
                         if (!SalesDetailModel.save(conn, detail)) {
+                            conn.rollback();
+                            return false;
+                        }
+                        
+                        // Update the product stock
+                        if (!ProductModel.updateStockAfterSale(conn, detail.getIdProduct(), detail.getQuantity())) {
                             conn.rollback();
                             return false;
                         }
@@ -46,7 +57,7 @@ public class SalesServcice {
                 throw e;
             }
         }
-    }
+     }
     
      public List<Sale> getRecentSales(int limit) throws SQLException {
         try (Connection conn = gConnDB.getConnection()) {

@@ -45,27 +45,75 @@ public class SalesView extends javax.swing.JPanel {
     private double tax;
     private double total;
 
-    public SalesView() {
+     public SalesView() {
         cartItems = new HashMap<>();
+        gProducts = new ArrayList<>();  // Inicializar con lista vacía
+        gCartProducts = new ArrayList<>();
+        
         initComponents();
         setupStyle();
         setupCartPanel();
-        initializeProducts();
-        setupProductsPanel();
+        loadProducts(); // Nuevo método para cargar productos
+    }
+     
+    private void loadProducts() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        
+        SwingWorker<List<Product>, Void> worker = new SwingWorker<>() {
+            @Override
+            protected List<Product> doInBackground() throws Exception {
+                ProductService productService = new ProductService();
+                return productService.getAllProducts();
+            }
+            
+            @Override
+            protected void done() {
+                try {
+                    gProducts = new ArrayList<>(get());
+                    setupProductsPanel();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(SalesView.this, 
+                        "Error al cargar los productos: " + e.getMessage(), 
+                        "Error", 
+                        JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
+                } finally {
+                    setCursor(Cursor.getDefaultCursor());
+                }
+            }
+        };
+        
+        worker.execute();
     }
 
-    private void initializeProducts() {
-        gProducts = new ArrayList<>();
-        gCartProducts = new ArrayList<>();
+   private void setupProductsPanel() {
+        if (gProducts == null) return;  // Protección contra null
+        
+        JScrollPane scrollPane = (JScrollPane) jpaProductos.getComponent(0);
+        JPanel contentPanel = (JPanel) scrollPane.getViewport().getView();
+        contentPanel.removeAll();
+        gCartProducts.clear();  // Limpiar la lista antes de añadir nuevos items
 
-        ProductService productService = new ProductService();
-        try {
-            gProducts = (ArrayList<Product>) productService.getAllProducts();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar los productos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
+        for (Product product : gProducts) {
+            ItemProduct itemProduct = new ItemProduct(product, this);
+            if (!gCartProducts.isEmpty()) {
+                contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+            itemProduct.setMaximumSize(new Dimension(Integer.MAX_VALUE, itemProduct.getPreferredSize().height));
+            itemProduct.setAlignmentX(Component.LEFT_ALIGNMENT);
+            gCartProducts.add(itemProduct);
+            contentPanel.add(itemProduct);
         }
+        
+        contentPanel.revalidate();
+        contentPanel.repaint();
     }
+
+    // Actualizar el método refreshData
+    public void refreshData() {
+        loadProducts();  // Usar el nuevo método
+    }
+
 
     private void setupStyle() {
         this.setBackground(BACKGROUND_COLOR);
@@ -96,25 +144,6 @@ public class SalesView extends javax.swing.JPanel {
         jToggleButton1.setBorderPainted(false);
 
         txt_filter.setBorder(new RoundedBorder(10, LIGHT_GRAY));
-    }
-
-     private void setupProductsPanel() {
-        JScrollPane scrollPane = (JScrollPane) jpaProductos.getComponent(0);
-        JPanel contentPanel = (JPanel) scrollPane.getViewport().getView();
-        contentPanel.removeAll();
-
-        for (Product product : gProducts) {
-            ItemProduct itemProduct = new ItemProduct(product, this);
-            if (!gCartProducts.isEmpty()) {
-                contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-            }
-            itemProduct.setMaximumSize(new Dimension(Integer.MAX_VALUE, itemProduct.getPreferredSize().height));
-            itemProduct.setAlignmentX(Component.LEFT_ALIGNMENT);
-            gCartProducts.add(itemProduct);
-            contentPanel.add(itemProduct);
-        }
-        contentPanel.revalidate();
-        contentPanel.repaint();
     }
 
     private void setupCartPanel() {
@@ -211,17 +240,7 @@ public class SalesView extends javax.swing.JPanel {
         boolean generateInvoice = askForInvoice();
         Sale sale = createSaleWithDetails();
 
-
-        try {
-            if (processSale(sale, generateInvoice)) {
-                showSuccessMessage();
-                clearCart();
-            } else {
-                showErrorMessage("Error al registrar la venta");
-            }
-        } catch (SQLException e) {
-            showErrorMessage("Error: " + e.getMessage());
-        }
+        processSale(sale, generateInvoice);
     }
 
     private boolean confirmSale() {
@@ -283,29 +302,41 @@ public class SalesView extends javax.swing.JPanel {
         return detail;
     }
 
-    private boolean processSale(Sale sale, boolean generateInvoice) throws SQLException {
-        SalesServcice saleService = new SalesServcice();
-        if (!saleService.save(sale)) {
-            return false;
-        }
-        
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        
-        if (generateInvoice) {
-                
-            openFacturaScreen(sale); // Desbloquear esta línea
-            // Comentado temporalmente
-            // openFacturaScreen(sale);
-        }
-        return true;
+    private void processSale(Sale sale, boolean generateInvoice) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        SwingWorker<Boolean, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Boolean doInBackground() throws Exception {
+                SalesServcice saleService = new SalesServcice();
+                return saleService.save(sale);
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    boolean success = get();
+                    if (success) {
+                        Home home = (Home) SwingUtilities.getWindowAncestor(SalesView.this);
+                        if (home != null) {
+                            home.requestViewsUpdate();
+                        }
+                        showSuccessMessage();
+                        clearCart();
+                    } else {
+                        showErrorMessage("Error al registrar la venta");
+                    }
+                } catch (Exception e) {
+                    showErrorMessage("Error: " + e.getMessage());
+                } finally {
+                    setCursor(Cursor.getDefaultCursor());
+                }
+            }
+        };
+
+        worker.execute();
     }
     
-
-
     private void showSuccessMessage() {
         JOptionPane.showMessageDialog(this, 
             "Venta registrada exitosamente", 
@@ -421,7 +452,7 @@ public class SalesView extends javax.swing.JPanel {
             return product.getUnitPrice() * quantity;
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -602,7 +633,7 @@ public class SalesView extends javax.swing.JPanel {
     
         if (filtro.isEmpty()) {
            // Si el filtro está vacío, mostrar todos los productos
-          initializeProducts(); // Recargar todos los productos
+          loadProducts(); // Recargar todos los productos
         } else {
           // Si hay un filtro, aplicar la búsqueda
          filtrarProductos(filtro); // Filtrar productos
@@ -611,15 +642,34 @@ public class SalesView extends javax.swing.JPanel {
     setupProductsPanel(); // Actualizar la lista de productos en la interfaz
     }//GEN-LAST:event_txt_filterActionPerformed
     private void filtrarProductos(String filtro) {
-        ProductService productService = new ProductService();
-        try {
-          // Obtener los productos filtrados
-         gProducts = (ArrayList<Product>) productService.getFilteredProducts(filtro);
-        } catch (SQLException e) {
-         JOptionPane.showMessageDialog(this, "Error al filtrar productos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-         e.printStackTrace();
-        }
-}
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        SwingWorker<List<Product>, Void> worker = new SwingWorker<>() {
+            @Override
+            protected List<Product> doInBackground() throws Exception {
+                ProductService productService = new ProductService();
+                return productService.getFilteredProducts(filtro);
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    gProducts = new ArrayList<>(get());
+                    setupProductsPanel();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(SalesView.this, 
+                        "Error al filtrar productos: " + e.getMessage(), 
+                        "Error", 
+                        JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
+                } finally {
+                    setCursor(Cursor.getDefaultCursor());
+                }
+            }
+        };
+
+        worker.execute();
+    }
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
 
         registerSale();

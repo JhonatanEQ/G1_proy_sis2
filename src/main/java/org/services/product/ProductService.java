@@ -90,4 +90,16 @@ public class ProductService {
         }
     }
     
+    public boolean updateStockAfterSale(int productId, int quantitySold) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            return ProductModel.updateStockAfterSale(conn, productId, quantitySold);
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
+        }
+    }
+    
 }

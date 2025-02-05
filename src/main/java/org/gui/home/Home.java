@@ -6,9 +6,11 @@ package org.gui.home;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 import org.gui.alerts.AlertsView;
 import org.gui.billing.BillingView;
@@ -422,38 +424,43 @@ public class Home extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jpDashboardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpDashboardMouseClicked
-        if (gDashboardPanel != null) {
-            gDashboardPanel.refreshDashboard();
-        }
+
         handleMenuClick(jpDashboard, jlIconDash, "/org/images/dash_select.png", jlDasboard, gDashboardPanel);
+        refreshAllViews();
     }//GEN-LAST:event_jpDashboardMouseClicked
 
     private void jpInventoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpInventoryMouseClicked
         // TODO add your handling code here:
         handleMenuClick(jpInventory, jlIconInv, "/org/images/inv_select.png", jlInv, gInventoryPanel);
+        refreshAllViews();
     }//GEN-LAST:event_jpInventoryMouseClicked
 
     private void jpProductMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpProductMouseClicked
         handleMenuClick(jpProduct, jlIconP, "/org/images/product_select.png", jlProduct, gProductPanel);
+        refreshAllViews();
     }//GEN-LAST:event_jpProductMouseClicked
 
     private void jpBillingMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpBillingMouseClicked
         handleMenuClick(jpBilling, jlIconB, "/org/images/inv_select.png", jlBilling, gBillingPanel);
+        refreshAllViews();
     }//GEN-LAST:event_jpBillingMouseClicked
 
     private void jpAlertsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpAlertsMouseClicked
         // TODO add your handling code here:
         handleMenuClick(jpAlerts, jlIconA, "/org/images/inv_select.png", jlAlerts, gAlertsPanel);
+        refreshAllViews();
     }//GEN-LAST:event_jpAlertsMouseClicked
 
     private void jpReportsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpReportsMouseClicked
         // TODO add your handling code here:
         handleMenuClick(jpReports, jlIconR, "/org/images/inv_select.png", jlReports, gReportsPanel);
+        refreshAllViews();
     }//GEN-LAST:event_jpReportsMouseClicked
 
     private void jpSettingsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpSettingsMouseClicked
         // TODO add your handling code here:
         handleMenuClick(jpSettings, jlIconSet, "/org/images/inv_select.png", jlSettings, gSettingsPanel);
+        refreshAllViews();
     }//GEN-LAST:event_jpSettingsMouseClicked
 
     private void jpDashboardMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpDashboardMouseEntered
@@ -508,6 +515,7 @@ public class Home extends javax.swing.JFrame {
     private void jpSalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpSalesMouseClicked
         // TODO add your handling code here:
         handleMenuClick(jpSales, jlIconSales, "/org/images/inv_select.png", jlSales, gSalesPanel);
+        refreshAllViews();
     }//GEN-LAST:event_jpSalesMouseClicked
 
     private void jpBillingMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jpBillingMouseEntered
@@ -638,16 +646,19 @@ public class Home extends javax.swing.JFrame {
         handleMouseEntered(panel, icon, iconPathSelected, textLabel, "#F1F6FD", "#4061DB");
         gSelectedPanel = panel;
 
+        // Mostrar el panel solicitado
+        showPanel(targetPanel);
+
+        // Refrescar los datos del panel actual
         if (targetPanel == gInventoryPanel) {
             ((InventoryView) gInventoryPanel).refreshData();
+        } else if (targetPanel == gDashboardPanel) {
+            ((Dashboard) gDashboardPanel).loadDashboardData();
+        } else if (targetPanel == gSalesPanel) {
+            ((SalesView) gSalesPanel).refreshData();
         }
-        // Actualizar el dashboard si se está cambiando a ese panel
-         else if (targetPanel == gDashboardPanel) {
-        ((Dashboard)gDashboardPanel).loadDashboardData();
     }
 
-        showPanel(targetPanel);
-    }
 
     private void resetPanelState(JPanel panel) {
         if (panel == jpDashboard) {
@@ -676,6 +687,42 @@ public class Home extends javax.swing.JFrame {
 
     public JLabel getLabelBilling() {
         return jlBilling;
+    }
+    
+    private void refreshAllViews() {
+        // Actualizar Dashboard
+        if (gDashboardPanel != null) {
+            gDashboardPanel.refreshDashboard();
+        }
+
+        // Actualizar Inventario
+        if (gInventoryPanel != null) {
+            gInventoryPanel.refreshData();
+        }
+
+        // Actualizar Vista de Ventas
+        if (gSalesPanel != null) {
+            gSalesPanel.refreshData();
+        }
+    }
+    
+    public void requestViewsUpdate() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                refreshAllViews();
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                setCursor(Cursor.getDefaultCursor());
+            }
+        };
+
+        worker.execute();
     }
 
 }

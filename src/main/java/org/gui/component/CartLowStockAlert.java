@@ -37,7 +37,7 @@ public class CartLowStockAlert extends javax.swing.JPanel {
             new EmptyBorder(5, 5, 5, 5),
             new RoundedBorder(8, new Color(240, 240, 240))
         ));
-        setPreferredSize(new Dimension(330, 70));
+        setPreferredSize(new Dimension(280, 70));
         setLayout(new BorderLayout(10, 5));
         
         // Create main content panel
@@ -116,7 +116,35 @@ public class CartLowStockAlert extends javax.swing.JPanel {
             .addGap(0, 46, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+class RoundedBorder extends javax.swing.border.AbstractBorder {
+    private int radius;
+    private Color color;
 
+    RoundedBorder(int radius, Color color) {
+        this.radius = radius;
+        this.color = color;
+    }
+
+    @Override
+    public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+        Graphics2D g2d = (Graphics2D) g.create();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setColor(color);
+        g2d.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+        g2d.dispose();
+    }
+
+    @Override
+    public Insets getBorderInsets(Component c) {
+        return new Insets(4, 4, 4, 4);
+    }
+
+    @Override
+    public Insets getBorderInsets(Component c, Insets insets) {
+        insets.left = insets.top = insets.right = insets.bottom = 4;
+        return insets;
+    }
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

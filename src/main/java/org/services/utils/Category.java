@@ -15,7 +15,7 @@ public class Category {
     public Category() {
     }
 
-    public int getgId() {
+    public int getId() {
         return gId;
     }
     
@@ -24,7 +24,7 @@ public class Category {
     }
     
 
-    public String getgName() {
+    public String getName() {
         return gName;
     }
 

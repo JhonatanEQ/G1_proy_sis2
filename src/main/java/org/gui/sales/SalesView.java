@@ -320,7 +320,11 @@ public class SalesView extends javax.swing.JPanel {
                         Home home = (Home) SwingUtilities.getWindowAncestor(SalesView.this);
                         if (home != null) {
                             home.requestViewsUpdate();
+                            if (generateInvoice) {
+                                openFacturaScreen(sale);
+                            }
                         }
+                        
                         showSuccessMessage();
                         clearCart();
                     } else {

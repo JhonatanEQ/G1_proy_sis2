@@ -19,26 +19,30 @@ import org.services.utils.SalesDetail;
 public class SalesDetailModel {
     
     public static List<SalesDetail> getByIdSale(Connection conn, int idSale) throws SQLException {
-        String query = "SELECT * FROM detalle_venta WHERE id_venta = ?";
-        List<SalesDetail> details = new ArrayList<>();
-        
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, idSale);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    SalesDetail sd = new SalesDetail();
-                    sd.setIdDetail(rs.getInt("id_detalle"));
-                    sd.setIdSale(rs.getInt("id_venta"));
-                    sd.setIdProduct(rs.getInt("id_producto"));
-                    sd.setQuantity(rs.getInt("cantidad"));
-                    sd.setUnitPrice(rs.getDouble("precio_unitario"));
-                    sd.setSubtotal(rs.getDouble("subtotal"));
-                    details.add(sd);
-                }
+    String query = "SELECT dv.*, p.nombre as nombre_producto " +
+                  "FROM detalle_venta dv " +
+                  "JOIN productos p ON dv.id_producto = p.id " + // Cambiado para usar 'id' en lugar de 'id_producto'
+                  "WHERE dv.id_venta = ?";
+    List<SalesDetail> details = new ArrayList<>();
+    
+    try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setInt(1, idSale);
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                SalesDetail sd = new SalesDetail();
+                sd.setIdDetail(rs.getInt("id_detalle"));
+                sd.setIdSale(rs.getInt("id_venta"));
+                sd.setIdProduct(rs.getInt("id_producto"));
+                sd.setQuantity(rs.getInt("cantidad"));
+                sd.setUnitPrice(rs.getDouble("precio_unitario"));
+                sd.setSubtotal(rs.getDouble("subtotal"));
+                sd.setProductName(rs.getString("nombre_producto"));
+                details.add(sd);
             }
         }
-        return details;
     }
+    return details;
+}
     
     public static boolean save(Connection conn, SalesDetail detail) throws SQLException {
         String query = "INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?)";

@@ -296,6 +296,8 @@ public class SalesView extends javax.swing.JPanel {
         }
         
         if (generateInvoice) {
+                
+            openFacturaScreen(sale); // Desbloquear esta línea
             // Comentado temporalmente
             // openFacturaScreen(sale);
         }
@@ -320,13 +322,9 @@ public class SalesView extends javax.swing.JPanel {
     
 
     private void openFacturaScreen(Sale sale) {
-        // Obtener referencia al JFrame principal
+    try {
         Home homeFrame = (Home) SwingUtilities.getWindowAncestor(this);
-
-        // Actualizar BillingView con la venta
-        //homeFrame.getBillingPanel().setSaleData(sale);
-
-        // Simular clic en jpBilling
+        homeFrame.getBillingPanel().setSaleData(sale);
         homeFrame.handleMenuClick(
             homeFrame.getBillingButton(), 
             homeFrame.getIconBilling(),
@@ -334,7 +332,14 @@ public class SalesView extends javax.swing.JPanel {
             homeFrame.getLabelBilling(),
             homeFrame.getBillingPanel()
         );
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this,
+            "Error al abrir la factura: " + e.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
     }
+}
 
     private void clearCart() {
         cartItems.clear();

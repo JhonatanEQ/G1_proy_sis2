@@ -1,18 +1,46 @@
 package org.gui.billing;
 
+import com.lowagie.text.alignment.HorizontalAlignment;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import org.services.utils.Sale;
-import org.services.utils.SalesDetail;
-import org.model.SalesDetailModel;
+import java.io.File;
+import java.io.InputStream;
+
 import org.model.config.DatabaseConnection;
 import java.sql.Connection;
 import java.util.List;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.design.*;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.type.LineStyleEnum;
+import net.sf.jasperreports.engine.design.JRDesignBand;
+import net.sf.jasperreports.engine.design.JRDesignSection;
+import net.sf.jasperreports.engine.design.JRDesignStaticText;
+import net.sf.jasperreports.engine.design.JRDesignTextField;
+import net.sf.jasperreports.engine.design.JRDesignExpression;
+import net.sf.jasperreports.engine.type.HorizontalTextAlignEnum;
+import net.sf.jasperreports.engine.design.JRDesignImage;
+import net.sf.jasperreports.engine.type.ScaleImageEnum;
+
+import org.model.InvoiceData;
+import org.services.utils.Sale;
+import org.services.utils.SalesDetail;
+import org.model.SalesDetailModel;
 
 public class BillingView extends JPanel {
     private DefaultTableModel model;
@@ -26,6 +54,7 @@ public class BillingView extends JPanel {
     private JTextField txtFechaFactura;
     private JTextField txtFechaCaducidad;
     private JButton btnPreview;
+    private JButton btnExport;
     private JScrollPane scrollPane;
 
     public BillingView() {
@@ -126,6 +155,13 @@ public class BillingView extends JPanel {
         btnPreview.setForeground(Color.WHITE);
         btnPreview.addActionListener(e -> previsualizarFactura());
         add(btnPreview);
+        
+        btnExport = new JButton("Imprimir");
+        btnExport.setBounds(600, 60, 110, 30);
+        btnExport.setBackground(new Color(0, 100, 0));
+        btnExport.setForeground(Color.WHITE);
+        btnExport.addActionListener(e -> exportToJasperReport());
+        add(btnExport);
 
         // Detalle de Productos
         JLabel lblDetalleProductos = new JLabel("Detalle de Productos");
@@ -357,15 +393,372 @@ public class BillingView extends JPanel {
         previewDialog.setSize(700, 600);
         previewDialog.setLocationRelativeTo(this);
         previewDialog.setVisible(true);
-    }
+    } 
+    
+    //Factura PDF
+    private void exportToJasperReport() {
+        if (model.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this,
+                "No hay datos para exportar",
+                "Error de Exportación",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Factura Electrónica");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new BillingView());
-        frame.pack();
-        frame.setSize(740, 570);  // Aumentado el alto para acomodar los totales
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        try {
+            // Crear lista de items
+            List<InvoiceData> invoiceItems = new ArrayList<>();
+            double subtotal = 0.0;
+            for (int i = 0; i < model.getRowCount(); i++) {
+                String producto = String.valueOf(model.getValueAt(i, 0));
+                String descripcion = String.valueOf(model.getValueAt(i, 1));
+                int cantidad = Integer.parseInt(String.valueOf(model.getValueAt(i, 2)));
+                double precioUnitario = Double.parseDouble(String.valueOf(model.getValueAt(i, 3))
+                    .replace("$", "").trim());
+                double subtotalItem = Double.parseDouble(String.valueOf(model.getValueAt(i, 4))
+                    .replace("$", "").trim());
+
+                subtotal += subtotalItem;
+                invoiceItems.add(new InvoiceData(
+                    producto,
+                    descripcion,
+                    cantidad,
+                    precioUnitario,
+                    subtotalItem
+                ));
+            }
+
+            // Calcular totales
+            double iva = subtotal * 0.10;
+            double descuento = subtotal * 0.05;
+            double total = subtotal + iva - descuento;
+
+            // Crear el diseño del reporte
+            JasperDesign jasperDesign = new JasperDesign();
+            jasperDesign.setName("Factura");
+            jasperDesign.setPageWidth(595);
+            jasperDesign.setPageHeight(842);
+            jasperDesign.setColumnWidth(515);
+            jasperDesign.setColumnSpacing(0);
+            jasperDesign.setLeftMargin(40);
+            jasperDesign.setRightMargin(40);
+            jasperDesign.setTopMargin(50);
+            jasperDesign.setBottomMargin(50);
+
+            // Nombre:
+            JRDesignParameter nombreClienteParam = new JRDesignParameter();
+            nombreClienteParam.setName("nombreCliente");
+            nombreClienteParam.setValueClass(String.class);
+            jasperDesign.addParameter(nombreClienteParam);
+
+            // Agregar:
+            JRDesignParameter ciNitParam = new JRDesignParameter();
+            ciNitParam.setName("ciNit");
+            ciNitParam.setValueClass(String.class);
+            jasperDesign.addParameter(ciNitParam);
+
+            JRDesignParameter telefonoParam = new JRDesignParameter();
+            telefonoParam.setName("telefono");
+            telefonoParam.setValueClass(String.class);
+            jasperDesign.addParameter(telefonoParam);
+
+            JRDesignParameter correoParam = new JRDesignParameter();
+            correoParam.setName("correo");
+            correoParam.setValueClass(String.class);
+            jasperDesign.addParameter(correoParam);
+
+            JRDesignParameter fechaFacturaParam = new JRDesignParameter();
+            fechaFacturaParam.setName("fechaFactura");
+            fechaFacturaParam.setValueClass(String.class);
+            jasperDesign.addParameter(fechaFacturaParam);
+
+            JRDesignParameter fechaCaducidadParam = new JRDesignParameter();
+            fechaCaducidadParam.setName("fechaCaducidad");
+            fechaCaducidadParam.setValueClass(String.class);
+            jasperDesign.addParameter(fechaCaducidadParam);
+
+            // Definir campos necesarios
+            JRDesignField productoField = new JRDesignField();
+            productoField.setName("producto");
+            productoField.setValueClass(String.class);
+            jasperDesign.addField(productoField);
+
+            JRDesignField descripcionField = new JRDesignField();
+            descripcionField.setName("descripcion");
+            descripcionField.setValueClass(String.class);
+            jasperDesign.addField(descripcionField);
+
+            JRDesignField cantidadField = new JRDesignField();
+            cantidadField.setName("cantidad");
+            cantidadField.setValueClass(Integer.class);
+            jasperDesign.addField(cantidadField);
+
+            JRDesignField precioField = new JRDesignField();
+            precioField.setName("precioUnitario");
+            precioField.setValueClass(Double.class);
+            jasperDesign.addField(precioField);
+
+            JRDesignField subtotalField = new JRDesignField();
+            subtotalField.setName("subtotal");
+            subtotalField.setValueClass(Double.class);
+            jasperDesign.addField(subtotalField);
+
+            // Crear banda de título
+            JRDesignBand titleBand = new JRDesignBand();
+            titleBand.setHeight(120);
+
+            // Agregar logo de la empresa como imagen real
+            JRDesignImage logoImage = new JRDesignImage(null);
+            logoImage.setX(415);
+            logoImage.setY(10);
+            logoImage.setWidth(100);
+            logoImage.setHeight(50);
+            logoImage.setScaleImage(ScaleImageEnum.RETAIN_SHAPE);
+
+            // Cargar la imagen del logo
+            String logoPath = getClass().getResource("/org/images/logo.png").toString();
+            JRDesignExpression imageExpression = new JRDesignExpression();
+            imageExpression.setText("\"" + logoPath + "\"");
+            logoImage.setExpression(imageExpression);
+            titleBand.addElement(logoImage);
+
+            // Agregar título
+            JRDesignStaticText titleElement = new JRDesignStaticText();
+            titleElement.setX(0);
+            titleElement.setY(20);
+            titleElement.setWidth(400);
+            titleElement.setHeight(30);
+            titleElement.setText("FACTURA ELECTRÓNICA");
+            titleElement.setHorizontalTextAlign(net.sf.jasperreports.engine.type.HorizontalTextAlignEnum.CENTER);
+            titleElement.setFontName("Arial");
+            titleElement.setFontSize(20f);
+            titleElement.setBold(true);
+            titleBand.addElement(titleElement);
+            
+            
+            JRDesignTextField clienteField = new JRDesignTextField();
+            clienteField.setX(40);
+            clienteField.setY(60);
+            clienteField.setWidth(400);
+            clienteField.setHeight(20);
+            clienteField.setFontName("Arial");
+            clienteField.setFontSize(10f);
+            clienteField.setExpression(new JRDesignExpression("\"Cliente: \" + ($P{nombreCliente} != null ? $P{nombreCliente} : \"\")"));
+            titleBand.addElement(clienteField);
+
+            JRDesignTextField cinitField = new JRDesignTextField();
+            cinitField.setX(40);
+            cinitField.setY(80);
+            cinitField.setWidth(200);
+            cinitField.setHeight(20);
+            cinitField.setFontName("Arial");
+            cinitField.setFontSize(10f);
+            cinitField.setExpression(new JRDesignExpression("\"CI/NIT: \" + ($P{ciNit} != null ? $P{ciNit} : \"\")"));
+            titleBand.addElement(cinitField);
+
+            JRDesignTextField telefonoField = new JRDesignTextField();
+            telefonoField.setX(40);
+            telefonoField.setY(100);
+            telefonoField.setWidth(200);
+            telefonoField.setHeight(20);
+            telefonoField.setFontName("Arial");
+            telefonoField.setFontSize(10f);
+            telefonoField.setExpression(new JRDesignExpression("\"Teléfono: \" + ($P{telefono} != null ? $P{telefono} : \"\")"));
+            titleBand.addElement(telefonoField);
+
+            JRDesignTextField correoField = new JRDesignTextField();
+            correoField.setX(250);
+            correoField.setY(100);
+            correoField.setWidth(200);
+            correoField.setHeight(20);
+            correoField.setFontName("Arial");
+            correoField.setFontSize(10f);
+            correoField.setExpression(new JRDesignExpression("\"Email: \" + ($P{correo} != null ? $P{correo} : \"\")"));
+            titleBand.addElement(correoField);
+
+            // Agregar fechas
+            JRDesignTextField fechaFacturaField = new JRDesignTextField();
+            fechaFacturaField.setX(250);
+            fechaFacturaField.setY(60);
+            fechaFacturaField.setWidth(150);
+            fechaFacturaField.setHeight(20);
+            fechaFacturaField.setFontName("Arial");
+            fechaFacturaField.setFontSize(10f);
+            fechaFacturaField.setExpression(new JRDesignExpression("\"Fecha: \" + ($P{fechaFactura} != null ? $P{fechaFactura} : \"\")"));
+            titleBand.addElement(fechaFacturaField);
+
+            JRDesignTextField fechaCaducidadField = new JRDesignTextField();
+            fechaCaducidadField.setX(250);
+            fechaCaducidadField.setY(80);
+            fechaCaducidadField.setWidth(150);
+            fechaCaducidadField.setHeight(20);
+            fechaCaducidadField.setFontName("Arial");
+            fechaCaducidadField.setFontSize(10f);
+            fechaCaducidadField.setExpression(new JRDesignExpression("\"Vence: \" + ($P{fechaCaducidad} != null ? $P{fechaCaducidad} : \"\")"));
+            titleBand.addElement(fechaCaducidadField);
+
+            jasperDesign.setTitle(titleBand);
+
+            // Crear banda de columnas con bordes
+            JRDesignBand columnHeaderBand = new JRDesignBand();
+            columnHeaderBand.setHeight(30);
+
+            // Definir los encabezados de columna con bordes
+            String[] headers = {"Producto", "Descripción", "Cantidad", "Precio Unit.", "Subtotal"};
+            int[] widths = {100, 175, 80, 80, 80};
+            int xPos = 0;
+
+            for (int i = 0; i < headers.length; i++) {
+                JRDesignStaticText header = new JRDesignStaticText();
+                header.setX(xPos);
+                header.setY(0);
+                header.setWidth(widths[i]);
+                header.setHeight(30);
+                header.setText(headers[i]);
+                header.setHorizontalTextAlign(net.sf.jasperreports.engine.type.HorizontalTextAlignEnum.CENTER);
+                header.setVerticalTextAlign(net.sf.jasperreports.engine.type.VerticalTextAlignEnum.MIDDLE);
+                header.setBold(true);
+                header.setFontSize(12f);
+                header.setFontName("Arial");
+                // Agregar bordes a las celdas de encabezado
+                header.setMode(net.sf.jasperreports.engine.type.ModeEnum.OPAQUE);
+                header.setBackcolor(new java.awt.Color(240, 240, 240));
+                header.getLineBox().getTopPen().setLineWidth(1f);
+                header.getLineBox().getTopPen().setLineStyle(LineStyleEnum.SOLID);
+                header.getLineBox().getLeftPen().setLineWidth(1f);
+                header.getLineBox().getLeftPen().setLineStyle(LineStyleEnum.SOLID);
+                header.getLineBox().getBottomPen().setLineWidth(1f);
+                header.getLineBox().getBottomPen().setLineStyle(LineStyleEnum.SOLID);
+                header.getLineBox().getRightPen().setLineWidth(1f);
+                header.getLineBox().getRightPen().setLineStyle(LineStyleEnum.SOLID);
+                columnHeaderBand.addElement(header);
+                xPos += widths[i];
+            }
+
+            jasperDesign.setColumnHeader(columnHeaderBand);
+
+            // Crear banda de detalle con bordes
+            JRDesignBand detailBand = new JRDesignBand();
+            detailBand.setHeight(20);
+
+            xPos = 0;
+            String[] fieldNames = {"producto", "descripcion", "cantidad", "precioUnitario", "subtotal"};
+
+            for (int i = 0; i < fieldNames.length; i++) {
+                JRDesignTextField field = new JRDesignTextField();
+                field.setX(xPos);
+                field.setY(0);
+                field.setWidth(widths[i]);
+                field.setHeight(20);
+                field.setExpression(new JRDesignExpression("$F{" + fieldNames[i] + "}"));
+                // Agregar bordes a las celdas de datos
+                field.getLineBox().getTopPen().setLineWidth(1f);
+                field.getLineBox().getTopPen().setLineStyle(LineStyleEnum.SOLID);
+                field.getLineBox().getLeftPen().setLineWidth(1f);
+                field.getLineBox().getLeftPen().setLineStyle(LineStyleEnum.SOLID);
+                field.getLineBox().getBottomPen().setLineWidth(1f);
+                field.getLineBox().getBottomPen().setLineStyle(LineStyleEnum.SOLID);
+                field.getLineBox().getRightPen().setLineWidth(1f);
+                field.getLineBox().getRightPen().setLineStyle(LineStyleEnum.SOLID);
+                field.setFontName("Arial");
+                field.setFontSize(10f);
+
+                if (i >= 2) { // Para campos numéricos
+                    field.setHorizontalTextAlign(net.sf.jasperreports.engine.type.HorizontalTextAlignEnum.RIGHT);
+                    if (i >= 3) { // Para campos de precio
+                        field.setPattern("$#,##0.00");
+                    }
+                } else {
+                    field.setHorizontalTextAlign(net.sf.jasperreports.engine.type.HorizontalTextAlignEnum.LEFT);
+                }
+
+                detailBand.addElement(field);
+                xPos += widths[i];
+            }
+
+            ((JRDesignSection) jasperDesign.getDetailSection()).addBand(detailBand);
+
+            // Parámetros del reporte
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("nombreCliente", txtNombreCliente.getText());
+            parameters.put("ciNit", txtCINIT.getText());
+            parameters.put("telefono", txtTelefonoCliente.getText());
+            parameters.put("correo", txtCorreo.getText());
+            parameters.put("fechaFactura", txtFechaFactura.getText());
+            parameters.put("fechaCaducidad", txtFechaCaducidad.getText());
+
+            // Crear origen de datos y compilar
+            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(invoiceItems);
+            JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(
+                jasperReport,
+                parameters,
+                dataSource
+            );
+
+            // Diálogo para guardar
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Guardar Factura PDF");
+            fileChooser.setFileFilter(new FileNameExtensionFilter("PDF Files", "pdf"));
+            fileChooser.setSelectedFile(new File("factura.pdf"));
+
+            if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                if (!file.getName().toLowerCase().endsWith(".pdf")) {
+                    file = new File(file.getAbsolutePath() + ".pdf");
+                }
+
+                // Exportar a PDF
+                JasperExportManager.exportReportToPdfFile(jasperPrint, file.getAbsolutePath());
+
+                // Abrir el PDF
+                if (Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop().open(file);
+                }
+
+                JOptionPane.showMessageDialog(this,
+                    "PDF exportado exitosamente.",
+                    "Exportación Completada",
+                    JOptionPane.INFORMATION_MESSAGE);
+                limpiarPantalla();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                "Error al exportar el PDF: " + e.getMessage(),
+                "Error de Exportación",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    
+    private void limpiarPantalla() {
+        // Limpiar campos de texto
+        txtNombreCliente.setText("");
+        txtCINIT.setText("");
+        txtTelefonoCliente.setText("");
+        txtCorreo.setText("");
+        txtFechaFactura.setText("");
+        txtFechaCaducidad.setText("");
+
+        // Limpiar tabla
+        while (model.getRowCount() > 0) {
+            model.removeRow(0);
+        }
+
+        // Reiniciar currentSale
+        currentSale = null;
+
+        // Remover el panel de totales si existe
+        for (Component comp : getComponents()) {
+            if (comp instanceof JPanel && "totalsPanel".equals(comp.getName())) {
+                remove(comp);
+            }
+        }
+
+        // Actualizar la vista
+        revalidate();
+        repaint();
     }
 }

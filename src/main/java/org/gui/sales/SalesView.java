@@ -229,6 +229,15 @@ public class SalesView extends javax.swing.JPanel {
 
 
     private void registerSale() {
+        
+        if (cartItems.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "Por favor, ingrese productos al carrito para realizar una venta.",
+                "Carrito Vacío",
+                JOptionPane.WARNING_MESSAGE);
+            return; 
+        }
+
         if (total <= 0) {
             return;
         }
